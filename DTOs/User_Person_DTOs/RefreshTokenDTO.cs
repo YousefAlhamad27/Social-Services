@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DTOs
+namespace DTOs.User_Person_DTOs
 {
-    public class LoginRequest
+    public class RefreshTokenDTO
     {
 
-
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string TokenString { get; set; }
     }
 }

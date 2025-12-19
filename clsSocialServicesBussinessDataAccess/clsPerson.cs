@@ -57,7 +57,6 @@ namespace clsSocialServicesBussiness
                 FirstName = updateDTO.FirstName,
                 SecondName = updateDTO.SecondName,
                 LastName = updateDTO.LastName,
-                // Assuming ThirdName is derived or nullable. If not, map it here.
                 Email = updateDTO.Email,
                 Phone = updateDTO.Phone,
                 Age = updateDTO.Age,
@@ -75,12 +74,25 @@ namespace clsSocialServicesBussiness
 
         public  int AddPerson( RegisterRequestDTO reqDto)
         {
+            if (reqDto.Imagepath == null || reqDto.Imagepath == "")
+                reqDto.Imagepath = null!;
 
-         return _personRepository.AddPerson(MapToPersonEntity(reqDto));
+
+            string newImagePath = UtilLibrary.FileOperations.saveImageTofile(reqDto.Imagepath, UtilLibrary.FileOperations.ImageType.UserImage);
+            reqDto.Imagepath = newImagePath;
+
+            return _personRepository.AddPerson(MapToPersonEntity(reqDto));
         }
-
+        //public bool updateImage(int personID,string newPath) {
+        
+        
+        
+        //}
         public bool updatePerson(int personID,PersonDetailsUpdateDTO updateDTO)
         {
+            string newImagePath = UtilLibrary.FileOperations.saveImageTofile(updateDTO.Imagepath, UtilLibrary.FileOperations.ImageType.UserImage);
+            updateDTO.Imagepath = newImagePath;
+
             return _personRepository.UpdatePerson(MapUpdateDTOToPersonEntity(personID,updateDTO));
         }
         public bool deletePerson(int personID) {

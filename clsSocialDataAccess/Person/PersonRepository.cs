@@ -21,12 +21,43 @@ namespace clsSocialServicesDataAccess
            
             try
             {
-             return _dbContext.People.Find(personID);
+             return _dbContext.People.Find(personID)!;
             }
             catch
             {
              return null;
             }
+        }
+        public bool UpdateImage(int personID,string imagePath)
+        {
+           
+           
+
+            try
+            {
+                PersonEntity person = _dbContext.People.FirstOrDefault(u => u.PersonID == personID)!;
+                if (person != null)
+                {
+                    if(imagePath==null||imagePath=="")
+                        person.ImagePath = null!;
+                    
+                    else
+                    {
+                        person.ImagePath = imagePath!;
+                    }
+                        _dbContext.People.Update(person);
+                    _dbContext.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+
+            }
+
+
         }
         public int AddPerson(PersonEntity personEntity)
         {
@@ -62,7 +93,7 @@ namespace clsSocialServicesDataAccess
             {
                 // 2. Find the existing, tracked entity using its permanent ID.
                 // Find() is the fastest way to check the database and load the entity.
-                PersonEntity personToDelete = _dbContext.People.Find(personID);
+                PersonEntity personToDelete = _dbContext.People.Find(personID)!;
 
                 if (personToDelete != null)
                 {

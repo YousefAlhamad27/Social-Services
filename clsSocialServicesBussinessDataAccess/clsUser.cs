@@ -1,6 +1,6 @@
 ﻿using clsSocialServicesDataAccess;
 using DTOs;
-
+using DTOs.User_Person_DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,13 +52,15 @@ namespace clsSocialServicesBussiness
              
             return _userRepo.DoesUsernameExist(username);
         }
+        
 
-        public int RegisterNewUser(RegisterRequestDTO reqDto)
+        public int RegisterNewUser(RegisterRequestDTO reqDto,int personID)
         {
+
          
             UserEntity userEntity = new UserEntity 
             {
-               
+               PersonID= personID,
                 Username = reqDto.Username,
                 Password = reqDto.PasswordHash, 
                 IsActive = true,
@@ -70,11 +72,8 @@ namespace clsSocialServicesBussiness
           
             return _userRepo.AddUser(userEntity);
         }
-        public bool updateUser(RegisterRequestDTO registerRequestDTO) {
-        
-          return  _userRepo.UpdateUser(MapToUserEntity(registerRequestDTO));
 
-        }
+         
         public int returnPersonID(UserDTO userDTO) {
             return _userRepo.getPersonID(MapUserDTOToUserEntity(userDTO));
         }
@@ -84,11 +83,105 @@ namespace clsSocialServicesBussiness
 
         }
         public UserDTO Find(string username) {
-            return MapToUserDTO(_userRepo.FindUserName(username));
+
+            try
+            {
+                return MapToUserDTO(_userRepo.FindUserName(username));
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
         public  UserDTO Find(int userID) {
-       return MapToUserDTO(_userRepo.Find(userID));
-        
+
+            try
+            {
+                return MapToUserDTO(_userRepo.Find(userID));
+            }
+
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
+        public bool updatePassword(UserDTO dto) {
+
+            UserEntity user = _userRepo.FindUserName( dto.Username);
+            user.Password = dto.PasswordHash;
+
+            return _userRepo.UpdateUser(user);
+        }
+
+        public bool revokeToken(RefreshTokenDTO dto,string newToken)
+        {
+           return  _userRepo.revokeRefreshToken(UtilLibrary.ReturnSHA256(dto.TokenString), UtilLibrary.ReturnSHA256(newToken));
+     
+        }
+        public bool deleteToken(RefreshTokenDTO dto)
+        {
+            return _userRepo.DeleteRefreshToken(UtilLibrary.ReturnSHA256(dto.TokenString));
+
+        }
+
+        public string getAccessToken(string username)
+        {
+            UserEntity user = _userRepo.FindUserName(username);
+
+            if (user != null)
+            {
+                return UtilLibrary.returnToken( user);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public bool addRefreshToken(string refreshToken,string username)
+        {
+
+            return _userRepo.AddRefreshToken(UtilLibrary.ReturnSHA256(refreshToken), username);
+
+        }
+        public UserDTO returnUserForRefreshToken(string refreshToken)
+        {
+
+            UserDTO user;
+
+            UserEntity userEntity = _userRepo.returnUserForToken(_userRepo.returnRefreshToken(refreshToken));
+
+            if (userEntity != null)
+            {
+                user = MapToUserDTO(userEntity);
+                return user;
+            }
+            return null;
+        }
+        public UserDTO isRefreshTokenValidForUse(RefreshTokenDTO dto)
+        {
+
+            RefreshToken token = _userRepo.returnRefreshToken(UtilLibrary.ReturnSHA256(dto.TokenString));
+
+
+
+
+            if (token == null)
+                return null;
+
+            if (token.Expires < DateTime.Now)
+                return null;
+
+            
+
+
+            UserDTO user =  returnUserForRefreshToken(UtilLibrary.ReturnSHA256(dto.TokenString));
+            if(user== null) return null;
+
+            return user;
+
+                
+
+                }
     }
 }
