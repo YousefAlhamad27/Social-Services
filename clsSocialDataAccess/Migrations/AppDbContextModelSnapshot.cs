@@ -134,7 +134,8 @@ namespace clsSocialServicesDataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ProfessionID")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("ProfessionID");
 
                     b.Property<DateTime>("PublishDateTime")
                         .HasColumnType("datetime2");
@@ -150,6 +151,8 @@ namespace clsSocialServicesDataAccess.Migrations
                     b.HasIndex("CountyID");
 
                     b.HasIndex("PostTypeID");
+
+                    b.HasIndex("ProfessionID");
 
                     b.HasIndex("UserID");
 
@@ -176,6 +179,27 @@ namespace clsSocialServicesDataAccess.Migrations
                     b.HasKey("PostTypeID");
 
                     b.ToTable("PostTypes");
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.Posts.ProfessionEntity", b =>
+                {
+                    b.Property<int>("ProfessionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfessionID"));
+
+                    b.Property<string>("ProfessionDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfessionTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProfessionID");
+
+                    b.ToTable("Professions");
                 });
 
             modelBuilder.Entity("clsSocialServicesDataAccess.RefreshToken", b =>
@@ -260,6 +284,12 @@ namespace clsSocialServicesDataAccess.Migrations
                     b.HasOne("clsSocialServicesDataAccess.Posts.PostTypeEntity", null)
                         .WithMany()
                         .HasForeignKey("PostTypeID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("clsSocialServicesDataAccess.Posts.ProfessionEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ProfessionID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
