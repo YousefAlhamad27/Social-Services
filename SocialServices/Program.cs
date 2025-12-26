@@ -1,5 +1,6 @@
 using clsSocialServicesBussiness;
 using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Counties___Cities;
 using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Posts;
 using clsSocialServicesDataAccess.Services;
@@ -38,11 +39,13 @@ clsConfigurations config = new clsConfigurations(builder.Configuration);
     builder.Services.AddScoped<PostRepository>();
     builder.Services.AddScoped<UserRepository>();
     builder.Services.AddScoped<PersonRepository>();
+    builder.Services.AddScoped<CountyCityRepository>();
     builder.Services.AddScoped<clsPerson>();
     builder.Services.AddScoped<clsPost>();
     builder.Services.AddScoped<clsUser>();
     builder.Services.AddScoped<clsServiceApplication>();
     builder.Services.AddScoped<clsFeedBack>();
+    builder.Services.AddScoped<clsCountiesCities>();
 
     builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
