@@ -20,13 +20,37 @@ namespace SocialServices.Controllers
             _userService = userService;
         }
 
-        //[HttpGet("GetAllPosts")]
-        //[Authorize(Roles = "User,Admin")]
-        //public ActionResult GetAllPosts()
-        //{
-        //    // Implementation to retrieve all posts
-        //    return Ok();
-        //}
+        [HttpGet("Get All Posts")]
+        [Authorize(Roles = "User,Admin")]
+        public ActionResult GetAllPosts()
+        {
+            int currentUserID= Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID == 0)
+            {
+                return Unauthorized("Invalid User");
+            }
+            if(!User.IsInRole("Admin"))
+            {
+                UserDTO user = _userService.Find(currentUserID);
+                if (user == null)
+                {
+                    return Unauthorized("Invalid User");
+                }
+            }
+            //else   implementation for admin 
+            //{
+                
+            //}
+
+            List<PostListDTO> posts = _postService.getAllPosts();
+            if (posts == null)
+            {
+                return StatusCode(500, new { Message = "Error retrieving posts" });
+            }
+            return Ok(posts);
+
+        }
 
         [HttpPost("Create Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User")]
@@ -94,7 +118,7 @@ namespace SocialServices.Controllers
         }
 
         [HttpPut("Update Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User")]
 
         public ActionResult UpdatePost(PostUpdateDTO dto)
         {
@@ -107,11 +131,30 @@ namespace SocialServices.Controllers
             {
                 return Unauthorized("Invalid User");
             }
-            UserDTO user = _userService.Find(userID);
-            if (user == null)
+
+            UserDTO CurrentUser = _userService.Find(userID);
+           
+            var sentUser = _userService.Find(dto.UserID);
+
+            if (sentUser != null && CurrentUser != null)
+            {
+                if (sentUser.Username == CurrentUser.Username)
+                {
+                    if (sentUser == null)
+                    {
+                        return Unauthorized("user not found");
+                    }
+                }
+                else
+                {
+                    return Unauthorized("Forbidden");
+                }
+            }
+            else
             {
                 return Unauthorized("Invalid User");
             }
+           
 
             if (!_postService.updatePost(userID, dto))
             {
@@ -123,18 +166,24 @@ namespace SocialServices.Controllers
 
         [HttpGet("Get User Posts Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User,Admin")]
-        public ActionResult GetUserPosts()
+        public ActionResult GetUserPosts(string username)
         {
-            int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
-            if (userID == 0)
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            if (currentUserID == 0)
             {
                 return Unauthorized("Invalid User");
             }
-            UserDTO user = _userService.Find(userID);
-            if (user == null)
+            
+            if (!User.IsInRole("Admin"))
             {
-                return Unauthorized("Invalid User");
+                UserDTO user = _userService.Find(username);
+                if (user == null)
+                {
+                    return Unauthorized("Invalid User");
+                }
             }
+            int userID = _userService.getUserID(username);
+            
             List<PostListDTO> posts = _postService.getAllPosts(userID);
 
             if (posts == null)
@@ -165,6 +214,7 @@ namespace SocialServices.Controllers
             }
             return Ok(posts);
         }
+
         [HttpPost("Complete Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User")]
         public ActionResult CompletePost(int postID)
@@ -191,6 +241,7 @@ namespace SocialServices.Controllers
         }
         [HttpPost("Lock Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User,Admin")]
+
         public ActionResult LockPost(int postID)
         {
 

@@ -367,3 +367,6 @@ FodyWeavers.xsd
 *.ldf
 *.suo
 *.user
+
+# Ignore SQL Dumps
+*.sql

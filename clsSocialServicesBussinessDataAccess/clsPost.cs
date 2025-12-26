@@ -1,5 +1,4 @@
 ﻿using clsSocialServicesDataAccess.Posts;
-using DTOs;
 using DTOs.Posts;
 using System;
 using System.Collections.Generic;
@@ -29,8 +28,30 @@ namespace clsSocialServicesBussiness
                 PublishDateTime = dto.PublishDate,
                 LockDate = null,
                 ImagePath=dto.imagePath,
-                Status=dto.Status
+                Status=dto.Status,
+                ProfessionID=dto.ProfessionID
             };
+        }
+        private PostDTO MapPostEntityToPostDTO(PostEntity dto)
+        {
+            if (dto != null)
+            {
+                return new PostDTO
+                {
+                    UserID = dto.UserID,
+                    Description = dto.Description,
+                    PostTitle = dto.PostTitle,
+                    CountyID = dto.CountyID,
+
+                    PublishDate = dto.PublishDateTime,
+                    PostID = dto.PostID,
+                    TypeID = dto.PostTypeID,
+                    imagePath = dto.ImagePath,
+                    Status = dto.Status
+                };
+            }
+            else
+                return null!;
         }
         private PostEntity MapPostUpdateDTOToPostEntity(int userID, PostUpdateDTO dto,PostEntity currentDetails)
         {
@@ -96,6 +117,11 @@ namespace clsSocialServicesBussiness
 
             return _postRepository.DeletePost(postID);
         }
+        public List<PostListDTO> getAllPosts()
+        {
+
+            return _postRepository.GetAllPosts();
+        }
         public List<PostListDTO> getAllPosts(int userID)
         {
 
@@ -111,6 +137,10 @@ namespace clsSocialServicesBussiness
         {
             PostEntity? post = _postRepository.Find(postID);
             return post != null;
+        }
+        public PostDTO? getPost(int postID)
+        {
+            return MapPostEntityToPostDTO(_postRepository.Find(postID)!);
         }
         public bool CompletePost(int userID,int postID)
         {

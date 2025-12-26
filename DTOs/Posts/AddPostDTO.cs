@@ -11,8 +11,8 @@ namespace DTOs.Posts
         public int TypeID { get; set; }
         public DateTime PublishDate { get; set; }
 
-        public string Description { get; set; }
-
+        public string? Description { get; set; }
+        public int ProfessionID { get; set; }
         public string PostTitle { get; set; }
         public int CountyID { get; set; }
         public string imagePath {get; set; }

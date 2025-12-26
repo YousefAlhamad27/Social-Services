@@ -31,26 +31,61 @@ namespace SocialServices.Controllers
         {
 
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+           // string currentUserRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value!;
+            bool isAdmin = User.IsInRole("Admin");
+            UserDTO user1= null;
             if (userID == 0)
             {
                 return BadRequest("Not Accepted");
             }
+            if (!isAdmin)
+            {
 
 
-            UserDTO userDTO = _userService.Find(Username);
 
-            if (userDTO == null)
-                return BadRequest("Not Found");
+                 user1 = _userService.Find(Username);
+                UserDTO user2 = _userService.Find(userID);
 
-            if (_userService.deleteUser(userDTO))
-                if (_personSerivce.deletePerson(userDTO.PersonID))
+                if (user1 != null && user2 != null)
+                    if (user1.Username != user2.Username && user1.CreationDate != user2.CreationDate)
+                        return Unauthorized("You are not authorized to delete this user");
+
+                if (user2 == null)
+                    return BadRequest("Not Found");
+            }
+            else {
+                 user1 = _userService.Find(Username);
+                if (user1 == null)
+                    return BadRequest("Not Found");
+            }
+            if (_userService.deleteUser(user1!))
+                if (_personSerivce.deletePerson(user1!.PersonID))
                 {
                     return Ok("User has been deleted successfully");
                 }
             return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Failed to Delete User" });
-            ;
+            
         }
 
+        [HttpDelete("Logout Everywhere"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "User")]
+        public ActionResult logoutEverywhere()
+        {
+            int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (userID == 0)
+            {
+                return BadRequest("User not found");
+            }
+            if (_userService.logoutEverywhere(userID))
+            {
+                return Ok("User logged out from all devices Sucessfully!");
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Error Logging Out" });
+            }
+        }
 
         [HttpPatch("Update Personal Details"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "User,Admin")]

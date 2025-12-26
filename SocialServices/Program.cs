@@ -1,6 +1,8 @@
 using clsSocialServicesBussiness;
 using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Posts;
+using clsSocialServicesDataAccess.Services;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -31,13 +33,16 @@ clsConfigurations config = new clsConfigurations(builder.Configuration);
             sqlServerOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
         }
     ));
-  
+  builder.Services.AddScoped<ServiceApplicationRepository>();
+    builder.Services.AddScoped<FeedbackRepository>();
     builder.Services.AddScoped<PostRepository>();
     builder.Services.AddScoped<UserRepository>();
     builder.Services.AddScoped<PersonRepository>();
     builder.Services.AddScoped<clsPerson>();
     builder.Services.AddScoped<clsPost>();
     builder.Services.AddScoped<clsUser>();
+    builder.Services.AddScoped<clsServiceApplication>();
+    builder.Services.AddScoped<clsFeedBack>();
 
     builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

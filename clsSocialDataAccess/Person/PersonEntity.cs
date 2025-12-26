@@ -14,12 +14,12 @@ namespace clsSocialServicesDataAccess
         // Person Details
 
         public string FirstName { get; set; }
-        public string SecondName { get; set; }
+        public string? SecondName { get; set; }
         public string LastName { get; set; } // Based on your schema
         public string Email { get; set; }
         public string Phone { get; set; }
         public int Age { get; set; }
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
 
         // Navigation property for the User linked to this Person
         public virtual UserEntity User { get; set; }

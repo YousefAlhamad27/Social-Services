@@ -91,16 +91,16 @@ namespace clsSocialServicesDataAccess
 
             try
             {
-                // 2. Find the existing, tracked entity using its permanent ID.
-                // Find() is the fastest way to check the database and load the entity.
+                
+                
                 PersonEntity personToDelete = _dbContext.People.Find(personID)!;
 
                 if (personToDelete != null)
                 {
-                    // 3. Remove the tracked entity instance.
+                   
                     _dbContext.People.Remove(personToDelete);
 
-                    // 4. Commit the deletion to the database.
+                    
                     _dbContext.SaveChanges();
 
                     return true;
@@ -109,8 +109,7 @@ namespace clsSocialServicesDataAccess
             }
             catch (Exception ex)
             {
-                // Log the deletion failure (e.g., if there are cascade constraints preventing deletion)
-                // Console.WriteLine(ex.Message); 
+               
                 return false;
             }
         }

@@ -69,6 +69,22 @@ namespace clsSocialServicesDataAccess
                 return null;
             }
         }
+        public int getUserID(string username)
+        {
+                       try
+            {
+                UserEntity user = _dbContext.Users.FirstOrDefault(u => u.Username == username)!;
+                if (user != null)
+                {
+                    return user.UserID;
+                }
+                return -1;
+            }
+            catch
+            {
+                return -1;
+            }
+        }
         public RefreshToken returnRefreshToken(string token)
         {
 
@@ -215,7 +231,22 @@ namespace clsSocialServicesDataAccess
             }
 
         }
-      
+      public bool DeleteAllRefreshTokensForUser(int userID)
+        {
+            try
+            {
+                var tokens = _dbContext.Tokens.Where(t => t.UserId == userID).ToList();
+                if (tokens.Count == 0)
+                    return false; // No tokens to delete
+                _dbContext.Tokens.RemoveRange(tokens);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public bool DeleteUser(string username) {
 
@@ -228,9 +259,10 @@ namespace clsSocialServicesDataAccess
 
                 if (userToDelete != null)
                 {
-                    // 3. Remove the tracked entity instance.
+                    // 3. Remove the tracked entity instance
+                     DeleteAllRefreshTokensForUser(userToDelete.UserID);
                     _dbContext.Users.Remove(userToDelete);
-
+                    
                     // 4. Commit the deletion to the database.
                     _dbContext.SaveChanges();
 

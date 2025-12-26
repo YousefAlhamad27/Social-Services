@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using clsSocialServicesDataAccess.Counties___Cities;
 using clsSocialServicesDataAccess.Posts;
+using clsSocialServicesDataAccess.Feedback;
+using clsSocialServicesDataAccess.Services;
+using clsSocialServicesDataAccess.Feedback;
 
 namespace clsSocialServicesDataAccess
 {
@@ -21,19 +24,39 @@ namespace clsSocialServicesDataAccess
         public DbSet<PostTypeEntity> PostTypes { get; set; }
 
 
-        //public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
-        //public DbSet<FeedbackEntity> Feedback { get; set; }
+        public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
+        public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
+
+
+            modelBuilder.Entity<FeedbackEntity>()
+                .HasKey(p => p.FeedbackID); // Primary Key
 
             modelBuilder.Entity<PersonEntity>()
                 .HasOne(p => p.User)
                 .WithOne(u => u.Person)
                 .HasForeignKey<UserEntity>(u => u.PersonID);
+            modelBuilder.Entity<ServiceApplicationEntity>(entity =>
+            {
+                entity.HasKey(sa => sa.ServiceApplicationID); // Primary Key
+                
+                entity.HasOne<UserEntity>()         
+                      .WithMany()                   
+                      .HasForeignKey(sa => sa.UserID) 
+                      .OnDelete(DeleteBehavior.Restrict); 
+                
+                entity.HasOne<PostEntity>()         
+                      .WithMany()                   
+                      .HasForeignKey(sa => sa.PostID) 
+                      .OnDelete(DeleteBehavior.Restrict); 
+            });
+
+
 
             modelBuilder.Entity<CityEntity>(entity =>
             {
@@ -43,6 +66,7 @@ namespace clsSocialServicesDataAccess
 
             
             
+
             
             modelBuilder.Entity<CountyEntity>(entity =>
             {

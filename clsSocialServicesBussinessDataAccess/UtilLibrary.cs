@@ -200,7 +200,14 @@ namespace clsSocialServicesBussiness
         }
         public static bool VerifyPassword(string plainPassword, string hashedPassword)
         {
-            return BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
+            try
+            {
+                return BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         static public string ReturnSHA256(string String)

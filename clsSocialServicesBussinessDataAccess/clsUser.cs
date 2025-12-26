@@ -44,15 +44,24 @@ namespace clsSocialServicesBussiness
         }
         private static UserDTO MapToUserDTO(UserEntity userEntity) {
 
+            if (userEntity == null)
+                return null!;
             return new UserDTO(userEntity.PersonID,userEntity.Username, userEntity.Password, userEntity.IsActive, userEntity.CreationDate);
                               
-        }                      
+        }    
+        public int getUserID(string username)
+        {
+            return _userRepo.getUserID(username);
+        }   
         public bool CheckUsernameExistence(string username)
         {
              
             return _userRepo.DoesUsernameExist(username);
         }
-        
+        public bool logoutEverywhere(int userID)
+        {
+          return _userRepo.DeleteAllRefreshTokensForUser(userID);
+        }
 
         public int RegisterNewUser(RegisterRequestDTO reqDto,int personID)
         {
