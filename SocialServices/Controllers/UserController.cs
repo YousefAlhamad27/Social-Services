@@ -144,31 +144,48 @@ namespace SocialServices.Controllers
         [HttpGet("Get User"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User,Admin")]
 
-        public ActionResult getUser(string username)
+        public ActionResult getUser(string username="", int userID = -1)
         {
             string currentUsername = User.Identity!.Name!; // Or specific claim
             string currentUserRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value!;
-            int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
-            if (currentUserRole != "Admin" && currentUsername != username)
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if(userID==-1 && string.IsNullOrEmpty(username))
             {
-                return Forbid();
+                return BadRequest("Please provide either username or userID");
             }
-            if (userID == 0)
+            UserDTO user;
+            if (userID < 1)
             {
-                return BadRequest("Not Accepted");
+                if (currentUserRole != "Admin" && currentUsername != username)
+                {
+                    return Forbid();
+                }
+                if (currentUserID == 0)
+                {
+                    return BadRequest("Not Accepted");
+                }
+                 user = _userService.Find(username);
+                if (user == null)
+                {
+                    return BadRequest("User not found");
+                }
+            }
+            else {
+                 user = _userService.Find(userID);
+                if (user == null)
+                {
+                    return BadRequest("User not found");
+                }
             }
 
-            
-            UserDTO user = _userService.Find(username);
-            if (user == null)
-            {
-                return BadRequest("User not found");
-            }
-            PersonDTO person = _personSerivce.Find(user.PersonID);
+
+                PersonDTO person = _personSerivce.Find(user.PersonID);
             if (person != null )
             {
                 GetUserDTO getUserDTO = new GetUserDTO
                 {
+                     
                     CreationDate = user.CreationDate,
                     IsActive = user.IsActive,
                     Imagepath = person.Imagepath,
@@ -178,7 +195,7 @@ namespace SocialServices.Controllers
                     Email = person.Email,
                     Phone = person.Phone,
                     Age = person.Age,
-                    Username = username
+                    Username = user.Username
                 };
                 return Ok(getUserDTO);
             }
@@ -189,6 +206,8 @@ namespace SocialServices.Controllers
 
             
         }
+
+
     }
 
 
