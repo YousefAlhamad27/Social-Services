@@ -131,14 +131,14 @@ namespace SocialServices.Controllers
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status401Unauthorized), ProducesResponseType(StatusCodes.Status400BadRequest),
 ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Authorize(Roles = "User")]
-        public ActionResult AcceptServiceApplication(int serviceApplicationID)
+        public ActionResult AcceptServiceApplication(int serviceApplicationID,string? AcceptanceMessage)
         {
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
             if (currentUserID <= 0)
                 return Unauthorized("Not allowed");
 
-            if (_serviceApplication.AcceptSerivceApplication(currentUserID, serviceApplicationID))
+            if (_serviceApplication.AcceptSerivceApplication(currentUserID, serviceApplicationID, AcceptanceMessage))
             {
                 return Ok("Service Application Accepted");
             }
