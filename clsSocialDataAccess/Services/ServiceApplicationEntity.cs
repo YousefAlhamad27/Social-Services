@@ -14,5 +14,7 @@ namespace clsSocialServicesDataAccess.Services
         public DateTime ApplyDateTime { get; set; }
         public bool Accepted { get; set; }
         public string? Description { get; set; }
+        public string? AcceptanceMessage { get; set; }
+
     }
 }

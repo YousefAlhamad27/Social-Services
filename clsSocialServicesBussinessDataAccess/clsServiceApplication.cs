@@ -46,12 +46,12 @@ namespace clsSocialServicesBussiness
         {
             return _repo.doesServiceBelongToUser(serviceID,userID);
         }
-        public bool AcceptSerivceApplication(int userID,int serviceApplicationID)
+        public bool AcceptSerivceApplication(int userID,int serviceApplicationID,string? AcceptanceMessage)
         {
             
          
 
-            return _repo.AcceptServiceApplication(userID,serviceApplicationID);
+            return _repo.AcceptServiceApplication(userID,serviceApplicationID,AcceptanceMessage);
 
         }
         public ServiceApplicationEntity Find(int serviceID)
