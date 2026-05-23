@@ -102,7 +102,7 @@ namespace clsSocialServicesDataAccess.Services
 
 
         }
-        public bool AcceptServiceApplication(int userID,int serviceApplicationID)
+        public bool AcceptServiceApplication(int userID,int serviceApplicationID,string? AcceptanceMessage)
         {
 
             try
@@ -111,8 +111,15 @@ namespace clsSocialServicesDataAccess.Services
             if (!DoesPostBelongToUser(userID, serviceApplication.PostID)) {
                 return false;
             }
+            PostEntity post
+                    = _context.Posts.FirstOrDefault(p => p.PostID == serviceApplication.PostID)!;
+                if (post == null)
+                    return false;
+                if (post.IsComplete || post.LockDate != null)
+                    return false;
 
-                serviceApplication.Accepted = true;
+                    serviceApplication.Accepted = true;
+                serviceApplication.AcceptanceMessage = AcceptanceMessage;
                 _context.ServiceApplications.Update(serviceApplication);
                 _context.SaveChanges();
                 return true;
