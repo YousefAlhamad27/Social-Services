@@ -15,76 +15,88 @@ using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
-
-
-
-
 var builder = WebApplication.CreateBuilder(args);
-clsConfigurations config = new clsConfigurations(builder.Configuration);
-// Add services to the container.
 
-//services block 
+
+
+clsConfigurations config = new clsConfigurations(builder.Configuration);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// CORS Configuration
+builder.Services.AddCors(options =>
 {
-    builder.Services.AddDbContext<AppDbContext>(options =>
+    options.AddPolicy("AllowViteFrontend",
+        policy =>
+        {
+            // Make sure the Vite port is actually in here!
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        clsConfigurations.ConnectionString, // Your connection string
+        clsConfigurations.ConnectionString,
         sqlServerOptions =>
         {
-            // This dynamically gets the correct assembly name "clsSocialServicesDataAccess"
             sqlServerOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
         }
     ));
-  builder.Services.AddScoped<ServiceApplicationRepository>();
-    builder.Services.AddScoped<FeedbackRepository>();
-    builder.Services.AddScoped<PostRepository>();
-    builder.Services.AddScoped<UserRepository>();
-    builder.Services.AddScoped<PersonRepository>();
-    builder.Services.AddScoped<CountyCityRepository>();
-    builder.Services.AddScoped<clsPerson>();
-    builder.Services.AddScoped<clsPost>();
-    builder.Services.AddScoped<clsUser>();
-    builder.Services.AddScoped<clsServiceApplication>();
-    builder.Services.AddScoped<clsFeedBack>();
-    builder.Services.AddScoped<clsCountiesCities>();
 
-    builder.Services
+
+builder.Services.AddScoped<ServiceApplicationRepository>();
+builder.Services.AddScoped<FeedbackRepository>();
+builder.Services.AddScoped<PostRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<PersonRepository>();
+builder.Services.AddScoped<CountyCityRepository>();
+builder.Services.AddScoped<clsPerson>();
+builder.Services.AddScoped<clsPost>();
+builder.Services.AddScoped<clsUser>();
+builder.Services.AddScoped<clsServiceApplication>();
+builder.Services.AddScoped<clsFeedBack>();
+builder.Services.AddScoped<clsCountiesCities>();
+
+// Authentication Configuration
+builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        // 1. Configure the options for the JWT Bearer Handler
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true, // Validate the server that created the token
-            ValidateAudience = true, // Validate the recipient of the token is authorized
-            ValidateLifetime = true, // Check if the token is expired
-            ValidateIssuerSigningKey = true, // Validate the signature key
-
-            // 2. Set the actual values (these should be retrieved from a configuration file/vault)
-            ValidIssuer = builder.Configuration["Jwt:Issuer"], // The issuer (server)
-            ValidAudience = builder.Configuration["Jwt:Audience"], // The audience (API resource)
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured."))
             ),
-            // Optional: Set a clock skew to tolerate slight time differences between servers
             ClockSkew = TimeSpan.Zero
         };
-
     });
-    builder.Services.AddSwaggerGen(options =>
-    {
-        // Define the security scheme
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please enter 'Bearer [jwt]'",
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey,
-            BearerFormat = "JWT",
-            Scheme = "Bearer"
-        });
 
-        // Add the security requirement
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+builder.Services.AddAuthorization();
+
+// Swagger Configuration
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter 'Bearer [jwt]'",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -98,48 +110,31 @@ clsConfigurations config = new clsConfigurations(builder.Configuration);
             new string[] {}
         }
     });
-    });
+});
 
-    builder.Services.AddAuthorization();
-
-}
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseAuthentication();
 app.UseHttpsRedirection();
 
+
+app.UseRouting();
+
+
+app.UseCors("AllowViteFrontend");
+
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.Run();
-
-
-
-
-
-
-
-//{
-//    "username": "Maher_Ahmad",
-//  "firstName": "Yousef",
-//  "secondName": "Ahmad",
-//  "lastName": "AlHasan",
-//  "email": "Maher@g.com",
-//  "phone": "45521",
-//  "age": 18,
-//  "imagepath": ""
-//}
