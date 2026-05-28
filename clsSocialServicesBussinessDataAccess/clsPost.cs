@@ -30,6 +30,9 @@ namespace clsSocialServicesBussiness
                 ImagePath=dto.imagePath,
                 Status=dto.Status,
                 ProfessionID=dto.ProfessionID
+                ,Price=dto.Price,
+                Latitude=dto.Latitude,
+                Longitude=dto.Longitude
             };
         }
         private PostDTO MapPostEntityToPostDTO(PostEntity dto)
@@ -47,7 +50,12 @@ namespace clsSocialServicesBussiness
                     PostID = dto.PostID,
                     TypeID = dto.PostTypeID,
                     imagePath = dto.ImagePath,
-                    Status = dto.Status
+                    Status = dto.Status,
+                    Price=dto.Price,
+                    ProfessionID=dto.ProfessionID,
+                     Latitude=dto.Latitude,
+                        Longitude=dto.Longitude
+
                 };
             }
             else
@@ -70,7 +78,12 @@ namespace clsSocialServicesBussiness
                     PostTypeID=currentDetails.PostTypeID,
                     IsComplete=currentDetails.IsComplete,
                     PublishDateTime=currentDetails.PublishDateTime,
-                    Status=currentDetails.Status
+                    Status=currentDetails.Status,
+                    Price=currentDetails.Price,
+                    ProfessionID=currentDetails.ProfessionID,
+                    Latitude=currentDetails.Latitude,
+                    Longitude=currentDetails.Longitude
+
 
                 };
             else return null!;
@@ -85,16 +98,19 @@ namespace clsSocialServicesBussiness
 
             if(dto.imagePath!=null && dto.imagePath!=currentDetails.ImagePath)
             {
-                UtilLibrary.FileOperations.removeImageFromFile(currentDetails.ImagePath, UtilLibrary.FileOperations.ImageType.PostImage);
+                UtilLibrary.FileOperations.removeImageFromFile(currentDetails.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
                 dto.imagePath = UtilLibrary.FileOperations.saveImageTofile(dto.imagePath, UtilLibrary.FileOperations.ImageType.PostImage);
             }
             currentDetails.ImagePath= dto.imagePath!;
             currentDetails.Description= dto.Description!;
             currentDetails.PostTitle= dto.PostTitle;
             currentDetails.CountyID= dto.CountyID;
+            currentDetails.Price = dto.Price;
+            currentDetails.Latitude = dto.Latitude;
+            currentDetails.Longitude = dto.Longitude;
 
 
-          //  PostEntity updatedPost = MapPostUpdateDTOToPostEntity(userID, dto,currentDetails);
+            //  PostEntity updatedPost = MapPostUpdateDTOToPostEntity(userID, dto,currentDetails);
             return _postRepository.UpdatePost(currentDetails);
         }
 

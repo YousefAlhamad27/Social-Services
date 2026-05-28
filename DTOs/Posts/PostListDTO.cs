@@ -28,7 +28,9 @@ namespace DTOs.Posts
         public int Status { get; set; } 
         public DateTime PublishDateTime { get; set; }
         public bool IsComplete { get; set; }
-        // You can usually skip LockDate and Status for the public list, 
-        // unless you use them for styling (e.g. Grey out closed posts).
+        public decimal? Price { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
+
     }
 }

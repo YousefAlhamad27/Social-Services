@@ -370,3 +370,6 @@ FodyWeavers.xsd
 
 # Ignore SQL Dumps
 *.sql
+
+SocialServices/PostsImages/
+SocialServices/UserImages/

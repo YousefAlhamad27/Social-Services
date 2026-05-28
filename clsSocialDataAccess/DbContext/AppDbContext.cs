@@ -41,6 +41,7 @@ namespace clsSocialServicesDataAccess
                 .HasOne(p => p.User)
                 .WithOne(u => u.Person)
                 .HasForeignKey<UserEntity>(u => u.PersonID);
+            
             modelBuilder.Entity<ServiceApplicationEntity>(entity =>
             {
                 entity.HasKey(sa => sa.ServiceApplicationID); // Primary Key

@@ -10,5 +10,6 @@ namespace DTOs.Services
     {
         public int PostID { get; set; }
         public string? Description { get; set; }
+
     }
 }

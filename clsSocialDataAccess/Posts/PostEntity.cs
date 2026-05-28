@@ -24,5 +24,12 @@ namespace clsSocialServicesDataAccess.Posts
         public DateTime? LockDate { get; set; }
         public bool IsComplete { get; set; }
         public byte Status { get; set; }
+        public decimal? Price { get; set; }
+
+        [Column(TypeName = "decimal(12,6)")]
+        public decimal? Latitude { get; set; }
+        [Column(TypeName = "decimal(12,6)")]
+        public decimal? Longitude { get; set; }
+
     }
 }

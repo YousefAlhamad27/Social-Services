@@ -31,18 +31,18 @@ namespace SocialServices.Controllers
         public ActionResult RegisterUser(RegisterRequestDTO reqDto)
         {
 
-
+            // if no data sent return bad request
             if (!UtilLibrary.checkReqDTOValues(reqDto))
                 return BadRequest("Register Credentials are not valid");
-            // code for checking username
 
+            // check if username already exists
             if (_userService.CheckUsernameExistence(reqDto.Username))
             {
                 return BadRequest("Username Already Exists");
             }
 
 
-            // add person first
+           
 
             int personID = _personSerivce.AddPerson(reqDto);
 
@@ -51,16 +51,18 @@ namespace SocialServices.Controllers
                 return StatusCode(500, new { Message = "Error adding person" });
 
 
-            //add new user then check whether addition was success and hash the password
+            // add new user then check whether addition was success and hash the password
             int userID = _userService.RegisterNewUser(new RegisterRequestDTO(
-                 "", "", "", "", "", 0, "", reqDto.Username, UtilLibrary.returnHashedPassword(reqDto.PasswordHash), reqDto.IsActive, reqDto.CreationDate),personID);
+                 "", "", "", "", "", 0, "", reqDto.Username,
+                 UtilLibrary.returnHashedPassword(reqDto.PasswordHash), reqDto.IsActive, reqDto.CreationDate),personID);
 
             if (userID == -1)
             {
-                // delete added person
+                
                 return StatusCode(500, new { Message = "Error adding user" });
             }
 
+            // if used was added successfully return ok
             return Ok("User registered Sucessfully!");
         }
 
