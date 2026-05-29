@@ -18,6 +18,16 @@ namespace clsSocialServicesDataAccess.Posts
         }
 
         public bool AddPost (PostEntity post) {
+
+            if(post.Latitude==0 || post.Longitude==0)
+            {
+                post.Latitude = null;
+                post.Longitude = null;
+            }
+            if(post.Price==0)
+            {
+                post.Price = null;
+            }
             try
             {
 
@@ -52,6 +62,16 @@ namespace clsSocialServicesDataAccess.Posts
         }
         public bool UpdatePost(PostEntity post)
         {
+            if (post.Latitude == 0 || post.Longitude == 0)
+            {
+                post.Latitude = null;
+                post.Longitude = null;
+            }
+            if (post.Price == 0)
+            {
+                post.Price = null;
+            }
+
             try
             {
                 _dbContext.Posts.Update(post);

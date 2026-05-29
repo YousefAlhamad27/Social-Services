@@ -24,7 +24,7 @@ namespace SocialServices.Controllers
 
         }
 
-        [HttpPost("Create")]
+        [HttpPost("Create Feedback")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)
             , ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User")]
