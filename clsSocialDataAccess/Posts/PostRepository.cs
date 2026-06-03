@@ -201,7 +201,9 @@ namespace clsSocialServicesDataAccess.Posts
                                        Status = p.Status,
                                        // Grab Type name from 'pt'
                                        PostTypeName = pt.TypeTitle,
-
+                                       Latitude=p.Latitude,
+                                       Longitude=p.Longitude,
+                                       Price=p.Price,
                                        // Grab Author name from 'per'
                                        AuthorName = per.FirstName + " " + per.LastName,
 
@@ -276,9 +278,11 @@ namespace clsSocialServicesDataAccess.Posts
                                 PostTypeName = pt.TypeTitle,
                                 AuthorName = per.FirstName + " " + per.LastName,
                                 UserID = p.UserID,
+                                Latitude = p.Latitude,
+                                Longitude = p.Longitude,
+                                Price = p.Price,
                                 ProfessionName = (prof == null) ? "General" : prof.ProfessionTitle
                             };
-
                 return query.ToList();
             }
 
@@ -287,9 +291,6 @@ namespace clsSocialServicesDataAccess.Posts
                 // Log error
                 return new List<PostListDTO>();
             }
-
-
-
         }
         public bool CompletePost(int userID, int postID)
         {
