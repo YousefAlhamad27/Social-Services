@@ -1,4 +1,5 @@
 ﻿using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Admin;
 using DTOs;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -144,29 +145,29 @@ namespace clsSocialServicesBussiness
             }
         }
 
-        // for admin 
-       // static public string returnToken(AdminEntity admin)
-       // {
+         //for admin
+        static public string returnToken(AdminEntity admin)
+        {
 
-       //     var claims = new List<Claim>
-       // {
-       //     new Claim(ClaimTypes.Name, admin.Username),
-       //     new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
-       //     new Claim(ClaimTypes.Role, "Admin")
-       // };
-
-
-
-       //     var token = new JwtSecurityToken(
-       //issuer: clsConfigurations.returnIssuer(),
-       //audience: clsConfigurations.returnAudience(),
-       //claims: claims,
-       //expires: DateTime.Now.AddHours(0.25),
-       //signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, admin.UserName),
+            new Claim(ClaimTypes.NameIdentifier, admin.Id.ToString()),
+            new Claim(ClaimTypes.Role, "Admin")
+        };
 
 
-       //     return new JwtSecurityTokenHandler().WriteToken(token);
-       // }
+
+            var token = new JwtSecurityToken(
+       issuer: clsConfigurations.returnIssuer(),
+       audience: clsConfigurations.returnAudience(),
+       claims: claims,
+       expires: DateTime.Now.AddHours(0.25),
+       signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
+
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
 
         static public string returnToken(UserEntity user)
         {
