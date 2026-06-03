@@ -1,5 +1,4 @@
 ﻿using clsSocialServicesDataAccess;
-using clsSocialServicesDataAccess.Admin;
 using DTOs;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -145,9 +144,9 @@ namespace clsSocialServicesBussiness
             }
         }
 
-         //for admin
-        static public string returnToken(AdminEntity admin)
-        {
+        // for admin 
+       // static public string returnToken(AdminEntity admin)
+       // {
 
             var claims = new List<Claim>
         {
@@ -158,16 +157,16 @@ namespace clsSocialServicesBussiness
 
 
 
-            var token = new JwtSecurityToken(
-       issuer: clsConfigurations.returnIssuer(),
-       audience: clsConfigurations.returnAudience(),
-       claims: claims,
-       expires: DateTime.Now.AddHours(0.25),
-       signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
+       //     var token = new JwtSecurityToken(
+       //issuer: clsConfigurations.returnIssuer(),
+       //audience: clsConfigurations.returnAudience(),
+       //claims: claims,
+       //expires: DateTime.Now.AddHours(0.25),
+       //signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
 
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+       //     return new JwtSecurityTokenHandler().WriteToken(token);
+       // }
 
         static public string returnToken(UserEntity user)
         {
