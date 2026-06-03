@@ -10,11 +10,11 @@ namespace clsSocialServicesDataAccess.Posts
     public interface  IPostRepository
     {
        public bool AddPost(PostEntity postEntity);
+
         bool UpdatePost(PostEntity postEntity);
         bool DeletePost(int postID);
         PostEntity? Find(int postID);
         List<PostListDTO> GetAllPosts(int userID);
         List<PostListDTO> GetFilteredPosts(string? searchQuery, int? countyID, int? postTypeID, int? professionID);
-        int PostsCount { get; }
     }
 }

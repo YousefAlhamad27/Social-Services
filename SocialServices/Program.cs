@@ -60,8 +60,7 @@ builder.Services.AddScoped<clsUser>();
 builder.Services.AddScoped<clsServiceApplication>();
 builder.Services.AddScoped<clsFeedBack>();
 builder.Services.AddScoped<clsCountiesCities>();
-builder.Services.AddScoped<IPostRepository, PostRepository>();
-builder.Services.AddScoped<clsAdminPostService>();
+
 // Authentication Configuration
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
