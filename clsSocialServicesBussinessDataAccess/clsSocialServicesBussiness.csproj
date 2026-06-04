@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\clsSocialDataAccess\clsSocialServicesDataAccess.csproj" />
+    <ProjectReference Include="..\clsSocialDataAccess\clsSocialDataAccess.csproj" />
     <ProjectReference Include="..\DTOs\DTOs.csproj" />
   </ItemGroup>
 
