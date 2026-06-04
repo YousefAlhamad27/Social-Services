@@ -1,4 +1,5 @@
-﻿using clsSocialServicesDataAccess.Admin;
+﻿using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Admin;
 using clsSocialServicesDataAccess.Posts;
 using DTOs.Admin;
 using System;
@@ -11,20 +12,24 @@ namespace clsSocialServicesBussiness
 {
     public class clsAdminService
     {
-        private  readonly IPostRepository _postRepo;
         private readonly IAdminRepository _adminRepo;
+        private  readonly IPostRepository _postRepo;
+        private readonly IUserRepository _userRepo;
 
-        public clsAdminService(IAdminRepository adminRepository, IPostRepository postRepo)
+        public clsAdminService(IAdminRepository adminRepository, IPostRepository postRepo , IUserRepository userRepo)
         {
             _adminRepo = adminRepository;
             _postRepo = postRepo;
+            _userRepo = userRepo;
         }
 
-        public  AdminStatusDTO GetStatus()
+        public async Task<AdminStatusDTO> GetDashBoardStatus()
         {
             return new AdminStatusDTO()
             {
-                TotalPost = _postRepo.PostsCount
+                TotalPost = await _postRepo.PostsCount(),
+                TotalUser = await _userRepo.GetUsersCount()
+
             };
         }
 

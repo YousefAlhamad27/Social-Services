@@ -16,14 +16,22 @@ namespace SocialServices.Controllers
             _clsAdminPostService = clsAdminPostService;
         }
 
-        [HttpGet("GetPostCount", Name = "GetPostCount"),
+        [HttpGet("GetDashBoardStatus", Name = "GetDashBoardStatus"),
         ProducesResponseType(StatusCodes.Status200OK),
         ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "Admin")]
-        public ActionResult GetPostCount()
-        {
 
-            return Ok(_clsAdminPostService.GetStatus());
+        public async Task<ActionResult> GetDashBoardStatus ()
+        {
+            try
+            {
+                var status = await _clsAdminPostService.GetDashBoardStatus();
+                return Ok(status);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,$"Internal server error : {ex.Message}");
+            }
         }
 
         [HttpPost("Login", Name = "Login"),
@@ -38,6 +46,5 @@ namespace SocialServices.Controllers
 
             return Ok("Token = "+token);
         }
-
     }
 }

@@ -15,6 +15,6 @@ namespace clsSocialServicesDataAccess.Posts
         PostEntity? Find(int postID);
         List<PostListDTO> GetAllPosts(int userID);
         List<PostListDTO> GetFilteredPosts(string? searchQuery, int? countyID, int? postTypeID, int? professionID);
-        int PostsCount { get; }
+        public Task<int> PostsCount();
     }
 }

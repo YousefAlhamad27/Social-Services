@@ -64,6 +64,7 @@ builder.Services.AddScoped<clsCountiesCities>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<clsAdminService>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped <IUserRepository,UserRepository>();
 
 // Authentication Configuration
 builder.Services

@@ -10,5 +10,7 @@ namespace DTOs.Admin
     {
         public int TotalPost { get; set; }
 
+        public int TotalUser { get; set; }
+
     }
 }

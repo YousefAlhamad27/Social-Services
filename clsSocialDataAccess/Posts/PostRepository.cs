@@ -360,20 +360,18 @@ namespace clsSocialServicesDataAccess.Posts
             }
         }
 
-        public int PostsCount
+        public async Task<int> PostsCount()
         {
-            get
-            {
+          
                 try
                 {
-                    return _dbContext.Posts.Count();
+                    return await _dbContext.Posts.CountAsync();
                 }
                 catch (Exception ex)
                 {
                     return 0;
                 }
-
-            }
+  
         }
     }
 }

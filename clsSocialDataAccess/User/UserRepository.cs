@@ -1,4 +1,5 @@
 ﻿using clsSocialServicesDataAccess;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -276,6 +277,20 @@ namespace clsSocialServicesDataAccess
                 // Console.WriteLine(ex.Message); 
                 return false;
             }
+        }
+
+        public async Task<int> GetUsersCount()
+        {
+            
+                try
+                {
+                    return await _dbContext.Users.CountAsync();
+                }
+                catch
+                {
+                    return -1;
+                }
+            
         }
     }
 }
