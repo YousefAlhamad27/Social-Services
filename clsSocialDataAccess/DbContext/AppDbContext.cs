@@ -5,6 +5,7 @@ using clsSocialServicesDataAccess.Posts;
 using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Services;
 using clsSocialServicesDataAccess.Feedback;
+using clsSocialServicesDataAccess.Admin;
 
 namespace clsSocialServicesDataAccess
 {
@@ -23,11 +24,11 @@ namespace clsSocialServicesDataAccess
         public DbSet<PostEntity> Posts { get; set; }
         public DbSet<PostTypeEntity> PostTypes { get; set; }
 
-
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
 
+        public DbSet<AdminEntity> Admins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

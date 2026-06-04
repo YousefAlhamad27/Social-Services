@@ -192,7 +192,25 @@ namespace clsSocialServicesBussiness
                 return new JwtSecurityTokenHandler().WriteToken(token);
             }
 
-        
+        static public string returnAdminToken(AdminEntity admin)
+        {
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, admin.UserName),
+        new Claim(ClaimTypes.NameIdentifier, admin.Id.ToString()),
+        new Claim(ClaimTypes.Role, "Admin")  
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: clsConfigurations.returnIssuer(),
+                audience: clsConfigurations.returnAudience(),
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
         static public string returnHashedPassword(string password)
         {
 
