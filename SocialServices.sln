@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialServices", "SocialServices\SocialServices.csproj", "{305C6403-CAD3-489E-8467-069306301D37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "clsSocialServicesDataAccess", "clsSocialDataAccess\clsSocialServicesDataAccess.csproj", "{7B465650-2A6A-4A5F-9185-57CC265B42CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "clsSocialDataAccess", "clsSocialDataAccess\clsSocialDataAccess.csproj", "{7B465650-2A6A-4A5F-9185-57CC265B42CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "clsSocialServicesBussiness", "clsSocialServicesBussinessDataAccess\clsSocialServicesBussiness.csproj", "{25668CDC-DD74-4D7F-A92B-A6AFA56FAA28}"
 EndProject

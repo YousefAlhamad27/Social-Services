@@ -24,6 +24,7 @@ namespace clsSocialServicesDataAccess
         public DbSet<PostEntity> Posts { get; set; }
         public DbSet<PostTypeEntity> PostTypes { get; set; }
 
+
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
@@ -35,10 +36,24 @@ namespace clsSocialServicesDataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            modelBuilder.Entity<AdminEntity>(entity =>
+                {
+                    entity.HasKey(a => a.AdminID);
+                    // Primary Key
+                    entity.HasOne<PersonEntity>()         
+                          .WithMany()                   
+                          .HasForeignKey(a => a.PersonID) 
+                          .OnDelete(DeleteBehavior.Restrict);
+                });
 
-
-            modelBuilder.Entity<FeedbackEntity>()
-                .HasKey(p => p.FeedbackID); // Primary Key
+            modelBuilder.Entity<FeedbackEntity>(entity =>
+                {
+                    entity.HasKey(p => p.FeedbackID); // Primary Key
+                    entity.HasOne<UserEntity>()         
+                          .WithMany()                   
+                          .HasForeignKey(p => p.UserID) 
+                          .OnDelete(DeleteBehavior.Restrict);
+                });
 
             modelBuilder.Entity<PersonEntity>()
                 .HasOne(p => p.User)
