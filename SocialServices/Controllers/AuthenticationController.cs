@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using clsSocialServicesBussiness;
+using clsSocialServicesDataAccess.Admin;
 using DTOs;
 using DTOs.User_Person_DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,15 @@ namespace SocialServices.Controllers
     {
         private readonly clsUser _userService;
         private readonly clsPerson _personSerivce;
-       
+        private readonly ILogRepository _logRepo;
 
         // The Controller only depends on the Business Logic
-        public AuthenticationController(clsUser userService, clsPerson personSerivce )
+        public AuthenticationController(clsUser userService, clsPerson personSerivce,ILogRepository LogRepo)
         {
             // The framework ensures UserService is NOT NULL
             _userService = userService;
             _personSerivce = personSerivce;
+            _logRepo = LogRepo;
            
         }
 
@@ -71,7 +73,7 @@ namespace SocialServices.Controllers
         [HttpPost("Login"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
       
 
-        public ActionResult Login(LoginRequest request)
+        public async Task<ActionResult> Login(LoginRequest request)
         {
 
             UserDTO userDTO = _userService.Find(request.Username);
@@ -97,7 +99,8 @@ namespace SocialServices.Controllers
             if (token == null)
                 return StatusCode(500, new { Message = "Error generating token" });
 
-            return Ok(new {AccessToken= token,RefreshToken=refreshToken});
+            await _logRepo.AddLog("Login" ,_userService.getUserID(request.Username) , "Login or Register", "User logged in", null);
+            return Ok(new { AccessToken = token, RefreshToken = refreshToken });
 
         }
 

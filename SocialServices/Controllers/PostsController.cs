@@ -58,6 +58,7 @@ namespace SocialServices.Controllers
         public ActionResult CreatePost(AddPostDTO dto)
         {
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            int postID = _postService.GetLastPostIdByUser(userID);
 
             UserDTO user = _userService.Find(userID);
 
@@ -66,12 +67,10 @@ namespace SocialServices.Controllers
                 return Unauthorized("Invalid User");
             }
 
-            if (!_postService.addPost(userID, dto))
+            if (!_postService.addPost(userID, dto,postID))
             {
                 return StatusCode(500, new { Message = "Error adding post" });
             }
-
-
 
             // Implementation to create a new post
             return Ok("Post Created Successfully");
@@ -93,7 +92,7 @@ namespace SocialServices.Controllers
             if (User.IsInRole("Admin"))
             {
                 // Admin can delete any post
-                if (!_postService.deletePost(postID))
+                if (!_postService.deletePost(postID,userID,userID))
                 {
                     return StatusCode(500, new { Message = "Error deleting post" });
                 }
@@ -108,7 +107,7 @@ namespace SocialServices.Controllers
                 {
                     return Unauthorized("Invalid User");
                 }
-                if (!_postService.deletePost(postID))
+                if (!_postService.deletePost(postID,userID,null))
                 {
                     return StatusCode(500, new { Message = "Error deleting post" });
                 }
@@ -244,7 +243,6 @@ namespace SocialServices.Controllers
 
         public ActionResult LockPost(int postID)
         {
-
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
             if (postID <= 0)
                 return BadRequest("Post Does not exist");
@@ -259,7 +257,8 @@ namespace SocialServices.Controllers
                 // Admin can lock any post
                 // we can also confirm admin by checking variable "currentUserID"
                 // inside the bussiness logic
-                if (!_postService.LockPost(postID, null))
+                 bool isAdmin = User.IsInRole("Admin");
+                if (!_postService.LockPost(postID, currentUserID,isAdmin?currentUserID:null))
                 {
                     return StatusCode(500, new { Message = "Error locking post" });
                 }

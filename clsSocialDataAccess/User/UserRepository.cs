@@ -292,5 +292,45 @@ namespace clsSocialServicesDataAccess
                 }
             
         }
-    }
+
+        public async Task<bool> BlockUser(int UserID)
+        {
+            try
+            {
+                UserEntity? user = _dbContext.Users.Find(UserID);
+                if (user != null)
+                {
+                    user.IsActive = false;
+                    _dbContext.Users.Update(user);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UnBlockUser(int UserID)
+        {
+            try
+            {
+                UserEntity? user = _dbContext.Users.Find(UserID)!;
+                if (user != null)
+                {
+                    user.IsActive = true;
+                    _dbContext.Users.Update(user);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+}
 }

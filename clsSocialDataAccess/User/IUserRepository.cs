@@ -12,7 +12,7 @@ namespace clsSocialServicesDataAccess
         bool UpdateUser(UserEntity userEntity);
         public bool DeleteUser(string username);
         public Task<int> GetUsersCount();
-
-        // Add other methods like GetUserByID, UpdateUser, etc.
+        public Task<bool> BlockUser(int UserID);
+        public Task<bool> UnBlockUser(int UserID);
     }
 }

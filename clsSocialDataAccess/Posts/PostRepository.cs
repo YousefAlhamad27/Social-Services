@@ -10,6 +10,13 @@ namespace clsSocialServicesDataAccess.Posts
 {
     public class PostRepository : IPostRepository
     {
+        enum enPostStatus : byte
+        {
+            Inactive = 0,
+            Active = 1,
+            Locked = 2
+        }
+
         private readonly AppDbContext _dbContext;
         public PostRepository(AppDbContext dbContext)
         {
@@ -362,16 +369,26 @@ namespace clsSocialServicesDataAccess.Posts
 
         public async Task<int> PostsCount()
         {
-          
-                try
-                {
-                    return await _dbContext.Posts.CountAsync();
-                }
-                catch (Exception ex)
-                {
-                    return 0;
-                }
-  
+
+            try
+            {
+                return await _dbContext.Posts.CountAsync();
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
         }
+
+        public int GetLastPostIdByUser(int userId)
+        {
+            return _dbContext.Posts
+                .Where(p => p.UserID == userId)
+                .OrderByDescending(p => p.PostID)
+                .Select(p => p.PostID)
+                .FirstOrDefault();
+        }
+
     }
 }

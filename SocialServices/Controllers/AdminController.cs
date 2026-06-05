@@ -21,7 +21,7 @@ namespace SocialServices.Controllers
         ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "Admin")]
 
-        public async Task<ActionResult> GetDashBoardStatus ()
+        public async Task<ActionResult> GetDashBoardStatus()
         {
             try
             {
@@ -30,7 +30,7 @@ namespace SocialServices.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,$"Internal server error : {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error : {ex.Message}");
             }
         }
 
@@ -44,7 +44,79 @@ namespace SocialServices.Controllers
             if (token == null)
                 return Unauthorized("Invalid username or password.");
 
-            return Ok("Token = "+token);
+            return Ok("Token = " + token);
+        }
+
+        [HttpPut("BlockUser", Name = "BlockUser"), ProducesResponseType(StatusCodes.Status200OK),
+            ProducesResponseType(StatusCodes.Status401Unauthorized),
+            ProducesResponseType(StatusCodes.Status500InternalServerError),
+            ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> BlockUser(int UserID)
+        {
+            try
+            {
+                int adminId = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+                bool result = await _clsAdminPostService.BlockUser(UserID,adminId);
+
+                if (result)
+                    return Ok("User has been blocked successfully");
+                else
+                    return BadRequest("Failed to block user");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("UnBlockUser", Name = "UnBlockUser"), ProducesResponseType(StatusCodes.Status200OK),
+            ProducesResponseType(StatusCodes.Status401Unauthorized),
+            ProducesResponseType(StatusCodes.Status500InternalServerError),
+            ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> UnBlockUser(int UserID)
+        {
+            try
+            {
+                int adminId = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+                var result = await _clsAdminPostService.UnBlockUser(UserID , adminId);
+
+                if (result)
+                {
+                    return Ok("User has been unblocked successfully");
+
+                }
+                else
+                {
+                    return BadRequest("Failed to unblock user");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetLoginOrRegisterLog",Name = "GetLoginOrRegisterLog"),ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetLoginRegisterLog()
+        {
+            return Ok(await _clsAdminPostService.GetLogs("Login or Register"));
+        }
+
+        [HttpGet("GetUserLogs",Name = "GetUsersLogs"),ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetUserLogs()
+        {
+            return Ok(await _clsAdminPostService.GetLogs("User"));
+        }
+
+        [HttpGet("GetPostLogs", Name = "GetPostLogs"), ProducesResponseType(StatusCodes.Status200OK),ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetPostLogs()
+        {
+            return Ok(await _clsAdminPostService.GetLogs("Post"));
         }
     }
 }

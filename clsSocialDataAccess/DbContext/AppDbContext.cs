@@ -30,6 +30,8 @@ namespace clsSocialServicesDataAccess
 
         public DbSet<AdminEntity> Admins { get; set; }
 
+        public DbSet<LogEntity> Logs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
