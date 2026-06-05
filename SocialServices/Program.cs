@@ -1,5 +1,6 @@
 using clsSocialServicesBussiness;
 using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Admin;
 using clsSocialServicesDataAccess.Counties___Cities;
 using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Posts;
@@ -60,6 +61,11 @@ builder.Services.AddScoped<clsUser>();
 builder.Services.AddScoped<clsServiceApplication>();
 builder.Services.AddScoped<clsFeedBack>();
 builder.Services.AddScoped<clsCountiesCities>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<clsAdminService>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped <IUserRepository,UserRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 
 // Authentication Configuration
 builder.Services

@@ -1,4 +1,6 @@
-﻿using clsSocialServicesDataAccess;
+﻿using Azure.Core;
+using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Admin;
 using DTOs;
 using DTOs.User_Person_DTOs;
 using System;
@@ -13,14 +15,16 @@ namespace clsSocialServicesBussiness
     {
     
         private readonly UserRepository _userRepo;
+        private readonly ILogRepository _logRepo;
 
         // You would also need an IPersonRepository injected here (not shown for brevity)
 
       
       
-        public clsUser(UserRepository userRepo)
+        public clsUser(UserRepository userRepo,ILogRepository LogRepo)
         {
             _userRepo = userRepo;
+            _logRepo = LogRepo;
         }
         private static UserEntity MapToUserEntity(RegisterRequestDTO reqDto)
         {
@@ -58,9 +62,14 @@ namespace clsSocialServicesBussiness
              
             return _userRepo.DoesUsernameExist(username);
         }
-        public bool logoutEverywhere(int userID)
+        public async Task<bool> logoutEverywhere(int userID)
         {
-          return _userRepo.DeleteAllRefreshTokensForUser(userID);
+          if( _userRepo.DeleteAllRefreshTokensForUser(userID))
+            {
+                await _logRepo.AddLog("Logout",userID, "User", "User logout", null);
+                return true;
+            }
+            return false;
         }
 
         public int RegisterNewUser(RegisterRequestDTO reqDto,int personID)
@@ -78,17 +87,26 @@ namespace clsSocialServicesBussiness
                  
             };
 
-          
-            return _userRepo.AddUser(userEntity);
+            var userId = _userRepo.AddUser(userEntity);
+            if (userId != -1)
+            {
+                _logRepo.AddLog("Register", userId, "Login or Register", "New User Registerd!", null);
+                return userId;
+            }
+            return -1;
         }
-
-         
+      
         public int returnPersonID(UserDTO userDTO) {
             return _userRepo.getPersonID(MapUserDTOToUserEntity(userDTO));
         }
-        public bool deleteUser(UserDTO userDTO) { 
+        public bool deleteUser(UserDTO userDTO , int userId=0,int? AdminID = null) { 
 
-        return _userRepo.DeleteUser(userDTO.Username);
+        if( _userRepo.DeleteUser(userDTO.Username))
+            {
+                _logRepo.AddLog("Delete User", userId, "User", "User Deleted", AdminID);
+                return true;
+            }
+            return false;
 
         }
         public UserDTO Find(string username) {
@@ -120,7 +138,12 @@ namespace clsSocialServicesBussiness
             UserEntity user = _userRepo.FindUserName( dto.Username);
             user.Password = dto.PasswordHash;
 
-            return _userRepo.UpdateUser(user);
+            if( _userRepo.UpdateUser(user))
+            {
+                _logRepo.AddLog("Update password!", user.UserID,"User",$"User {user.UserID} change his password!", null);
+                return true;
+            }
+            return false;
         }
 
         public bool revokeToken(RefreshTokenDTO dto,string newToken)
@@ -134,7 +157,7 @@ namespace clsSocialServicesBussiness
 
         }
 
-        public string getAccessToken(string username)
+        public string? getAccessToken(string username)
         {
             UserEntity user = _userRepo.FindUserName(username);
 
@@ -153,7 +176,7 @@ namespace clsSocialServicesBussiness
             return _userRepo.AddRefreshToken(UtilLibrary.ReturnSHA256(refreshToken), username);
 
         }
-        public UserDTO returnUserForRefreshToken(string refreshToken)
+        public UserDTO? returnUserForRefreshToken(string refreshToken)
         {
 
             UserDTO user;
