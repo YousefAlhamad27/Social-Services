@@ -151,8 +151,8 @@ namespace clsSocialServicesBussiness
 
             var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, admin.UserName),
-            new Claim(ClaimTypes.NameIdentifier, admin.Id.ToString()),
+            new Claim(ClaimTypes.Name, admin.Username),
+            new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
             new Claim(ClaimTypes.Role, "Admin")
         };
 
@@ -196,8 +196,8 @@ namespace clsSocialServicesBussiness
         {
             var claims = new List<Claim>
     {
-        new Claim(ClaimTypes.Name, admin.UserName),
-        new Claim(ClaimTypes.NameIdentifier, admin.Id.ToString()),
+        new Claim(ClaimTypes.Name, admin.Username),
+        new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
         new Claim(ClaimTypes.Role, "Admin")  
     };
 

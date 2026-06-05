@@ -17,7 +17,7 @@ namespace clsSocialServicesDataAccess.Admin
 
         public AdminEntity? GetAdminByUsername(string username)
         {
-            return _context.Admins.FirstOrDefault(a => a.UserName == username);
+            return _context.Admins.FirstOrDefault(a => a.Username == username);
         }
 
     }
