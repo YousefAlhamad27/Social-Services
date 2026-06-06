@@ -66,6 +66,7 @@ builder.Services.AddScoped<clsAdminService>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped <IUserRepository,UserRepository>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<clsAiRecommendationService>();
 
 // Authentication Configuration
 builder.Services
