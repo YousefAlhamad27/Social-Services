@@ -135,7 +135,7 @@ namespace clsSocialServicesBussiness
             }
             return false;
         }
-        public bool deletePost(int postID,int userId, int? adminId)
+        public bool deletePost(int postID,int? userId, int? adminId)
         {
             PostEntity post=_postRepository.Find(postID)!;
             if(post==null)
@@ -144,9 +144,13 @@ namespace clsSocialServicesBussiness
             }
             UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
 
-            if( _postRepository.DeletePost(postID))
+            if (_postRepository.DeletePost(postID))
             {
-                _logRepo.AddLog("Delete Post", postID, "Post", $"Post {postID} has been deleted by user{userId}.", adminId);
+                string logMessage = adminId.HasValue
+                    ? $"Post {postID} has been deleted by Admin {adminId}."
+                    : $"Post {postID} has been deleted by User {userId}.";
+
+                _logRepo.AddLog("Delete Post", postID, "Post", logMessage, adminId);
                 return true;
             }
             return false;
