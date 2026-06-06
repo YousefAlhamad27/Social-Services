@@ -29,7 +29,7 @@ namespace clsSocialServicesBussiness
             var client = new HttpClient();
 
             string prompt = $@"
-أنت مساعد ذكي متخصص في توصية الخدمات. مهمتك تحليل طلب المستخدم وترشيح أفضل 3 بوستات من القائمة المتاحة.
+أنت مساعد ذكي متخصص في توصية الخدمات. مهمتك تحليل طلب المستخدم وترشيح أفضل بوستات من القائمة المتاحة.
 
 طلب المستخدم: {userMessage}
 
@@ -41,6 +41,7 @@ namespace clsSocialServicesBussiness
 - خذ بعين الاعتبار الموقع الجغرافي إذا ذكره المستخدم
 - رتب النتائج من الأنسب للأقل
 - إذا ما في 3 بوستات مناسبة، رشح الموجود فقط
+إذا ذكر المستخدم عدد معين من النتائج، التزم بذلك العدد. إذا ما ذكر عدد، رشح 3 بوستات.
 
 أجب بهذا الشكل بالضبط لكل بوست:
 PostID: [رقم]
@@ -69,6 +70,9 @@ PostID: [رقم]
             );
 
             var result = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                return $"Error: {result}";
 
             var jsonDoc = JsonDocument.Parse(result);
             string text = jsonDoc.RootElement
