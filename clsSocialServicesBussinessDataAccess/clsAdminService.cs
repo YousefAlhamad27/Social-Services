@@ -72,5 +72,10 @@ namespace clsSocialServicesBussiness
         {
             return await _logRepo.GetLogs(targetType);
         }
+
+        public Task<List<UserEntity>> GetAllUsers()
+        {
+            return _userRepo.GetAllUsers();
+        }
     }
 }

@@ -332,5 +332,16 @@ namespace clsSocialServicesDataAccess
                 return false;
             }
         }
+        public async Task<List<UserEntity>> GetAllUsers()
+        {
+            try
+            {
+                return await _dbContext.Users.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex}");
+            }
+        }
 }
 }

@@ -1,4 +1,5 @@
 ﻿using clsSocialServicesBussiness;
+using clsSocialServicesDataAccess;
 using DTOs.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -117,6 +118,22 @@ namespace SocialServices.Controllers
         public async Task<ActionResult> GetPostLogs()
         {
             return Ok(await _clsAdminPostService.GetLogs("Post"));
+        }
+
+        [HttpGet("GetAllUsres",Name ="GetAllUsers")
+            ,ProducesResponseType(StatusCodes.Status200OK)
+            ,ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<UserEntity>>> GetAllUsers()
+        {
+            var result = await _clsAdminPostService.GetAllUsers();
+
+            if(result == null)
+            {
+                return NotFound("No Users Founded!");
+            }
+
+            return Ok(result);
         }
     }
 }

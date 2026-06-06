@@ -18,7 +18,7 @@ namespace clsSocialServicesDataAccess.Admin
 
         public string TargetType { get; set; } = string.Empty;
 
-       public string TargetDescription { get; set; } = string.Empty;
+        public string TargetDescription { get; set; } = string.Empty;
 
         public int? AdminId { get; set; }
 
