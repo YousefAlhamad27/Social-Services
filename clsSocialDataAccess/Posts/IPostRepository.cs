@@ -18,5 +18,7 @@ namespace clsSocialServicesDataAccess.Posts
         public Task<int> PostsCount();
 
         public int GetLastPostIdByUser(int userId);
+
+        public Task<PostEntity> GetPostById(int postID);
     }
 }

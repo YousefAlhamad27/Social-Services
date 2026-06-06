@@ -212,5 +212,9 @@ namespace clsSocialServicesBussiness
             return _postRepository.GetLastPostIdByUser(userId);
         }
 
+        public async Task<PostEntity> GetPostById(int postId)
+        {
+            return await _postRepository.GetPostById(postId);
+        }
     }
 }

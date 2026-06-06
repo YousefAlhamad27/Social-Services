@@ -390,5 +390,10 @@ namespace clsSocialServicesDataAccess.Posts
                 .FirstOrDefault();
         }
 
+        public async Task<PostEntity> GetPostById(int  postID)
+        {
+            return await _dbContext.Posts.Where(p => p.PostID == postID).FirstOrDefaultAsync();
+        }
+
     }
 }

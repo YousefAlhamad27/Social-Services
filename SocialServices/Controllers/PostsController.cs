@@ -295,5 +295,19 @@ namespace SocialServices.Controllers
             return Ok("Post Unlocked Successfully by Admin");
         }
 
+        [HttpGet("GetPostById", Name = "GetPostById")
+            ,ProducesResponseType(StatusCodes.Status200OK)
+            ,ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetPostById(int postID)
+        {
+            var result = await _postService.GetPostById(postID);
+
+            if(result == null)
+            {
+                return NotFound("No post found!");
+            }
+            return Ok(result);
+        }
     }
 }
