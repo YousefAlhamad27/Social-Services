@@ -33,6 +33,7 @@ namespace SocialServices.Controllers
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
            // string currentUserRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value!;
             bool isAdmin = User.IsInRole("Admin");
+
             UserDTO user1= null;
             if (userID == 0)
             {
