@@ -1,6 +1,6 @@
 ﻿using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Admin;
-using DTOs;
+using DTOs.Login;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Resources;

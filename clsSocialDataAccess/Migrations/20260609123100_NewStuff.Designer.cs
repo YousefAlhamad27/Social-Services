@@ -12,8 +12,8 @@ using clsSocialServicesDataAccess;
 namespace clsSocialServicesDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260604214818_AddAdminTable")]
-    partial class AddAdminTable
+    [Migration("20260609123100_NewStuff")]
+    partial class NewStuff
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,40 @@ namespace clsSocialServicesDataAccess.Migrations
                     b.HasKey("AdminID");
 
                     b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.Admin.LogEntity", b =>
+                {
+                    b.Property<int>("LogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogId"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TargetDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TargetId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LogId");
+
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("clsSocialServicesDataAccess.Counties___Cities.CityEntity", b =>

@@ -37,7 +37,7 @@ namespace clsSocialServicesBussiness
 
         public string? Login(string UserName, string Password)
         {
-            var Admin = _adminRepo.GetAdminByUsername(UserName);
+            AdminEntity Admin = _adminRepo.GetAdminByUsername(UserName)!;
 
             if (Admin == null)
                 return null;
@@ -77,5 +77,6 @@ namespace clsSocialServicesBussiness
         {
             return _userRepo.GetAllUsers();
         }
+
     }
 }

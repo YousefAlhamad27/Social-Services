@@ -12,8 +12,8 @@ using clsSocialServicesDataAccess;
 namespace clsSocialServicesDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260605011003_AddLogsTable")]
-    partial class AddLogsTable
+    [Migration("20260609123514_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,7 +67,7 @@ namespace clsSocialServicesDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AdminId")
+                    b.Property<int?>("AdminId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")

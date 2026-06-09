@@ -35,10 +35,33 @@ namespace clsSocialServicesDataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+                        modelBuilder.Entity<LogEntity>(
+                            entity
+                            => {
+                                entity.HasKey(l => l.LogID);
+                                entity.HasOne<AdminEntity>()
+                                    .WithMany()
+                                    .HasForeignKey(l => l.AdminID)
+                                    .OnDelete(DeleteBehavior.Restrict);
+                            }
+                            );
 
 
-            modelBuilder.Entity<FeedbackEntity>()
-                .HasKey(p => p.FeedbackID); // Primary Key
+
+            // Primary Key
+
+            modelBuilder.Entity<FeedbackEntity>(
+                entity => {
+                
+                    entity.HasKey(f => f.FeedbackID);
+                    entity.HasOne<UserEntity>()
+                        .WithMany()
+                        .HasForeignKey(f => f.UserID)
+                        .OnDelete(DeleteBehavior.Restrict); 
+                }
+                );
+
+            // Primary Key
 
             modelBuilder.Entity<PersonEntity>()
                 .HasOne(p => p.User)
