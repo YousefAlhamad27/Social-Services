@@ -372,5 +372,45 @@ namespace clsSocialServicesDataAccess.Posts
             }
         }
 
+        public async Task<int> PostsCount()
+        {
+            try
+            {
+                return await _dbContext.Posts.CountAsync();
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public int GetLastPostIdByUser(int userId)
+        {
+            try
+            {
+                return _dbContext.Posts
+                    .Where(p => p.UserID == userId)
+                    .OrderByDescending(p => p.PostID)
+                    .Select(p => p.PostID)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public async Task<PostEntity> GetPostById(int postID)
+        {
+            try
+            {
+                return await _dbContext.Posts.FindAsync(postID);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

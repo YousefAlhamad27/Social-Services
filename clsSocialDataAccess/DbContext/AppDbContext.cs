@@ -28,9 +28,6 @@ namespace clsSocialServicesDataAccess
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
-
-        public DbSet<AdminEntity> Admins { get; set; }
-
         public DbSet<LogEntity> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
