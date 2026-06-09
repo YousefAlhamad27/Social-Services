@@ -8,7 +8,7 @@ using clsSocialServicesDataAccess;
 
 #nullable disable
 
-namespace clsSocialServicesDataAccess.Migrations
+namespace clsSocialDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -40,7 +40,7 @@ namespace clsSocialServicesDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int>("PersonID")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
@@ -49,9 +49,12 @@ namespace clsSocialServicesDataAccess.Migrations
 
                     b.HasKey("AdminID");
 
+                    b.HasIndex("PersonID");
+
                     b.ToTable("Admins");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("clsSocialServicesDataAccess.Admin.LogEntity", b =>
                 {
                     b.Property<int>("LogId")
@@ -86,6 +89,8 @@ namespace clsSocialServicesDataAccess.Migrations
                     b.ToTable("Logs");
                 });
 
+=======
+>>>>>>> d93bb9a75351ef79645a176ba87952ab2f2260d6
             modelBuilder.Entity("clsSocialServicesDataAccess.Counties___Cities.CityEntity", b =>
                 {
                     b.Property<int>("CityID")
@@ -151,6 +156,8 @@ namespace clsSocialServicesDataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("FeedbackID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Feedbacks");
                 });
@@ -398,11 +405,29 @@ namespace clsSocialServicesDataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("clsSocialServicesDataAccess.Admin.AdminEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.PersonEntity", null)
+                        .WithMany()
+                        .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("clsSocialServicesDataAccess.Counties___Cities.CountyEntity", b =>
                 {
                     b.HasOne("clsSocialServicesDataAccess.Counties___Cities.CityEntity", null)
                         .WithMany()
                         .HasForeignKey("CityID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.Feedback.FeedbackEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

@@ -95,10 +95,16 @@ namespace SocialServices.Controllers
         {
 
             UserDTO user = _userService.Find(updateDTO.Username);
+          
 
             if (user == null)
             {
                 return BadRequest("User not found");
+            }
+
+            if (user.IsActive == false)
+            {
+                return BadRequest("User is not active");
             }
 
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
@@ -126,6 +132,15 @@ namespace SocialServices.Controllers
 
             UserDTO user = _userService.Find(userID);
 
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            if (user.IsActive == false)
+            {
+                return BadRequest("User is not active");
+            }
 
             if (!UtilLibrary.VerifyPassword(dto.CurrentPassword, user.PasswordHash))
                 return Unauthorized("Invalid Username or Password");
@@ -157,6 +172,7 @@ namespace SocialServices.Controllers
                 return BadRequest("Please provide either username or userID");
             }
             UserDTO user;
+
             if (userID < 1)
             {
                 if (currentUserRole != "Admin" && currentUsername != username)
@@ -168,9 +184,15 @@ namespace SocialServices.Controllers
                     return BadRequest("Not Accepted");
                 }
                  user = _userService.Find(username);
+
                 if (user == null)
                 {
                     return BadRequest("User not found");
+                }
+             
+                if (user.IsActive == false)
+                {
+                    return BadRequest("User is not active");
                 }
             }
             else {

@@ -9,7 +9,8 @@ namespace clsSocialServicesDataAccess.Posts
 {
     public interface IPostRepository
     {
-        public bool AddPost(PostEntity postEntity);
+       public bool AddPost(PostEntity postEntity);
+
         bool UpdatePost(PostEntity postEntity);
         bool DeletePost(int postID);
         PostEntity? Find(int postID);

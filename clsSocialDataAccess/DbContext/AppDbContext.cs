@@ -23,13 +23,11 @@ namespace clsSocialServicesDataAccess
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<PostEntity> Posts { get; set; }
         public DbSet<PostTypeEntity> PostTypes { get; set; }
+        public DbSet<AdminEntity> Admins { get; set; }
 
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
-
-        public DbSet<AdminEntity> Admins { get; set; }
-
         public DbSet<LogEntity> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

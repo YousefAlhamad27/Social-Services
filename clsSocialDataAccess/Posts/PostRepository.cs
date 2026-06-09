@@ -112,7 +112,7 @@ namespace clsSocialServicesDataAccess.Posts
 
                 IQueryable query = from p in _dbContext.Posts
 
-                                       //  Get County Name
+                                   //  Get County Name
                                    join c in _dbContext.Counties
                                    on p.CountyID equals c.CountyID
 
@@ -145,7 +145,10 @@ namespace clsSocialServicesDataAccess.Posts
                                        Status = p.Status,
                                        // Grab Type name from 'pt'
                                        PostTypeName = pt.TypeTitle,
-
+                                       Latitude = p.Latitude
+                                       ,
+                                       Longitude = p.Longitude,
+                                       Price = p.Price,
                                        // Grab Author name from 'per'
                                        AuthorName = per.FirstName + " " + per.LastName,
 
@@ -168,7 +171,7 @@ namespace clsSocialServicesDataAccess.Posts
 
                 IQueryable query = from p in _dbContext.Posts
 
-                                   //  Get County Name
+                                       //  Get County Name
                                    join c in _dbContext.Counties
                                    on p.CountyID equals c.CountyID
 
@@ -201,7 +204,9 @@ namespace clsSocialServicesDataAccess.Posts
                                        Status = p.Status,
                                        // Grab Type name from 'pt'
                                        PostTypeName = pt.TypeTitle,
-
+                                       Latitude = p.Latitude,
+                                       Longitude = p.Longitude,
+                                       Price = p.Price,
                                        // Grab Author name from 'per'
                                        AuthorName = per.FirstName + " " + per.LastName,
 
@@ -290,8 +295,8 @@ namespace clsSocialServicesDataAccess.Posts
 
 
 
-        }
-        public bool CompletePost(int userID, int postID)
+}
+        public bool CompletePost(int userID,int postID)
         {
             try
             {
@@ -369,7 +374,6 @@ namespace clsSocialServicesDataAccess.Posts
 
         public async Task<int> PostsCount()
         {
-
             try
             {
                 return await _dbContext.Posts.CountAsync();
@@ -378,21 +382,34 @@ namespace clsSocialServicesDataAccess.Posts
             {
                 return 0;
             }
-
         }
 
         public int GetLastPostIdByUser(int userId)
         {
-            return _dbContext.Posts
-                .Where(p => p.UserID == userId)
-                .OrderByDescending(p => p.PostID)
-                .Select(p => p.PostID)
-                .FirstOrDefault();
+            try
+            {
+                return _dbContext.Posts
+                    .Where(p => p.UserID == userId)
+                    .OrderByDescending(p => p.PostID)
+                    .Select(p => p.PostID)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
-        public async Task<PostEntity> GetPostById(int  postID)
+        public async Task<PostEntity> GetPostById(int postID)
         {
-            return await _dbContext.Posts.Where(p => p.PostID == postID).FirstOrDefaultAsync();
+            try
+            {
+                return await _dbContext.Posts.FindAsync(postID);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
     }
