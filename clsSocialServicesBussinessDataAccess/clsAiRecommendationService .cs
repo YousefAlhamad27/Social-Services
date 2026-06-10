@@ -13,9 +13,9 @@ namespace clsSocialServicesBussiness
     public class clsAiRecommendationService
     {
         private readonly string _apiKey;
-        private readonly PostRepository _postRepo;
+        private readonly IPostRepository _postRepo;
 
-        public clsAiRecommendationService(PostRepository postRepo, IConfiguration configuration)
+        public clsAiRecommendationService(IPostRepository postRepo, IConfiguration configuration)
         {
             _postRepo = postRepo;
             _apiKey = configuration["Gemini:ApiKey"]!;

@@ -1,4 +1,5 @@
-﻿using clsSocialServicesDataAccess.Admin;
+﻿using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Admin;
 using clsSocialServicesDataAccess.Posts;
 using DTOs.Posts;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,12 @@ namespace clsSocialServicesBussiness
 {
     public class clsPost
     {
-        private readonly PostRepository _postRepository;
-        private readonly LogRepository _logRepo;
-        public clsPost(PostRepository postRepository,LogRepository LogRepo)
+        private readonly IPersonRespository _postRepository;
+        private readonly ILogRepository _logRepo;
+        public clsPost(IPersonRespository postRepository, ILogRepository logRepo)
         {
             _postRepository = postRepository;
-            _logRepo = LogRepo;
+            _logRepo = logRepo;
         }
 
         private PostEntity MapPostDTOToPostEntity(int userID,AddPostDTO dto)

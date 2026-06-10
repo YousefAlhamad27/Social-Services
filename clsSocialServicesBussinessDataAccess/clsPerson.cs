@@ -14,12 +14,13 @@ namespace clsSocialServicesBussiness
     public class clsPerson
     {
 
-        private readonly PersonRepository _personRepository;
-        private readonly LogRepository _logRepo;
-        public clsPerson(PersonRepository personRepository, LogRepository LogRepo)
+        private readonly IPersonRespository _personRepository;
+        private readonly ILogRepository _logRepo;
+
+        public clsPerson(IPersonRespository personRepository, ILogRepository logRepo)
         {
             _personRepository = personRepository;
-            _logRepo = LogRepo;
+            _logRepo = logRepo;
         }
     
         private static PersonEntity MapToPersonEntity(RegisterRequestDTO reqDto)

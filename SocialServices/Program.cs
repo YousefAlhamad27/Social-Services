@@ -49,11 +49,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 
-builder.Services.AddScoped<ServiceApplicationRepository>();
-builder.Services.AddScoped<FeedbackRepository>();
-builder.Services.AddScoped<PostRepository>();
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<PersonRepository>();
+builder.Services.AddScoped<IServiceApplicationRepository, ServiceApplicationRepository>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPersonRespository, PersonRepository>();
 builder.Services.AddScoped<CountyCityRepository>();
 builder.Services.AddScoped<clsPerson>();
 builder.Services.AddScoped<clsPost>();
@@ -62,10 +62,10 @@ builder.Services.AddScoped<clsServiceApplication>();
 builder.Services.AddScoped<clsFeedBack>();
 builder.Services.AddScoped<clsCountiesCities>();
 
-builder.Services.AddScoped<AdminRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<clsAdminService>();
 builder.Services.AddScoped<clsAiRecommendationService>();
-builder.Services.AddScoped< LogRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 
 
 

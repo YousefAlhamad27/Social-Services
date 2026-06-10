@@ -12,12 +12,12 @@ namespace clsSocialServicesBussiness
 {
     public class clsAdminService
     {
-        private readonly AdminRepository _adminRepo;
-        private readonly PostRepository _postRepo;
-        private readonly UserRepository _userRepo;
-        private readonly LogRepository _logRepo;
+        private readonly IAdminRepository _adminRepo;
+        private readonly IPostRepository _postRepo;
+        private readonly IUserRepository _userRepo;
+        private readonly ILogRepository _logRepo;
 
-        public clsAdminService(AdminRepository adminRepository, PostRepository postRepo, UserRepository userRepo, LogRepository logRepo)
+        public clsAdminService(IAdminRepository adminRepository, IPostRepository postRepo, IUserRepository userRepo, ILogRepository logRepo)
         {
             _adminRepo = adminRepository;
             _postRepo = postRepo;

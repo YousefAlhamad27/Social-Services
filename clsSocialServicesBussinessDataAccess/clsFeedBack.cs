@@ -11,9 +11,9 @@ namespace clsSocialServicesBussiness
 {
     public class clsFeedBack
     {
-        private readonly FeedbackRepository _feedbackRepository;
+        private readonly IFeedbackRepository _feedbackRepository;
 
-        public clsFeedBack(FeedbackRepository feedbackRepository)
+        public clsFeedBack(IFeedbackRepository feedbackRepository)
         {
             _feedbackRepository = feedbackRepository;
         }

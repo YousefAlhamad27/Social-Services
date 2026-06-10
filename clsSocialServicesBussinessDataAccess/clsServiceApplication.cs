@@ -10,9 +10,9 @@ namespace clsSocialServicesBussiness
 {
     public class clsServiceApplication
     {
-        private readonly  ServiceApplicationRepository _repo;
+        private readonly  IServiceApplicationRepository _repo;
 
-        public clsServiceApplication(ServiceApplicationRepository repo)
+        public clsServiceApplication(IServiceApplicationRepository repo)
         {
             _repo = repo;
         }

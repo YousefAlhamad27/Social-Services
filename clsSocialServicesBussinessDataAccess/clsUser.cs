@@ -15,17 +15,15 @@ namespace clsSocialServicesBussiness
     public class clsUser
     {
     
-        private readonly UserRepository _userRepo;
-        private readonly LogRepository _logRepo;
+        private readonly IUserRepository _userRepo;
+        private readonly ILogRepository _logRepo;
 
         // You would also need an IPersonRepository injected here (not shown for brevity)
 
-      
-      
-        public clsUser(UserRepository userRepo, LogRepository LogRepo)
+        public clsUser(IUserRepository userRepo, ILogRepository logRepo)
         {
             _userRepo = userRepo;
-            _logRepo = LogRepo;
+            _logRepo = logRepo;
         }
         private static UserEntity MapToUserEntity(RegisterRequestDTO reqDto)
         {
