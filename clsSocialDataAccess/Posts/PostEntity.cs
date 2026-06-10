@@ -13,6 +13,7 @@ namespace clsSocialServicesDataAccess.Posts
 
         public int PostID { get; set; }
         public int PostTypeID { get; set; }
+
         [Column("ProfessionID"),ForeignKey("ProfessionID")]
         public int ProfessionID { get; set; }
         public int CountyID { get; set; }

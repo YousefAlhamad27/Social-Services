@@ -1,5 +1,7 @@
 ﻿using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Admin;
 using DTOs;
+using DTOs.Login;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +15,11 @@ namespace clsSocialServicesBussiness
     {
 
         private readonly PersonRepository _personRepository;
-        public clsPerson(PersonRepository personRepository)
+        private readonly LogRepository _logRepo;
+        public clsPerson(PersonRepository personRepository, LogRepository LogRepo)
         {
-            
             _personRepository = personRepository;
+            _logRepo = LogRepo;
         }
     
         private static PersonEntity MapToPersonEntity(RegisterRequestDTO reqDto)
@@ -88,12 +91,19 @@ namespace clsSocialServicesBussiness
         
         
         //}
-        public bool updatePerson(int personID,PersonDetailsUpdateDTO updateDTO)
+        public bool updatePerson(int personID,PersonDetailsUpdateDTO updateDTO , int UserId)
         {
             string newImagePath = UtilLibrary.FileOperations.saveImageTofile(updateDTO.Imagepath, UtilLibrary.FileOperations.ImageType.UserImage);
             updateDTO.Imagepath = newImagePath;
 
-            return _personRepository.UpdatePerson(MapUpdateDTOToPersonEntity(personID,updateDTO));
+            if( _personRepository.UpdatePerson(MapUpdateDTOToPersonEntity(personID,updateDTO)))
+
+            {
+                _logRepo.AddLog("Update User",UserId, "User", "User been updated", null);
+                return true;
+            }
+
+            return false;
         }
         public bool deletePerson(int personID) {
         

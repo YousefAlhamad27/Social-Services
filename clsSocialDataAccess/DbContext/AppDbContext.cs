@@ -4,9 +4,7 @@ using clsSocialServicesDataAccess.Counties___Cities;
 using clsSocialServicesDataAccess.Posts;
 using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Services;
-using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Admin;
-
 namespace clsSocialServicesDataAccess
 {
     
@@ -28,10 +26,11 @@ namespace clsSocialServicesDataAccess
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
-
+        public DbSet<LogEntity> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
 
             modelBuilder.Entity<AdminEntity>(entity =>
                 {
@@ -51,6 +50,17 @@ namespace clsSocialServicesDataAccess
                           .HasForeignKey(p => p.UserID) 
                           .OnDelete(DeleteBehavior.Restrict);
                 });
+
+                        modelBuilder.Entity<LogEntity>(
+                            entity
+                            => {
+                                entity.HasKey(l => l.LogID);
+                                entity.HasOne<AdminEntity>()
+                                    .WithMany()
+                                    .HasForeignKey(l => l.AdminID)
+                                    .OnDelete(DeleteBehavior.Restrict);
+                            }
+                            );
 
             modelBuilder.Entity<PersonEntity>()
                 .HasOne(p => p.User)

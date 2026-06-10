@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using clsSocialServicesDataAccess;
 
 #nullable disable
 
-namespace clsSocialDataAccess.Migrations
+namespace clsSocialServicesDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260609123514_new")]
+    partial class @new
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +43,7 @@ namespace clsSocialDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PersonID")
+                    b.Property<int>("PersonId")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
@@ -49,10 +52,9 @@ namespace clsSocialDataAccess.Migrations
 
                     b.HasKey("AdminID");
 
-                    b.HasIndex("PersonID");
-
                     b.ToTable("Admins");
                 });
+
             modelBuilder.Entity("clsSocialServicesDataAccess.Admin.LogEntity", b =>
                 {
                     b.Property<int>("LogId")
@@ -86,6 +88,7 @@ namespace clsSocialDataAccess.Migrations
 
                     b.ToTable("Logs");
                 });
+
             modelBuilder.Entity("clsSocialServicesDataAccess.Counties___Cities.CityEntity", b =>
                 {
                     b.Property<int>("CityID")
@@ -151,8 +154,6 @@ namespace clsSocialDataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("FeedbackID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Feedbacks");
                 });
@@ -400,29 +401,11 @@ namespace clsSocialDataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("clsSocialServicesDataAccess.Admin.AdminEntity", b =>
-                {
-                    b.HasOne("clsSocialServicesDataAccess.PersonEntity", null)
-                        .WithMany()
-                        .HasForeignKey("PersonID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("clsSocialServicesDataAccess.Counties___Cities.CountyEntity", b =>
                 {
                     b.HasOne("clsSocialServicesDataAccess.Counties___Cities.CityEntity", null)
                         .WithMany()
                         .HasForeignKey("CityID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("clsSocialServicesDataAccess.Feedback.FeedbackEntity", b =>
-                {
-                    b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
-                        .WithMany()
-                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

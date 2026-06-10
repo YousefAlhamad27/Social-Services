@@ -59,7 +59,7 @@ namespace SocialServices.Controllers
                 if (user1 == null)
                     return BadRequest("Not Found");
             }
-            if (_userService.deleteUser(user1!))
+            if (_userService.deleteUser(user1!, userID, isAdmin ? userID : null))
                 if (_personSerivce.deletePerson(user1!.PersonID))
                 {
                     return Ok("User has been deleted successfully");
@@ -70,7 +70,7 @@ namespace SocialServices.Controllers
 
         [HttpDelete("Logout Everywhere"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "User")]
-        public ActionResult logoutEverywhere()
+        public async Task<ActionResult> logoutEverywhere()
         {
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
@@ -78,8 +78,9 @@ namespace SocialServices.Controllers
             {
                 return BadRequest("User not found");
             }
-            if (_userService.logoutEverywhere(userID))
+            if (await _userService.logoutEverywhere(userID))
             {
+
                 return Ok("User logged out from all devices Sucessfully!");
             }
             else
@@ -95,13 +96,20 @@ namespace SocialServices.Controllers
         {
 
             UserDTO user = _userService.Find(updateDTO.Username);
+          
 
             if (user == null)
             {
                 return BadRequest("User not found");
             }
 
-            if (_personSerivce.updatePerson(user.PersonID, updateDTO))
+            if (user.IsActive == false)
+            {
+                return BadRequest("User is not active");
+            }
+
+            int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            if (_personSerivce.updatePerson(user.PersonID, updateDTO,userID))
             {
                 return Ok("User updated Sucessfully!");
             }
@@ -125,6 +133,15 @@ namespace SocialServices.Controllers
 
             UserDTO user = _userService.Find(userID);
 
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            if (user.IsActive == false)
+            {
+                return BadRequest("User is not active");
+            }
 
             if (!UtilLibrary.VerifyPassword(dto.CurrentPassword, user.PasswordHash))
                 return Unauthorized("Invalid Username or Password");
@@ -156,6 +173,7 @@ namespace SocialServices.Controllers
                 return BadRequest("Please provide either username or userID");
             }
             UserDTO user;
+
             if (userID < 1)
             {
                 if (currentUserRole != "Admin" && currentUsername != username)
@@ -167,9 +185,15 @@ namespace SocialServices.Controllers
                     return BadRequest("Not Accepted");
                 }
                  user = _userService.Find(username);
+
                 if (user == null)
                 {
                     return BadRequest("User not found");
+                }
+             
+                if (user.IsActive == false)
+                {
+                    return BadRequest("User is not active");
                 }
             }
             else {

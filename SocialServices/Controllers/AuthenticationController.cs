@@ -1,6 +1,8 @@
 ﻿using Azure.Core;
 using clsSocialServicesBussiness;
+using clsSocialServicesDataAccess.Admin;
 using DTOs;
+using DTOs.Login;
 using DTOs.User_Person_DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -13,24 +15,25 @@ namespace SocialServices.Controllers
     {
         private readonly clsUser _userService;
         private readonly clsPerson _personSerivce;
-       
+        private readonly LogRepository _logRepo;
 
         // The Controller only depends on the Business Logic
-        public AuthenticationController(clsUser userService, clsPerson personSerivce )
+        public AuthenticationController(clsUser userService, clsPerson personSerivce, LogRepository LogRepo)
         {
             // The framework ensures UserService is NOT NULL
             _userService = userService;
             _personSerivce = personSerivce;
-           
+            _logRepo = LogRepo;
+
         }
 
        
        
-        [HttpPost("Register"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status202Accepted), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("Register User"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status202Accepted), ProducesResponseType(StatusCodes.Status400BadRequest)]
        
         public ActionResult RegisterUser(RegisterRequestDTO reqDto)
         {
-
+            
             // if no data sent return bad request
             if (!UtilLibrary.checkReqDTOValues(reqDto))
                 return BadRequest("Register Credentials are not valid");
@@ -68,10 +71,10 @@ namespace SocialServices.Controllers
 
 
 
-        [HttpPost("Login"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("Login User"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
       
 
-        public ActionResult Login(LoginRequest request)
+        public async Task<ActionResult> Login(UserLoginRequest request)
         {
 
             UserDTO userDTO = _userService.Find(request.Username);
@@ -97,10 +100,43 @@ namespace SocialServices.Controllers
             if (token == null)
                 return StatusCode(500, new { Message = "Error generating token" });
 
-            return Ok(new {AccessToken= token,RefreshToken=refreshToken});
+            await _logRepo.AddLog("Login" ,_userService.getUserID(request.Username) , "Login or Register", "User logged in", null);
+            return Ok(new { AccessToken = token, RefreshToken = refreshToken });
 
         }
 
+        [HttpPost("Login Admin"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<ActionResult> Login(AdminLoginRequest request)
+        {
+
+            UserDTO userDTO = _userService.Find(request.Username);
+
+            if (userDTO == null)
+                return Unauthorized("Invalid Username or Password");
+
+            string hashedPassword = UtilLibrary.returnHashedPassword(request.Password);
+
+
+
+            if (!UtilLibrary.VerifyPassword(request.Password, userDTO.PasswordHash))
+                return Unauthorized("Invalid Username or Password");
+
+            string token = _userService.getAccessToken(request.Username);
+            string refreshToken = UtilLibrary.GenerateRefreshToken();
+
+            bool isRefreshTokenAdded = _userService.addRefreshToken(refreshToken, request.Username);
+
+            if (!isRefreshTokenAdded)
+                return StatusCode(500, new { Message = "Error generating refresh token" });
+
+            if (token == null)
+                return StatusCode(500, new { Message = "Error generating token" });
+
+            await _logRepo.AddLog("Login", _userService.getUserID(request.Username), "Login or Register", "User logged in", null);
+            return Ok(new { AccessToken = token, RefreshToken = refreshToken });
+
+        }
 
         [HttpPost("RefreshToken"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status401Unauthorized), ProducesResponseType(StatusCodes.Status500InternalServerError)]
 

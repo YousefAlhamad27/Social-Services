@@ -1,5 +1,7 @@
-﻿using clsSocialServicesDataAccess.Posts;
+﻿using clsSocialServicesDataAccess.Admin;
+using clsSocialServicesDataAccess.Posts;
 using DTOs.Posts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,11 @@ namespace clsSocialServicesBussiness
     public class clsPost
     {
         private readonly PostRepository _postRepository;
-        public clsPost(PostRepository postRepository)
+        private readonly LogRepository _logRepo;
+        public clsPost(PostRepository postRepository,LogRepository LogRepo)
         {
             _postRepository = postRepository;
+            _logRepo = LogRepo;
         }
 
         private PostEntity MapPostDTOToPostEntity(int userID,AddPostDTO dto)
@@ -111,18 +115,27 @@ namespace clsSocialServicesBussiness
 
 
             //  PostEntity updatedPost = MapPostUpdateDTOToPostEntity(userID, dto,currentDetails);
-            return _postRepository.UpdatePost(currentDetails);
+            if(_postRepository.UpdatePost(currentDetails))
+            {
+                int postId = _postRepository.GetLastPostIdByUser(userID);
+                _logRepo.AddLog("Update Post", postId, "Post", $"User {userID} Updated Post{postId}", null);
+                return true;
+            }
+            return false; 
         }
 
-        public bool addPost(int userID, AddPostDTO dto)
+        public bool addPost(int userID, AddPostDTO dto,int postID)
         {
            dto.imagePath= UtilLibrary.FileOperations.saveImageTofile(dto.imagePath,UtilLibrary.FileOperations.ImageType.PostImage);
 
-            return _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto));
-             
-
+            if( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
+            {
+                _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post.", null);
+                return true;
+            }
+            return false;
         }
-        public bool deletePost(int postID)
+        public bool deletePost(int postID,int? userId, int? adminId)
         {
             PostEntity post=_postRepository.Find(postID)!;
             if(post==null)
@@ -131,7 +144,16 @@ namespace clsSocialServicesBussiness
             }
             UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
 
-            return _postRepository.DeletePost(postID);
+            if (_postRepository.DeletePost(postID))
+            {
+                string logMessage = adminId.HasValue
+                    ? $"Post {postID} has been deleted by Admin {adminId}."
+                    : $"Post {postID} has been deleted by User {userId}.";
+
+                _logRepo.AddLog("Delete Post", postID, "Post", logMessage, adminId);
+                return true;
+            }
+            return false;
         }
         public List<PostListDTO> getAllPosts()
         {
@@ -163,15 +185,36 @@ namespace clsSocialServicesBussiness
              
             return _postRepository.CompletePost(userID,postID);
         }
-        public bool LockPost(int postID,int? userID)
+        public bool LockPost(int postID, int? userID, int? adminId = null)
         {
+            // إذا Admin بنبعث null للـ userID
+            int? repoUserId = adminId != null ? null : userID;
 
-            return _postRepository.LockPost(postID,userID);
+            if (_postRepository.LockPost(postID, repoUserId))
+            {
+                _logRepo.AddLog("LockPost", postID, "Post", "Post locked", adminId);
+                return true;
+            }
+            return false;
         }
-        public bool UnlockPost(int postID,int? adminID)
+        public bool UnlockPost(int postID,int adminID)
         {
-            return _postRepository.UnlockPost(postID);
+            if(_postRepository.UnlockPost(postID))
+            {
+                _logRepo.AddLog("Unlock Post", postID, "Post", "Post Unlocked", adminID);
+                return true;
+            }
+            return false;
         }
 
+        public int GetLastPostIdByUser(int userId)
+        {
+            return _postRepository.GetLastPostIdByUser(userId);
+        }
+
+        public async Task<PostEntity> GetPostById(int postId)
+        {
+            return await _postRepository.GetPostById(postId);
+        }
     }
 }

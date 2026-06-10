@@ -1,5 +1,8 @@
 ﻿using clsSocialServicesDataAccess;
 using DTOs;
+
+using DTOs.Login;
+
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Resources;
@@ -145,28 +148,28 @@ namespace clsSocialServicesBussiness
         }
 
         // for admin 
-       // static public string returnToken(AdminEntity admin)
-       // {
-
-       //     var claims = new List<Claim>
-       // {
-       //     new Claim(ClaimTypes.Name, admin.Username),
-       //     new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
-       //     new Claim(ClaimTypes.Role, "Admin")
-       // };
+        static public string returnToken(AdminEntity admin)
+        {
 
 
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, admin.Username),
+            new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
+            new Claim(ClaimTypes.Role, "Admin")
+        };
 
-       //     var token = new JwtSecurityToken(
-       //issuer: clsConfigurations.returnIssuer(),
-       //audience: clsConfigurations.returnAudience(),
-       //claims: claims,
-       //expires: DateTime.Now.AddHours(0.25),
-       //signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
+
+        var token = new JwtSecurityToken(
+        issuer: clsConfigurations.returnIssuer(),
+        audience: clsConfigurations.returnAudience(),
+        claims: claims,
+        expires: DateTime.Now.AddHours(0.25),
+        signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
 
 
-       //     return new JwtSecurityTokenHandler().WriteToken(token);
-       // }
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
 
         static public string returnToken(UserEntity user)
         {
@@ -191,7 +194,25 @@ namespace clsSocialServicesBussiness
                 return new JwtSecurityTokenHandler().WriteToken(token);
             }
 
-        
+        static public string returnAdminToken(AdminEntity admin)
+        {
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, admin.Username),
+        new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
+        new Claim(ClaimTypes.Role, "Admin")  
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: clsConfigurations.returnIssuer(),
+                audience: clsConfigurations.returnAudience(),
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
         static public string returnHashedPassword(string password)
         {
 

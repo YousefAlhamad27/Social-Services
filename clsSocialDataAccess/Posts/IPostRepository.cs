@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace clsSocialServicesDataAccess.Posts
 {
-    public interface  IPostRepository
+    public interface IPostRepository
     {
        public bool AddPost(PostEntity postEntity);
 
@@ -16,5 +16,9 @@ namespace clsSocialServicesDataAccess.Posts
         PostEntity? Find(int postID);
         List<PostListDTO> GetAllPosts(int userID);
         List<PostListDTO> GetFilteredPosts(string? searchQuery, int? countyID, int? postTypeID, int? professionID);
+         public Task<int> PostsCount();
+        public int GetLastPostIdByUser(int userId);
+        public Task<PostEntity> GetPostById(int postID);
+
     }
 }

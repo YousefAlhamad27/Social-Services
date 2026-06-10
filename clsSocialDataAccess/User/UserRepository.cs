@@ -1,4 +1,5 @@
 ﻿using clsSocialServicesDataAccess;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -277,5 +278,70 @@ namespace clsSocialServicesDataAccess
                 return false;
             }
         }
-    }
+
+        public async Task<int> GetUsersCount()
+        {
+            
+                try
+                {
+                    return await _dbContext.Users.CountAsync();
+                }
+                catch
+                {
+                    return -1;
+                }
+            
+        }
+
+        public async Task<bool> BlockUser(int UserID)
+        {
+            try
+            {
+                UserEntity? user = _dbContext.Users.Find(UserID);
+                if (user != null)
+                {
+                    user.IsActive = false;
+                    _dbContext.Users.Update(user);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UnBlockUser(int UserID)
+        {
+            try
+            {
+                UserEntity? user = _dbContext.Users.Find(UserID)!;
+                if (user != null)
+                {
+                    user.IsActive = true;
+                    _dbContext.Users.Update(user);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public async Task<List<UserEntity>> GetAllUsers()
+        {
+            try
+            {
+                return await _dbContext.Users.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex}");
+            }
+        }
+}
 }

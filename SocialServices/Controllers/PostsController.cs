@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using DTOs.Posts;
-using clsSocialServicesBussiness;
+﻿using clsSocialServicesBussiness;
 using DTOs;
+using DTOs.Posts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace SocialServices.Controllers
 {
@@ -58,6 +59,7 @@ namespace SocialServices.Controllers
         public ActionResult CreatePost(AddPostDTO dto)
         {
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            int postID = _postService.GetLastPostIdByUser(userID);
 
             UserDTO user = _userService.Find(userID);
 
@@ -66,55 +68,47 @@ namespace SocialServices.Controllers
                 return Unauthorized("Invalid User");
             }
 
-            if (!_postService.addPost(userID, dto))
+            if (!_postService.addPost(userID, dto,postID))
             {
                 return StatusCode(500, new { Message = "Error adding post" });
             }
-
-
 
             // Implementation to create a new post
             return Ok("Post Created Successfully");
         }
 
-        [HttpDelete("Delete Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpDelete("Delete Post")]
         [Authorize(Roles = "User,Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public ActionResult DeletePost(int postID)
         {
-            int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            int userID = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             if (postID <= 0)
-                return BadRequest("Post Does not exist");
+                return BadRequest("Post does not exist");
 
             if (userID == 0)
-            {
                 return Unauthorized("Invalid User");
-            }
 
-            if (User.IsInRole("Admin"))
-            {
-                // Admin can delete any post
-                if (!_postService.deletePost(postID))
-                {
-                    return StatusCode(500, new { Message = "Error deleting post" });
-                }
-                return Ok("Post Deleted Successfully by Admin");
-            }
+            bool isAdmin = User.IsInRole("Admin");
 
-            else
+            int? adminId = isAdmin ? userID : (int?)null;
+            int? ownerUserId = isAdmin ? (int?)null : userID;
+
+            if (!isAdmin)
             {
                 UserDTO user = _userService.Find(userID);
-
                 if (user == null)
-                {
                     return Unauthorized("Invalid User");
-                }
-                if (!_postService.deletePost(postID))
-                {
-                    return StatusCode(500, new { Message = "Error deleting post" });
-                }
-                // Implementation to delete a post
-                return Ok("Post Deleted Successfully");
             }
+
+            if (!_postService.deletePost(postID, ownerUserId, adminId))
+                return StatusCode(500, new { Message = "Error deleting post" });
+
+            string message = isAdmin ? "Post Deleted Successfully by Admin" : "Post Deleted Successfully";
+            return Ok(message);
         }
 
         [HttpPut("Update Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -244,7 +238,6 @@ namespace SocialServices.Controllers
 
         public ActionResult LockPost(int postID)
         {
-
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
             if (postID <= 0)
                 return BadRequest("Post Does not exist");
@@ -259,7 +252,8 @@ namespace SocialServices.Controllers
                 // Admin can lock any post
                 // we can also confirm admin by checking variable "currentUserID"
                 // inside the bussiness logic
-                if (!_postService.LockPost(postID, null))
+                 bool isAdmin = User.IsInRole("Admin");
+                if (!_postService.LockPost(postID, currentUserID,isAdmin?currentUserID:null))
                 {
                     return StatusCode(500, new { Message = "Error locking post" });
                 }
@@ -301,5 +295,19 @@ namespace SocialServices.Controllers
             return Ok("Post Unlocked Successfully by Admin");
         }
 
+        [HttpGet("GetPostById", Name = "GetPostById")
+            ,ProducesResponseType(StatusCodes.Status200OK)
+            ,ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetPostById(int postID)
+        {
+            var result = await _postService.GetPostById(postID);
+
+            if(result == null)
+            {
+                return NotFound("No post found!");
+            }
+            return Ok(result);
+        }
     }
 }
