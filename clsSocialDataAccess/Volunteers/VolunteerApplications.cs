@@ -13,12 +13,12 @@ namespace clsSocialDataAccess.Volunteers
     {
 
         [Key]
-        public int volunteerApplicationID { get; set; }
+        public int VolunteerApplicationID { get; set; }
 
         [ForeignKey("Users")]
-        public int userID { get; set; }
+        public int UserID { get; set; }
         [ForeignKey("Admins")]
-        public int adminID { get; set; }
+        public int AdminID { get; set; }
         public string IdImagePath { get; set; }
         public string? Description { get; set; }
         public IVolunteerRepository.ApplicationStatus  Status { get; set; } = IVolunteerRepository.ApplicationStatus.Pending;

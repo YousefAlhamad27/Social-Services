@@ -13,9 +13,9 @@ namespace clsSocialServicesBussiness
 {
     public class clsPost
     {
-        private readonly IPersonRespository _postRepository;
+        private readonly IPostRepository _postRepository;
         private readonly ILogRepository _logRepo;
-        public clsPost(IPersonRespository postRepository, ILogRepository logRepo)
+        public clsPost(IPostRepository postRepository, ILogRepository logRepo)
         {
             _postRepository = postRepository;
             _logRepo = logRepo;

@@ -9,11 +9,11 @@ using clsSocialServicesDataAccess;
 
 #nullable disable
 
-namespace clsSocialServicesDataAccess.Migrations
+namespace clsSocialDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260609123514_new")]
-    partial class @new
+    [Migration("20260611013309_editLetters")]
+    partial class editLetters
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,129 @@ namespace clsSocialServicesDataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("clsSocialServicesDataAccess.Admin.AdminEntity", b =>
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
+                {
+                    b.Property<int>("VolunteerApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AdminID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("VolunteerApplicationID");
+
+                    b.HasIndex("AdminID")
+                        .IsUnique();
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("VolunteerApplications");
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerEntity", b =>
+                {
+                    b.Property<int>("VolunteerID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VolunteerID"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PointsCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("VolunteerID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Volunteers");
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerProofImage", b =>
+                {
+                    b.Property<int>("ImageID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageID"));
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VolunteerApplicationEntityVolunteerApplicationID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VolunteerApplicationID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ImageID");
+
+                    b.HasIndex("VolunteerApplicationEntityVolunteerApplicationID");
+
+                    b.HasIndex("VolunteerApplicationID");
+
+                    b.ToTable("VolunteerProofImages");
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.Admin.LogEntity", b =>
+                {
+                    b.Property<int>("LogID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogID"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AdminID")
+                        .HasColumnType("int")
+                        .HasColumnName("AdminID");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TargetDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TargetID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LogID");
+
+                    b.HasIndex("AdminID");
+
+                    b.ToTable("Logs");
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.AdminEntity", b =>
                 {
                     b.Property<int>("AdminID")
                         .ValueGeneratedOnAdd()
@@ -43,7 +165,7 @@ namespace clsSocialServicesDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int>("PersonID")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
@@ -52,41 +174,9 @@ namespace clsSocialServicesDataAccess.Migrations
 
                     b.HasKey("AdminID");
 
+                    b.HasIndex("PersonID");
+
                     b.ToTable("Admins");
-                });
-
-            modelBuilder.Entity("clsSocialServicesDataAccess.Admin.LogEntity", b =>
-                {
-                    b.Property<int>("LogId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogId"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("AdminId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TargetDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TargetId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TargetType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("LogId");
-
-                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("clsSocialServicesDataAccess.Counties___Cities.CityEntity", b =>
@@ -154,6 +244,8 @@ namespace clsSocialServicesDataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("FeedbackID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Feedbacks");
                 });
@@ -401,11 +493,80 @@ namespace clsSocialServicesDataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.AdminEntity", null)
+                        .WithOne()
+                        .HasForeignKey("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", "AdminID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerEntity", null)
+                        .WithMany()
+                        .HasForeignKey("VolunteerApplicationID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerProofImage", b =>
+                {
+                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", null)
+                        .WithMany("ProofImages")
+                        .HasForeignKey("VolunteerApplicationEntityVolunteerApplicationID");
+
+                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", null)
+                        .WithMany()
+                        .HasForeignKey("VolunteerApplicationID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.Admin.LogEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.AdminEntity", null)
+                        .WithMany()
+                        .HasForeignKey("AdminID")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.AdminEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.PersonEntity", null)
+                        .WithMany()
+                        .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("clsSocialServicesDataAccess.Counties___Cities.CountyEntity", b =>
                 {
                     b.HasOne("clsSocialServicesDataAccess.Counties___Cities.CityEntity", null)
                         .WithMany()
                         .HasForeignKey("CityID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("clsSocialServicesDataAccess.Feedback.FeedbackEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -461,6 +622,11 @@ namespace clsSocialServicesDataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
+                {
+                    b.Navigation("ProofImages");
                 });
 
             modelBuilder.Entity("clsSocialServicesDataAccess.PersonEntity", b =>

@@ -15,7 +15,7 @@ namespace clsSocialDataAccess.Volunteers
         public int VolunteerID { get; set; }
 
         [ForeignKey("Users")]
-        public int userID { get; set; }
+        public int UserID { get; set; }
         public string? Description { get; set; }
 
         public int PointsCount { get; set; }

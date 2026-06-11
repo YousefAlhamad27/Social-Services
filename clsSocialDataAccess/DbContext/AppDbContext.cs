@@ -5,6 +5,7 @@ using clsSocialServicesDataAccess.Posts;
 using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Services;
 using clsSocialServicesDataAccess.Admin;
+using clsSocialDataAccess.Volunteers;
 namespace clsSocialServicesDataAccess
 {
     
@@ -22,6 +23,9 @@ namespace clsSocialServicesDataAccess
         public DbSet<PostEntity> Posts { get; set; }
         public DbSet<PostTypeEntity> PostTypes { get; set; }
         public DbSet<AdminEntity> Admins { get; set; }
+        public DbSet<VolunteerApplicationEntity> VolunteerApplications { get; set; }
+        public DbSet<VolunteerEntity> Volunteers { get; set; }
+        public DbSet<VolunteerProofImage> VolunteerProofImages { get; set; }
 
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
@@ -30,6 +34,46 @@ namespace clsSocialServicesDataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<VolunteerProofImage>(entity =>
+            {
+                entity.HasKey(u => u.ImageID); // Primary Key
+
+                entity.HasOne<VolunteerApplicationEntity>()         
+                      .WithMany() 
+                      .HasForeignKey(v=>v.VolunteerApplicationID) 
+                      .OnDelete(DeleteBehavior.Restrict); 
+            });
+
+            modelBuilder.Entity<VolunteerEntity>(entity =>
+            {
+                entity.HasKey(u => u.VolunteerID); // Primary Key
+
+                entity.HasOne<UserEntity>()         
+                      .WithMany() 
+                      .HasForeignKey(u=>u.UserID)
+                      .OnDelete(DeleteBehavior.Restrict); 
+               entity.HasMany<VolunteerApplicationEntity>() 
+                      .WithOne() 
+                      .HasForeignKey(va => va.VolunteerApplicationID) 
+                      .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            modelBuilder.Entity<VolunteerApplicationEntity>(entity =>
+                {
+                    entity.HasKey(u => u.VolunteerApplicationID); // Primary Key
+                    entity.HasOne<UserEntity>()         
+                          .WithMany()                   
+                          .HasForeignKey(u => u.UserID)
+                          .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne<AdminEntity>()
+                    .WithOne().HasForeignKey<VolunteerApplicationEntity>(va => va.AdminID)
+                    .OnDelete(DeleteBehavior.Restrict);
+                });
+
+
 
 
             modelBuilder.Entity<AdminEntity>(entity =>
