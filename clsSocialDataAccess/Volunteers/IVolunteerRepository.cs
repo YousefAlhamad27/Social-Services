@@ -14,8 +14,11 @@ namespace clsSocialDataAccess.Volunteers
             Approved = 2,
             Rejected = 3
         }
-        
 
+        public Task<bool> AddVolunteer(VolunteerEntity volunteer);
+        public Task<int> IssueVolunteerRequest(VolunteerApplicationEntity volunteerApplication);
+        public Task<bool> AddVolunteerProofImage(VolunteerProofImage proofImage);
+        public bool CanUserApplyToBeVolunteer(int userID);
 
     }
 }

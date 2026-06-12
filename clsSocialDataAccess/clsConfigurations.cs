@@ -35,6 +35,13 @@ namespace clsSocialServicesDataAccess
                 return _config["Paths:AdminImages"]!;
             }
         }
+        public static string VolunteerImagePath
+        {
+                        get
+            {
+                return _config["Paths:VolunteerImages"]!;
+            }
+        }
         static public string returnIssuer()
         {
             return _config["Jwt:Issuer"]!;

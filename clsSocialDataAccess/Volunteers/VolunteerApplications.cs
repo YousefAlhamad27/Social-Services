@@ -15,16 +15,16 @@ namespace clsSocialDataAccess.Volunteers
         [Key]
         public int VolunteerApplicationID { get; set; }
 
-        [ForeignKey("Users")]
+       
         public int UserID { get; set; }
-        [ForeignKey("Admins")]
-        public int AdminID { get; set; }
+      
+        public int? AdminID { get; set; }
         public string IdImagePath { get; set; }
         public string? Description { get; set; }
         public IVolunteerRepository.ApplicationStatus  Status { get; set; } = IVolunteerRepository.ApplicationStatus.Pending;
+        public DateTime CreationDate { get; set; }
 
-
-        public ICollection<VolunteerProofImage> ProofImages { get; set; }
+        
     }
 
     public class VolunteerProofImage

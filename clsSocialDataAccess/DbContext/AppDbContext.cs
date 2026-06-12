@@ -35,43 +35,53 @@ namespace clsSocialServicesDataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            modelBuilder.Ignore<VolunteerProofImage>(); // Ignore the VolunteerProofImage entity
+            modelBuilder.Ignore<VolunteerEntity>();
+            modelBuilder.Ignore<VolunteerApplicationEntity>();
+
             modelBuilder.Entity<VolunteerProofImage>(entity =>
             {
-                entity.HasKey(u => u.ImageID); // Primary Key
+                entity.HasKey(img => img.ImageID);
 
-                entity.HasOne<VolunteerApplicationEntity>()         
-                      .WithMany() 
-                      .HasForeignKey(v=>v.VolunteerApplicationID) 
-                      .OnDelete(DeleteBehavior.Restrict); 
+                
+                entity.HasOne<VolunteerApplicationEntity>()
+                    .WithMany()  
+                    .HasForeignKey(img => img.VolunteerApplicationID)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
-
             modelBuilder.Entity<VolunteerEntity>(entity =>
             {
                 entity.HasKey(u => u.VolunteerID); // Primary Key
 
-                entity.HasOne<UserEntity>()         
-                      .WithMany() 
-                      .HasForeignKey(u=>u.UserID)
-                      .OnDelete(DeleteBehavior.Restrict); 
-               entity.HasMany<VolunteerApplicationEntity>() 
-                      .WithOne() 
-                      .HasForeignKey(va => va.VolunteerApplicationID) 
-                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<UserEntity>()
+                    .WithMany()
+                    .HasForeignKey(u => u.UserID)
+                    .OnDelete(DeleteBehavior.Restrict);
 
+                 
+                entity.HasOne<VolunteerApplicationEntity>()
+                    .WithOne()
+                    .HasForeignKey<VolunteerEntity>(v => v.VolunteerApplicationID)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<VolunteerApplicationEntity>(entity =>
-                {
-                    entity.HasKey(u => u.VolunteerApplicationID); // Primary Key
-                    entity.HasOne<UserEntity>()         
-                          .WithMany()                   
-                          .HasForeignKey(u => u.UserID)
-                          .OnDelete(DeleteBehavior.Restrict);
 
-                    entity.HasOne<AdminEntity>()
-                    .WithOne().HasForeignKey<VolunteerApplicationEntity>(va => va.AdminID)
+            modelBuilder.Entity<VolunteerApplicationEntity>(entity =>
+            {
+                entity.HasKey(u => u.VolunteerApplicationID); // Primary Key
+
+                entity.HasOne<UserEntity>()
+                    .WithMany()
+                    .HasForeignKey(u => u.UserID)
                     .OnDelete(DeleteBehavior.Restrict);
-                });
+
+             
+
+                entity.HasOne<AdminEntity>()
+                    .WithMany() 
+                    .HasForeignKey(va => va.AdminID) 
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
 
 

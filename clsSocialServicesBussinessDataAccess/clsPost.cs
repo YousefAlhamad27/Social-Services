@@ -128,8 +128,12 @@ namespace clsSocialServicesBussiness
         public bool addPost(int userID, AddPostDTO dto,int postID)
         {
            dto.imagePath= UtilLibrary.FileOperations.saveImageTofile(dto.imagePath,UtilLibrary.FileOperations.ImageType.PostImage);
+            if(dto.imagePath==null)
+            {
+                return false;
+            }
 
-            if( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
+            if ( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
             {
                 _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post.", null);
                 return true;

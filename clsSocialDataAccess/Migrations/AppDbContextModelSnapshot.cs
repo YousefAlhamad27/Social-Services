@@ -25,10 +25,16 @@ namespace clsSocialDataAccess.Migrations
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
                 {
                     b.Property<int>("VolunteerApplicationID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AdminID")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VolunteerApplicationID"));
+
+                    b.Property<int?>("AdminID")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -45,8 +51,7 @@ namespace clsSocialDataAccess.Migrations
 
                     b.HasKey("VolunteerApplicationID");
 
-                    b.HasIndex("AdminID")
-                        .IsUnique();
+                    b.HasIndex("AdminID");
 
                     b.HasIndex("UserID");
 
@@ -73,9 +78,15 @@ namespace clsSocialDataAccess.Migrations
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
+                    b.Property<int>("VolunteerApplicationID")
+                        .HasColumnType("int");
+
                     b.HasKey("VolunteerID");
 
                     b.HasIndex("UserID");
+
+                    b.HasIndex("VolunteerApplicationID")
+                        .IsUnique();
 
                     b.ToTable("Volunteers");
                 });
@@ -92,15 +103,10 @@ namespace clsSocialDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VolunteerApplicationEntityVolunteerApplicationID")
-                        .HasColumnType("int");
-
                     b.Property<int>("VolunteerApplicationID")
                         .HasColumnType("int");
 
                     b.HasKey("ImageID");
-
-                    b.HasIndex("VolunteerApplicationEntityVolunteerApplicationID");
 
                     b.HasIndex("VolunteerApplicationID");
 
@@ -493,20 +499,13 @@ namespace clsSocialDataAccess.Migrations
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
                 {
                     b.HasOne("clsSocialServicesDataAccess.AdminEntity", null)
-                        .WithOne()
-                        .HasForeignKey("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", "AdminID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("AdminID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerEntity", null)
-                        .WithMany()
-                        .HasForeignKey("VolunteerApplicationID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -518,14 +517,16 @@ namespace clsSocialDataAccess.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", null)
+                        .WithOne()
+                        .HasForeignKey("clsSocialDataAccess.Volunteers.VolunteerEntity", "VolunteerApplicationID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerProofImage", b =>
                 {
-                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", null)
-                        .WithMany("ProofImages")
-                        .HasForeignKey("VolunteerApplicationEntityVolunteerApplicationID");
-
                     b.HasOne("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", null)
                         .WithMany()
                         .HasForeignKey("VolunteerApplicationID")
@@ -619,11 +620,6 @@ namespace clsSocialDataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
-                {
-                    b.Navigation("ProofImages");
                 });
 
             modelBuilder.Entity("clsSocialServicesDataAccess.PersonEntity", b =>

@@ -1,3 +1,4 @@
+using clsSocialDataAccess.Volunteers;
 using clsSocialServicesBussiness;
 using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Admin;
@@ -16,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
+using static clsSocialServicesBussiness.UtilLibrary;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +71,8 @@ builder.Services.AddScoped<clsServiceApplication>();
 builder.Services.AddScoped<clsFeedBack>();
 builder.Services.AddScoped<clsCountiesCities>();
 
+builder.Services.AddScoped<clsVolunteer>();
+builder.Services.AddScoped<IVolunteerRepository,VolunteerRepository>();
 builder.Services.AddScoped<IAdminRepository,AdminRepository>();
 builder.Services.AddScoped<clsAdminService>();
 builder.Services.AddScoped<clsAiRecommendationService>();
@@ -129,7 +133,7 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
-
+FileOperations.RootPath = app.Environment.ContentRootPath;
 
 if (app.Environment.IsDevelopment())
 {

@@ -15,10 +15,10 @@ namespace SocialServices.Controllers
     {
         private readonly clsUser _userService;
         private readonly clsPerson _personSerivce;
-        private readonly LogRepository _logRepo;
+        private readonly ILogRepository _logRepo;
 
         // The Controller only depends on the Business Logic
-        public AuthenticationController(clsUser userService, clsPerson personSerivce, LogRepository LogRepo)
+        public AuthenticationController(clsUser userService, clsPerson personSerivce, ILogRepository LogRepo)
         {
             // The framework ensures UserService is NOT NULL
             _userService = userService;

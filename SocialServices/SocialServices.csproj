@@ -6,7 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>ac629c22-5eb0-4638-88cc-080e4dd9b7be</UserSecretsId>
   </PropertyGroup>
-
+ 
+	
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="dotenv.net" Version="4.0.0" />
@@ -24,8 +25,10 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="4.1.1" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="4.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
 
+	 
+  </ItemGroup>
+	
   <ItemGroup>
     <ProjectReference Include="..\clsSocialServicesBussinessDataAccess\clsSocialServicesBussiness.csproj" />
     <ProjectReference Include="..\DTOs\DTOs.csproj" />
