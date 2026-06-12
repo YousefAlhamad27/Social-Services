@@ -24,7 +24,7 @@ namespace SocialServices.Controllers
         [HttpPost("Issue Volunteer Request")]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> AddVolunteerService(AddVolunteerRequest request)
+        public async Task<IActionResult> AddVolunteerApplication(AddVolunteerRequest request)
         {
             int currentUserID= Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 

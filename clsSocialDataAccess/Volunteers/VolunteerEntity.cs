@@ -24,5 +24,7 @@ namespace clsSocialDataAccess.Volunteers
 
         public DateTime CreationDate { get; set; }
 
+        public int AccomplishedServiceApplicationsCount { get; set; }
+
     }
 }

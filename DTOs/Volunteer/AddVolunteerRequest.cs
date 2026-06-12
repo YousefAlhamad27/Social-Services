@@ -12,6 +12,7 @@ namespace DTOs.Volunteer
         public string IdImagePath { get; set; }
         public string? Description { get; set; }
          public List<string> ProofImagePaths { get; set; }
+         
 
 
 
