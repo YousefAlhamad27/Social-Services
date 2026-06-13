@@ -26,18 +26,30 @@ namespace clsSocialServicesDataAccess
         public DbSet<VolunteerApplicationEntity> VolunteerApplications { get; set; }
         public DbSet<VolunteerEntity> Volunteers { get; set; }
         public DbSet<VolunteerProofImage> VolunteerProofImages { get; set; }
+        public DbSet<CertficateEntity> Certificates { get; set; }
 
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
         public DbSet<LogEntity> Logs { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Ignore<VolunteerProofImage>(); // Ignore the VolunteerProofImage entity
-            modelBuilder.Ignore<VolunteerEntity>();
-            modelBuilder.Ignore<VolunteerApplicationEntity>();
+             
+            modelBuilder.Entity<CertficateEntity>(
+                
+                entity=>
+                {
+                    entity.HasKey(c => c.CertificateID);
+                    entity.HasOne<VolunteerEntity>()
+                          .WithMany()
+                          .HasForeignKey(c => c.VolunteerID)
+                          .OnDelete(DeleteBehavior.Restrict);
+                });
+
+
 
             modelBuilder.Entity<VolunteerProofImage>(entity =>
             {

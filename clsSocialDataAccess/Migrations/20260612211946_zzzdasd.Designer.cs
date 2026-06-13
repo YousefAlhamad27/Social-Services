@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using clsSocialServicesDataAccess;
 
@@ -11,9 +12,11 @@ using clsSocialServicesDataAccess;
 namespace clsSocialDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612211946_zzzdasd")]
+    partial class zzzdasd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,30 +24,6 @@ namespace clsSocialDataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("clsSocialDataAccess.Volunteers.CertficateEntity", b =>
-                {
-                    b.Property<int>("CertificateID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CertificateID"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("NumberOfAccomplishedServices")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VolunteerID")
-                        .HasColumnType("int");
-
-                    b.HasKey("CertificateID");
-
-                    b.HasIndex("VolunteerID");
-
-                    b.ToTable("Certificates");
-                });
 
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
                 {
@@ -521,15 +500,6 @@ namespace clsSocialDataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("clsSocialDataAccess.Volunteers.CertficateEntity", b =>
-                {
-                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerEntity", null)
-                        .WithMany()
-                        .HasForeignKey("VolunteerID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
