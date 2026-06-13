@@ -8,12 +8,12 @@ using clsSocialServicesDataAccess.Admin;
 using clsSocialDataAccess.Volunteers;
 namespace clsSocialServicesDataAccess
 {
-    
+
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-       
+
         public DbSet<PersonEntity> People { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<RefreshToken> Tokens { get; set; }
@@ -55,9 +55,9 @@ namespace clsSocialServicesDataAccess
             {
                 entity.HasKey(img => img.ImageID);
 
-                
+
                 entity.HasOne<VolunteerApplicationEntity>()
-                    .WithMany()  
+                    .WithMany()
                     .HasForeignKey(img => img.VolunteerApplicationID)
                     .OnDelete(DeleteBehavior.Restrict);
             });
@@ -70,7 +70,7 @@ namespace clsSocialServicesDataAccess
                     .HasForeignKey(u => u.UserID)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                 
+
                 entity.HasOne<VolunteerApplicationEntity>()
                     .WithOne()
                     .HasForeignKey<VolunteerEntity>(v => v.VolunteerApplicationID)
@@ -87,65 +87,52 @@ namespace clsSocialServicesDataAccess
                     .HasForeignKey(u => u.UserID)
                     .OnDelete(DeleteBehavior.Restrict);
 
-             
+
 
                 entity.HasOne<AdminEntity>()
-                    .WithMany() 
-                    .HasForeignKey(va => va.AdminID) 
+                    .WithMany()
+                    .HasForeignKey(va => va.AdminID)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
 
 
 
-            modelBuilder.Entity<AdminEntity>(entity =>
-                {
-                    entity.HasKey(a => a.AdminID);
-                    // Primary Key
-                    entity.HasOne<PersonEntity>()         
-                          .WithMany()                   
-                          .HasForeignKey(a => a.PersonID) 
-                          .OnDelete(DeleteBehavior.Restrict);
-                });
 
-            modelBuilder.Entity<FeedbackEntity>(entity =>
-                {
-                    entity.HasKey(p => p.FeedbackID); // Primary Key
-                    entity.HasOne<UserEntity>()         
-                          .WithMany()                   
-                          .HasForeignKey(p => p.UserID) 
-                          .OnDelete(DeleteBehavior.Restrict);
-                });
 
-                        modelBuilder.Entity<LogEntity>(
-                            entity
-                            => {
-                                entity.HasKey(l => l.LogID);
-                                entity.HasOne<AdminEntity>()
-                                    .WithMany()
-                                    .HasForeignKey(l => l.AdminID)
-                                    .OnDelete(DeleteBehavior.Restrict);
-                            }
-                            );
+            modelBuilder.Entity<FeedbackEntity>()
+                .HasKey(p => p.FeedbackID); // Primary Key
+
+            modelBuilder.Entity<LogEntity>(
+                entity
+                =>
+                {
+                    entity.HasKey(l => l.LogID);
+                    entity.HasOne<AdminEntity>()
+                        .WithMany()
+                        .HasForeignKey(l => l.AdminID)
+                        .OnDelete(DeleteBehavior.Restrict);
+                }
+                );
 
             modelBuilder.Entity<PersonEntity>()
                 .HasOne(p => p.User)
                 .WithOne(u => u.Person)
                 .HasForeignKey<UserEntity>(u => u.PersonID);
-            
+
             modelBuilder.Entity<ServiceApplicationEntity>(entity =>
             {
                 entity.HasKey(sa => sa.ServiceApplicationID); // Primary Key
-                
-                entity.HasOne<UserEntity>()         
-                      .WithMany()                   
-                      .HasForeignKey(sa => sa.UserID) 
-                      .OnDelete(DeleteBehavior.Restrict); 
-                
-                entity.HasOne<PostEntity>()         
-                      .WithMany()                   
-                      .HasForeignKey(sa => sa.PostID) 
-                      .OnDelete(DeleteBehavior.Restrict); 
+
+                entity.HasOne<UserEntity>()
+                      .WithMany()
+                      .HasForeignKey(sa => sa.UserID)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<PostEntity>()
+                      .WithMany()
+                      .HasForeignKey(sa => sa.PostID)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
 
@@ -156,26 +143,26 @@ namespace clsSocialServicesDataAccess
                 entity.Property(c => c.CityName).IsRequired().HasMaxLength(100);
             });
 
-            
-            
 
-            
+
+
+
             modelBuilder.Entity<CountyEntity>(entity =>
             {
                 entity.HasKey(c => c.CountyID); // Primary Key
                 entity.Property(c => c.CountyName).IsRequired().HasMaxLength(100);
 
-                
-                entity.HasOne<CityEntity>()         
-                      .WithMany()                   
-                      .HasForeignKey(c => c.CityID) 
-                      .OnDelete(DeleteBehavior.Restrict); 
+
+                entity.HasOne<CityEntity>()
+                      .WithMany()
+                      .HasForeignKey(c => c.CityID)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<ProfessionEntity>(
                 entity =>
                 {
                     entity.HasKey(pro => pro.ProfessionID);
-                   
+
                 });
 
             modelBuilder.Entity<PostTypeEntity>(entity =>
