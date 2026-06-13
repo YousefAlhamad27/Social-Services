@@ -1,6 +1,7 @@
 ﻿using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Admin;
 using DTOs;
+using DTOs.Login;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,13 @@ namespace clsSocialServicesBussiness
     public class clsPerson
     {
 
-        private readonly PersonRepository _personRepository;
+        private readonly IPersonRespository _personRepository;
         private readonly ILogRepository _logRepo;
-        public clsPerson(PersonRepository personRepository,ILogRepository LogRepo)
+
+        public clsPerson(IPersonRespository personRepository, ILogRepository logRepo)
         {
             _personRepository = personRepository;
-            _logRepo = LogRepo;
+            _logRepo = logRepo;
         }
     
         private static PersonEntity MapToPersonEntity(RegisterRequestDTO reqDto)

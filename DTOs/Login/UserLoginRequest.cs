@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DTOs
+namespace DTOs.Login
 {
-    public class LoginRequest
+    public class UserLoginRequest
     {
 
 

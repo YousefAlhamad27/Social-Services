@@ -21,10 +21,10 @@ namespace clsSocialServicesDataAccess.Admin
             var log = new LogEntity
             {
                 Action = action,
-                TargetId = targetId,
+                TargetID = targetId,
                 TargetType = targetType,
                 TargetDescription = targetDescription,
-                AdminId = adminId,
+                AdminID = adminId,
                 CreatedAt = DateTime.Now
             };
 

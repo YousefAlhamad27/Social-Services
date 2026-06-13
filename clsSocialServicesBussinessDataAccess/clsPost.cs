@@ -1,4 +1,5 @@
-﻿using clsSocialServicesDataAccess.Admin;
+﻿using clsSocialServicesDataAccess;
+using clsSocialServicesDataAccess.Admin;
 using clsSocialServicesDataAccess.Posts;
 using DTOs.Posts;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,12 @@ namespace clsSocialServicesBussiness
 {
     public class clsPost
     {
-        private readonly PostRepository _postRepository;
+        private readonly IPostRepository _postRepository;
         private readonly ILogRepository _logRepo;
-        public clsPost(PostRepository postRepository,ILogRepository LogRepo)
+        public clsPost(IPostRepository postRepository, ILogRepository logRepo)
         {
             _postRepository = postRepository;
-            _logRepo = LogRepo;
+            _logRepo = logRepo;
         }
 
         private PostEntity MapPostDTOToPostEntity(int userID,AddPostDTO dto)
@@ -127,15 +128,19 @@ namespace clsSocialServicesBussiness
         public bool addPost(int userID, AddPostDTO dto,int postID)
         {
            dto.imagePath= UtilLibrary.FileOperations.saveImageTofile(dto.imagePath,UtilLibrary.FileOperations.ImageType.PostImage);
+            if(dto.imagePath==null)
+            {
+                return false;
+            }
 
-            if( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
+            if ( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
             {
                 _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post.", null);
                 return true;
             }
             return false;
         }
-        public bool deletePost(int postID,int userId, int? adminId)
+        public bool deletePost(int postID,int? userId, int? adminId)
         {
             PostEntity post=_postRepository.Find(postID)!;
             if(post==null)
@@ -144,9 +149,13 @@ namespace clsSocialServicesBussiness
             }
             UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
 
-            if( _postRepository.DeletePost(postID))
+            if (_postRepository.DeletePost(postID))
             {
-                _logRepo.AddLog("Delete Post", postID, "Post", $"Post {postID} has been deleted by user{userId}.", adminId);
+                string logMessage = adminId.HasValue
+                    ? $"Post {postID} has been deleted by Admin {adminId}."
+                    : $"Post {postID} has been deleted by User {userId}.";
+
+                _logRepo.AddLog("Delete Post", postID, "Post", logMessage, adminId);
                 return true;
             }
             return false;
@@ -208,5 +217,9 @@ namespace clsSocialServicesBussiness
             return _postRepository.GetLastPostIdByUser(userId);
         }
 
+        public async Task<PostEntity> GetPostById(int postId)
+        {
+            return await _postRepository.GetPostById(postId);
+        }
     }
 }

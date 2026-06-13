@@ -1,3 +1,4 @@
+using clsSocialDataAccess.Volunteers;
 using clsSocialServicesBussiness;
 using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Admin;
@@ -15,6 +16,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Text.Json.Serialization;
+using static clsSocialServicesBussiness.UtilLibrary;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +41,12 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // This single line ensures all enums are serialized as strings instead of numbers
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
@@ -49,11 +58,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 
-builder.Services.AddScoped<ServiceApplicationRepository>();
-builder.Services.AddScoped<FeedbackRepository>();
-builder.Services.AddScoped<PostRepository>();
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<PersonRepository>();
+builder.Services.AddScoped<IServiceApplicationRepository,ServiceApplicationRepository>();
+builder.Services.AddScoped<IFeedbackRepository,FeedbackRepository>();
+builder.Services.AddScoped<IPostRepository,PostRepository>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IPersonRespository,PersonRepository>();
 builder.Services.AddScoped<CountyCityRepository>();
 builder.Services.AddScoped<clsPerson>();
 builder.Services.AddScoped<clsPost>();
@@ -61,11 +70,15 @@ builder.Services.AddScoped<clsUser>();
 builder.Services.AddScoped<clsServiceApplication>();
 builder.Services.AddScoped<clsFeedBack>();
 builder.Services.AddScoped<clsCountiesCities>();
-builder.Services.AddScoped<IPostRepository, PostRepository>();
+
+builder.Services.AddScoped<clsVolunteer>();
+builder.Services.AddScoped<IVolunteerRepository,VolunteerRepository>();
+builder.Services.AddScoped<IAdminRepository,AdminRepository>();
 builder.Services.AddScoped<clsAdminService>();
-builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-builder.Services.AddScoped <IUserRepository,UserRepository>();
-builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<clsAiRecommendationService>();
+builder.Services.AddScoped<ILogRepository,LogRepository>();
+
+
 
 // Authentication Configuration
 builder.Services
@@ -120,7 +133,7 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
-
+FileOperations.RootPath = app.Environment.ContentRootPath;
 
 if (app.Environment.IsDevelopment())
 {

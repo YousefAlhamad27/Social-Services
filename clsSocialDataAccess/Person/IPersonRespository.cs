@@ -9,8 +9,10 @@ namespace clsSocialServicesDataAccess
     public interface IPersonRespository
     {
         public int AddPerson(PersonEntity personEntity);
+        public bool UpdateImage(int personID, string imagePath);
+        public PersonEntity Find(int personID);
 
-       
+
         public bool UpdatePerson(PersonEntity personEntity);
         public bool DeletePerson(int personID);
 

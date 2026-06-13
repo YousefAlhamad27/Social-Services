@@ -15,7 +15,11 @@ namespace clsSocialServicesDataAccess.Services
         public ServiceApplicationEntity Find(int serviceID);
         public List<ServiceApplicationEntity> GetListForUser(int userID);
         public List<ServiceApplicationEntity> GetServicesForPost(int postID);
-        
+        public bool doesServiceBelongToUser(int serviceID, int userID);
+        public bool AcceptServiceApplication(int userID, int serviceApplicationID, string? AcceptanceMessage);
+        public bool DoesPostBelongToUser(int userID, int? postID);
+
+
 
     }
 }

@@ -1,12 +1,15 @@
 ﻿using clsSocialServicesDataAccess;
-using clsSocialServicesDataAccess.Admin;
 using DTOs;
+using Microsoft.AspNetCore.Hosting;
+using DTOs.Login;
+
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Resources;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 
 namespace clsSocialServicesBussiness
@@ -15,19 +18,25 @@ namespace clsSocialServicesBussiness
     {
      public class FileOperations
         {
+
+            
+            public static string RootPath; 
+           
             public enum ImageType
             {
                 UserImage,
                 PostImage,
-                AdminImage
-                //admin image
+                AdminImage,
+                VolunteerImage
             }
 
             private static readonly string usersImages = clsConfigurations.UserImagePath;
             private static readonly string postsImages = clsConfigurations.PostImagePath;
             private static readonly string adminsImages = clsConfigurations.AdminImagePath;
+            private static readonly string volunteersImages = clsConfigurations.VolunteerImagePath;
+            
 
-            public static  string saveImageTofile(string selectedImagePath,ImageType type)
+            public static string saveImageTofile(string selectedImagePath,ImageType type)
             {
 
 
@@ -36,34 +45,37 @@ namespace clsSocialServicesBussiness
                 if (string.IsNullOrEmpty(selectedImagePath))
                     return null!;
 
-                string storage;
+                string relativePath;
 
                 if (type == ImageType.UserImage)
                 {
-                     storage=usersImages;
+                     relativePath=usersImages;
                 }
                 else if(type==ImageType.PostImage)
                 {
-                    storage = postsImages;
+                    relativePath = postsImages;
+                }
+                else if(ImageType.AdminImage == type)
+                {
+                    relativePath = adminsImages;
                 }
                 else
                 {
-                    storage = adminsImages;
+                    relativePath = volunteersImages;
                 }
-
-
-
                     try
                     {
-                        // Ensure storage directory exists
-                        if (!Directory.Exists(storage))
+
+                    string fullStorageDirectory = Path.Combine(RootPath, relativePath);
+                    // Ensure storage directory exists
+                    if (!Directory.Exists(fullStorageDirectory))
                         {
-                            Directory.CreateDirectory(storage);
+                            Directory.CreateDirectory(fullStorageDirectory);
                         }
                         // Generate unique filename to avoid conflicts
 
                         string fileName = Path.GetFileName(selectedImagePath);
-                        string destinationPath = Path.Combine(storage, fileName);
+                        string destinationPath = Path.Combine(fullStorageDirectory, fileName);
 
                         // Handle duplicate names by adding a counter
 
@@ -75,8 +87,8 @@ namespace clsSocialServicesBussiness
 
                         string extension = Path.GetExtension(fileName);
                         string fileNameWithExtension = newFileName + extension;
-                        string guidPathName = storage + "\\" + fileNameWithExtension;
-                        destinationPath = Path.Combine(storage, $"{fileNameWithExtension}");
+                        string guidPathName = relativePath + "\\" + fileNameWithExtension;
+                        destinationPath = Path.Combine(relativePath, $"{fileNameWithExtension}");
 
 
 
@@ -103,20 +115,24 @@ namespace clsSocialServicesBussiness
                 if (string.IsNullOrEmpty(ImagePath))
                     return false;
 
-                string storage;
+                //string relativePath;
 
-                if (type == ImageType.UserImage)
-                {
-                    storage = usersImages;
-                }
-                else if (type == ImageType.PostImage)
-                {
-                    storage = postsImages;
-                }
-                else
-                {
-                    storage = adminsImages;
-                }
+                //if (type == ImageType.UserImage)
+                //{
+                //    relativePath = usersImages;
+                //}
+                //else if (type == ImageType.PostImage)
+                //{
+                //    relativePath = postsImages;
+                //}
+                //else if (ImageType.AdminImage == type)
+                //{
+                //    relativePath = adminsImages;
+                //}
+                //else
+                //{
+                //    relativePath = volunteersImages;
+                //}
 
                 try
                     {
@@ -145,9 +161,10 @@ namespace clsSocialServicesBussiness
             }
         }
 
-         //for admin
+        // for admin 
         static public string returnToken(AdminEntity admin)
         {
+
 
             var claims = new List<Claim>
         {
@@ -157,13 +174,12 @@ namespace clsSocialServicesBussiness
         };
 
 
-
-            var token = new JwtSecurityToken(
-       issuer: clsConfigurations.returnIssuer(),
-       audience: clsConfigurations.returnAudience(),
-       claims: claims,
-       expires: DateTime.Now.AddHours(0.25),
-       signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
+        var token = new JwtSecurityToken(
+        issuer: clsConfigurations.returnIssuer(),
+        audience: clsConfigurations.returnAudience(),
+        claims: claims,
+        expires: DateTime.Now.AddHours(0.25),
+        signingCredentials: new SigningCredentials(clsConfigurations.getKeyValue(), SecurityAlgorithms.HmacSha256));
 
 
             return new JwtSecurityTokenHandler().WriteToken(token);

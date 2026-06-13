@@ -4,17 +4,16 @@ using clsSocialServicesDataAccess.Counties___Cities;
 using clsSocialServicesDataAccess.Posts;
 using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Services;
-using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Admin;
-
+using clsSocialDataAccess.Volunteers;
 namespace clsSocialServicesDataAccess
 {
-    
+
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-       
+
         public DbSet<PersonEntity> People { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<RefreshToken> Tokens { get; set; }
@@ -23,41 +22,105 @@ namespace clsSocialServicesDataAccess
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<PostEntity> Posts { get; set; }
         public DbSet<PostTypeEntity> PostTypes { get; set; }
+        public DbSet<AdminEntity> Admins { get; set; }
+        public DbSet<VolunteerApplicationEntity> VolunteerApplications { get; set; }
+        public DbSet<VolunteerEntity> Volunteers { get; set; }
+        public DbSet<VolunteerProofImage> VolunteerProofImages { get; set; }
 
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
-
-        public DbSet<AdminEntity> Admins { get; set; }
-
         public DbSet<LogEntity> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Ignore<VolunteerProofImage>(); // Ignore the VolunteerProofImage entity
+            modelBuilder.Ignore<VolunteerEntity>();
+            modelBuilder.Ignore<VolunteerApplicationEntity>();
+
+            modelBuilder.Entity<VolunteerProofImage>(entity =>
+            {
+                entity.HasKey(img => img.ImageID);
+
+
+                entity.HasOne<VolunteerApplicationEntity>()
+                    .WithMany()
+                    .HasForeignKey(img => img.VolunteerApplicationID)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<VolunteerEntity>(entity =>
+            {
+                entity.HasKey(u => u.VolunteerID); // Primary Key
+
+                entity.HasOne<UserEntity>()
+                    .WithMany()
+                    .HasForeignKey(u => u.UserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.HasOne<VolunteerApplicationEntity>()
+                    .WithOne()
+                    .HasForeignKey<VolunteerEntity>(v => v.VolunteerApplicationID)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+            modelBuilder.Entity<VolunteerApplicationEntity>(entity =>
+            {
+                entity.HasKey(u => u.VolunteerApplicationID); // Primary Key
+
+                entity.HasOne<UserEntity>()
+                    .WithMany()
+                    .HasForeignKey(u => u.UserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+
+                entity.HasOne<AdminEntity>()
+                    .WithMany()
+                    .HasForeignKey(va => va.AdminID)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+
 
 
 
             modelBuilder.Entity<FeedbackEntity>()
                 .HasKey(p => p.FeedbackID); // Primary Key
 
+            modelBuilder.Entity<LogEntity>(
+                entity
+                =>
+                {
+                    entity.HasKey(l => l.LogID);
+                    entity.HasOne<AdminEntity>()
+                        .WithMany()
+                        .HasForeignKey(l => l.AdminID)
+                        .OnDelete(DeleteBehavior.Restrict);
+                }
+                );
+
             modelBuilder.Entity<PersonEntity>()
                 .HasOne(p => p.User)
                 .WithOne(u => u.Person)
                 .HasForeignKey<UserEntity>(u => u.PersonID);
-            
+
             modelBuilder.Entity<ServiceApplicationEntity>(entity =>
             {
                 entity.HasKey(sa => sa.ServiceApplicationID); // Primary Key
-                
-                entity.HasOne<UserEntity>()         
-                      .WithMany()                   
-                      .HasForeignKey(sa => sa.UserID) 
-                      .OnDelete(DeleteBehavior.Restrict); 
-                
-                entity.HasOne<PostEntity>()         
-                      .WithMany()                   
-                      .HasForeignKey(sa => sa.PostID) 
-                      .OnDelete(DeleteBehavior.Restrict); 
+
+                entity.HasOne<UserEntity>()
+                      .WithMany()
+                      .HasForeignKey(sa => sa.UserID)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<PostEntity>()
+                      .WithMany()
+                      .HasForeignKey(sa => sa.PostID)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
 
@@ -68,26 +131,26 @@ namespace clsSocialServicesDataAccess
                 entity.Property(c => c.CityName).IsRequired().HasMaxLength(100);
             });
 
-            
-            
 
-            
+
+
+
             modelBuilder.Entity<CountyEntity>(entity =>
             {
                 entity.HasKey(c => c.CountyID); // Primary Key
                 entity.Property(c => c.CountyName).IsRequired().HasMaxLength(100);
 
-                
-                entity.HasOne<CityEntity>()         
-                      .WithMany()                   
-                      .HasForeignKey(c => c.CityID) 
-                      .OnDelete(DeleteBehavior.Restrict); 
+
+                entity.HasOne<CityEntity>()
+                      .WithMany()
+                      .HasForeignKey(c => c.CityID)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<ProfessionEntity>(
                 entity =>
                 {
                     entity.HasKey(pro => pro.ProfessionID);
-                   
+
                 });
 
             modelBuilder.Entity<PostTypeEntity>(entity =>

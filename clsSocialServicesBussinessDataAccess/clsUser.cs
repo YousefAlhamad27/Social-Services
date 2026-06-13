@@ -2,6 +2,7 @@
 using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Admin;
 using DTOs;
+using DTOs.Login;
 using DTOs.User_Person_DTOs;
 using System;
 using System.Collections.Generic;
@@ -14,17 +15,15 @@ namespace clsSocialServicesBussiness
     public class clsUser
     {
     
-        private readonly UserRepository _userRepo;
+        private readonly IUserRepository _userRepo;
         private readonly ILogRepository _logRepo;
 
         // You would also need an IPersonRepository injected here (not shown for brevity)
 
-      
-      
-        public clsUser(UserRepository userRepo,ILogRepository LogRepo)
+        public clsUser(IUserRepository userRepo, ILogRepository logRepo)
         {
             _userRepo = userRepo;
-            _logRepo = LogRepo;
+            _logRepo = logRepo;
         }
         private static UserEntity MapToUserEntity(RegisterRequestDTO reqDto)
         {
@@ -214,6 +213,6 @@ namespace clsSocialServicesBussiness
 
                 
 
-                }
+    }
     }
 }

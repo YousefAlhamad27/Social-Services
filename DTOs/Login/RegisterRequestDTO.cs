@@ -1,4 +1,4 @@
-﻿namespace DTOs
+﻿namespace DTOs.Login
 {
     public class RegisterRequestDTO
     {
@@ -21,18 +21,18 @@
             bool isActive, DateTime creationDate)
         {
            
-            this.FirstName = firstName;
-            this.SecondName = secondName;
-            this.LastName = lastName;
-            this.Email = email;
-            this.Phone = phone;
-            this.Age = age;
-            this.Imagepath = imagepath;
+            FirstName = firstName;
+            SecondName = secondName;
+            LastName = lastName;
+            Email = email;
+            Phone = phone;
+            Age = age;
+            Imagepath = imagepath;
            
-            this.Username = username;
-            this.PasswordHash = passwordHash;
-            this.IsActive = isActive;
-            this.CreationDate = creationDate;
+            Username = username;
+            PasswordHash = passwordHash;
+            IsActive = isActive;
+            CreationDate = creationDate;
         }
     }
 }
