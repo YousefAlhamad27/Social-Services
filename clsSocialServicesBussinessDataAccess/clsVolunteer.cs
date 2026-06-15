@@ -212,6 +212,30 @@ namespace clsSocialServicesBussiness
                 return await UpdateVolunteer(volunteer);
 
         }
+        public async Task<List<GetVolunteerApplicationDTO>> GetAllVolunteerApplications()
+        {
+            List<VolunteerApplicationEntity> applications = await repository.GetAllVolunteerApplications();
 
+            List<GetVolunteerApplicationDTO> dtos = new List<GetVolunteerApplicationDTO>();
+            foreach (var application in applications)
+            {
+                string statusString = GetAppStatusString(application.Status);
+                List<VolunteerProofImage> images = await repository.GetProofImagesByApplicationID(application.VolunteerApplicationID);
+                GetVolunteerApplicationDTO dto = new GetVolunteerApplicationDTO
+                {
+                    VolunteerApplicationID = application.VolunteerApplicationID,
+                    UserID = application.UserID,
+                    Description = application.Description,
+                    IdImagePath = application.IdImagePath,
+                    ApplicationStatus = statusString,
+                    ApplicationDateTime = application.CreationDate,
+                    ProofImagePaths = images.Select(i => i.ImagePath).ToList()
+                   
+                };
+                dtos.Add(dto);
+            }
+            return dtos;
+
+        }
     }
 }
