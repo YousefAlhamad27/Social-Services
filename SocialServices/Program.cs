@@ -1,3 +1,4 @@
+using clsSocialDataAccess.Posts.Preferances;
 using clsSocialDataAccess.Volunteers;
 using clsSocialServicesBussiness;
 using clsSocialServicesDataAccess;
@@ -77,6 +78,7 @@ builder.Services.AddScoped<IAdminRepository,AdminRepository>();
 builder.Services.AddScoped<clsAdminService>();
 builder.Services.AddScoped<clsAiRecommendationService>();
 builder.Services.AddScoped<ILogRepository,LogRepository>();
+builder.Services.AddScoped<ILogViewRepository, LogViewRepository>();
 
 
 

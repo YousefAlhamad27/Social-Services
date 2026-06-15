@@ -1,4 +1,5 @@
-﻿using clsSocialServicesDataAccess;
+﻿using clsSocialDataAccess.Posts.Preferances;
+using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Admin;
 using clsSocialServicesDataAccess.Posts;
 using DTOs.Posts;
@@ -15,10 +16,12 @@ namespace clsSocialServicesBussiness
     {
         private readonly IPostRepository _postRepository;
         private readonly ILogRepository _logRepo;
-        public clsPost(IPostRepository postRepository, ILogRepository logRepo)
+        private readonly ILogViewRepository _logViewRepo;
+        public clsPost(IPostRepository postRepository, ILogRepository logRepo , ILogViewRepository LogViewRepo)
         {
             _postRepository = postRepository;
             _logRepo = logRepo;
+            _logViewRepo = LogViewRepo;
         }
 
         private PostEntity MapPostDTOToPostEntity(int userID,AddPostDTO dto)
@@ -167,7 +170,6 @@ namespace clsSocialServicesBussiness
         }
         public List<PostListDTO> getAllPosts(int userID)
         {
-
             return _postRepository.GetAllPosts(userID);
         }
 
@@ -221,5 +223,16 @@ namespace clsSocialServicesBussiness
         {
             return await _postRepository.GetPostById(postId);
         }
+
+        public async Task<List<PostListDTO>> GetAllPreferancesPosts(int userId)
+        {
+            return await _logViewRepo.GetAllPreferancesPosts(userId);
+        }
+
+        public async Task AddLogView(int UserId, int ProfessionId)
+        {
+            await _logViewRepo.AddLogView(UserId, ProfessionId);
+        }
     }
 }
+

@@ -6,6 +6,7 @@ using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Services;
 using clsSocialServicesDataAccess.Admin;
 using clsSocialDataAccess.Volunteers;
+using clsSocialDataAccess.Posts.Preferances;
 namespace clsSocialServicesDataAccess
 {
 
@@ -17,7 +18,6 @@ namespace clsSocialServicesDataAccess
         public DbSet<PersonEntity> People { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<RefreshToken> Tokens { get; set; }
-
         public DbSet<CountyEntity> Counties { get; set; }
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<PostEntity> Posts { get; set; }
@@ -31,6 +31,7 @@ namespace clsSocialServicesDataAccess
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
         public DbSet<LogEntity> Logs { get; set; }
+        public DbSet<LogViewEntity> LogViews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

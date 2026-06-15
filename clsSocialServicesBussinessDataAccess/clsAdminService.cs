@@ -60,7 +60,7 @@ namespace clsSocialServicesBussiness
 
         public async Task<bool> UnBlockUser(int UserID,int AdminId)
         {
-            if (await _userRepo.BlockUser(UserID))
+            if (await _userRepo.UnBlockUser(UserID))
             {
                 await _logRepo.AddLog("Uesr Unblocked", UserID, "User", "User has been Unblocked", AdminId);
                 return true;

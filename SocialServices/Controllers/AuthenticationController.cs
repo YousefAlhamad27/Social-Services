@@ -71,7 +71,7 @@ namespace SocialServices.Controllers
 
 
 
-        [HttpPost("Login User"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("Login User"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError),ProducesResponseType(StatusCodes.Status401Unauthorized)]
       
 
         public async Task<ActionResult> Login(UserLoginRequest request)
@@ -82,9 +82,13 @@ namespace SocialServices.Controllers
             if (userDTO == null)
                 return Unauthorized("Invalid Username or Password");
 
+            if(userDTO.IsActive == false)
+            {
+                return Unauthorized("User has been blocked.");
+            }
+
             string hashedPassword = UtilLibrary.returnHashedPassword(request.Password);
 
-   
 
             if (!UtilLibrary.VerifyPassword(request.Password,userDTO.PasswordHash))
                 return Unauthorized("Invalid Username or Password");

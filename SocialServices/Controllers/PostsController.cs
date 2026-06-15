@@ -23,34 +23,29 @@ namespace SocialServices.Controllers
 
         [HttpGet("Get All Posts")]
         [Authorize(Roles = "User,Admin")]
-        public ActionResult GetAllPosts()
+        public async Task<ActionResult> GetAllPosts()
         {
-            int currentUserID= Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
             if (currentUserID == 0)
-            {
                 return Unauthorized("Invalid User");
-            }
-            if(!User.IsInRole("Admin"))
+
+            if (!User.IsInRole("Admin"))
             {
                 UserDTO user = _userService.Find(currentUserID);
                 if (user == null)
-                {
                     return Unauthorized("Invalid User");
-                }
+
+                var preferred = await _postService.GetAllPreferancesPosts(currentUserID);
+                if (preferred.Any())
+                    return Ok(preferred);
             }
-            //else   implementation for admin 
-            //{
-                
-            //}
 
             List<PostListDTO> posts = _postService.getAllPosts();
             if (posts == null)
-            {
                 return StatusCode(500, new { Message = "Error retrieving posts" });
-            }
-            return Ok(posts);
 
+            return Ok(posts);
         }
 
         [HttpPost("Create Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -160,7 +155,7 @@ namespace SocialServices.Controllers
 
         [HttpGet("Get User Posts Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User,Admin")]
-        public ActionResult GetUserPosts(string username)
+        public async Task<ActionResult> GetUserPosts(string username)
         {
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
             if (currentUserID == 0)
@@ -178,7 +173,7 @@ namespace SocialServices.Controllers
             }
             int userID = _userService.getUserID(username);
             
-            List<PostListDTO> posts = _postService.getAllPosts(userID);
+            List<PostListDTO> posts =  _postService.getAllPosts(userID);
 
             if (posts == null)
             {
@@ -308,6 +303,14 @@ namespace SocialServices.Controllers
                 return NotFound("No post found!");
             }
             return Ok(result);
+        }
+        [HttpPost("Log View")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> LogView(int professionId)
+        {
+            int userId = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            await _postService.AddLogView(userId, professionId);
+            return Ok();
         }
     }
 }
