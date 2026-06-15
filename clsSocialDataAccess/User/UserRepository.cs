@@ -1,4 +1,5 @@
-﻿using clsSocialServicesDataAccess;
+﻿using clsSocialDataAccess.Volunteers;
+using clsSocialServicesDataAccess;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -343,5 +344,26 @@ namespace clsSocialServicesDataAccess
                 throw new Exception($"{ex}");
             }
         }
-}
+
+        public UserEntity GetUserByVolunteerID(int volunteerID)
+        {
+
+            try
+            {
+              VolunteerEntity volunteer=  _dbContext.Volunteers.Find(volunteerID)!;
+                if (volunteer == null)
+                {
+                    return null!;
+                }
+                UserEntity user =  _dbContext.Users.Find(volunteer.UserID)!;
+
+
+                return user!;
+            }
+            catch (Exception ex)
+            {
+                return null!;
+            }
+        }
+    }
 }

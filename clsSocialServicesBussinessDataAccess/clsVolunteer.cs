@@ -113,7 +113,7 @@ namespace clsSocialServicesBussiness
             }
             return true;
         }
-        public string GetAppStatusString(IVolunteerRepository.ApplicationStatus status)
+        private string GetAppStatusString(IVolunteerRepository.ApplicationStatus status)
         {
             switch (status)
             {
@@ -162,31 +162,32 @@ namespace clsSocialServicesBussiness
         {
             return await repository.UpdateVolunteer(entity);
         }
-        public async Task<bool> AddPointsToVolunteer(int userID,int pointsCount)
+        public bool AddPointsToVolunteer(int userID,int pointsCount)
         {
-            VolunteerEntity volunteer = await GetVolunteer(userID);
+            VolunteerEntity volunteer =  GetVolunteer(userID);
             if (volunteer == null)
                 return false;
 
             volunteer.PointsCount += pointsCount;
+              repository.UpdateVolunteer(volunteer);
             return true;
 
         }
        
-        private async Task<VolunteerEntity> GetVolunteer(int userID)
+        private VolunteerEntity GetVolunteer(int userID)
         {
-            VolunteerEntity existingVolunteer =  await repository.GetVolunteerByUserID(userID);
+            VolunteerEntity existingVolunteer =   repository.GetVolunteerByUserID(userID);
             if (existingVolunteer == null)
             {
                 return null; // Volunteer not found
             }
             return existingVolunteer;
         }
-        public async Task<GetVolunteerDTO> GetVolunteerByUserID(int userID)
+        public GetVolunteerDTO GetVolunteerByUserID(int userID)
         {
-            VolunteerEntity volunteer = await GetVolunteer(userID);
+            VolunteerEntity volunteer =  GetVolunteer(userID);
             if (volunteer == null)
-                return null;
+                return null!;
             VolunteerApplicationEntity application=repository.GetVolunteerApplicationByID(volunteer.VolunteerApplicationID);
 
             GetVolunteerDTO dto = new GetVolunteerDTO
@@ -206,7 +207,7 @@ namespace clsSocialServicesBussiness
         {
 
 
-            VolunteerEntity volunteer = await GetVolunteer(userID);
+            VolunteerEntity volunteer =  GetVolunteer(userID);
                volunteer.Description = description;
 
                 return await UpdateVolunteer(volunteer);
@@ -237,5 +238,11 @@ namespace clsSocialServicesBussiness
             return dtos;
 
         }
-    }
+
+        public bool IsUserAVolunteer(int userID)
+        {
+            VolunteerEntity volunteer =  GetVolunteer(userID);
+            return volunteer != null;
+        }
+        }
 }

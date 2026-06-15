@@ -27,7 +27,7 @@ namespace clsSocialDataAccess.Volunteers
 
         public Task<bool> DeleteVolunteer(int volunteerID);
         public Task<bool> UpdateVolunteer(VolunteerEntity volunteer);
-        public Task<VolunteerEntity> GetVolunteerByUserID(int userID);
+        public VolunteerEntity GetVolunteerByUserID(int userID);
         public Task<VolunteerEntity> GetVolunteerByID(int volunteerID);
         public Task<List<VolunteerEntity>> GetAllVolunteers();
         public Task<List<VolunteerApplicationEntity>> GetAllVolunteerApplications();

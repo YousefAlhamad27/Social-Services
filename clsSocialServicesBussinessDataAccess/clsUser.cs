@@ -45,7 +45,7 @@ namespace clsSocialServicesBussiness
                 IsActive = userDTO.IsActive,
             };
         }
-        private static UserDTO MapToUserDTO(UserEntity userEntity) {
+        private  UserDTO MapToUserDTO(UserEntity userEntity) {
 
             if (userEntity == null)
                 return null!;
@@ -214,5 +214,11 @@ namespace clsSocialServicesBussiness
                 
 
     }
-    }
+        public UserDTO GetUserByVolunteerID(int volunteerID)
+        {
+            var userEntity = _userRepo.GetUserByVolunteerID(volunteerID);
+            return MapToUserDTO(userEntity);
+
+        }
+        }
 }

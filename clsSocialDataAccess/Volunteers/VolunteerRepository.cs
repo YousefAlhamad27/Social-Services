@@ -202,11 +202,11 @@ namespace clsSocialDataAccess.Volunteers
             }
 
         }
-        public async Task<VolunteerEntity> GetVolunteerByUserID(int userID)
+        public VolunteerEntity GetVolunteerByUserID(int userID)
         {
             try
             {
-                return await _context.Volunteers.FirstOrDefaultAsync(v => v.UserID == userID);
+                return  _context.Volunteers.FirstOrDefault(v => v.UserID == userID)!;
             }
             catch (Exception ex)
             {
@@ -293,6 +293,7 @@ namespace clsSocialDataAccess.Volunteers
             }
         }
 
+        
 
 
     }

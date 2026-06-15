@@ -8,7 +8,8 @@ namespace DTOs.Volunteer
 {
     public class UpdateVolunteerDTO
     {
-
+                public int VolunteerID { get; set; }
+        public string Description { get; set; } = string.Empty;
 
     }
 }
