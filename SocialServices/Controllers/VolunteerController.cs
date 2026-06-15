@@ -103,7 +103,7 @@ namespace SocialServices.Controllers
         [HttpGet("Get Volunteer by userID")]
         [Authorize(Roles = "User,Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetVolunteerByUserID(int userID)
+        public  IActionResult GetVolunteerByUserID(int userID)
         {
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 

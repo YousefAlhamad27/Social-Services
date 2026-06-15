@@ -33,16 +33,16 @@ namespace clsSocialServicesBussiness
         }
         public async Task<bool> IssueVolunteerRequest(AddVolunteerRequest addVolunteerRequest)
         {
-            if (UtilLibrary.FileOperations.saveImageTofile(addVolunteerRequest.IdImagePath, UtilLibrary.FileOperations.ImageType.VolunteerImage) == null) return false;
+            //if (UtilLibrary.FileOperations.saveImageTofile(addVolunteerRequest.IdImagePath, UtilLibrary.FileOperations.ImageType.VolunteerImage) == null) return false;
 
 
-            foreach (var proofImagePath in addVolunteerRequest.ProofImagePaths)
-            {
-                if (UtilLibrary.FileOperations.saveImageTofile(proofImagePath, UtilLibrary.FileOperations.ImageType.VolunteerImage) == null)
-                {
-                    return false;
-                }
-            }
+            //foreach (var proofImagePath in addVolunteerRequest.ProofImagePaths)
+            //{
+            //    if (UtilLibrary.FileOperations.saveImageTofile(proofImagePath, UtilLibrary.FileOperations.ImageType.VolunteerImage) == null)
+            //    {
+            //        return false;
+            //    }
+            //}
 
             VolunteerApplicationEntity request = new VolunteerApplicationEntity
             {

@@ -1,15 +1,15 @@
 ﻿using clsSocialServicesDataAccess;
 using DTOs;
-using Microsoft.AspNetCore.Hosting;
 using DTOs.Login;
-
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Resources;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 
 namespace clsSocialServicesBussiness
@@ -35,7 +35,45 @@ namespace clsSocialServicesBussiness
             private static readonly string adminsImages = clsConfigurations.AdminImagePath;
             private static readonly string volunteersImages = clsConfigurations.VolunteerImagePath;
 
+            public static string saveImageTofile(IFormFile file, ImageType type)
+            {
+                if (file == null || file.Length == 0)
+                    return null!;
 
+                string relativePath;
+                if (type == ImageType.UserImage)
+                    relativePath = usersImages;
+                else if (type == ImageType.PostImage)
+                    relativePath = postsImages;
+                else if (type == ImageType.AdminImage)
+                    relativePath = adminsImages;
+                else
+                    relativePath = volunteersImages;
+
+                try
+                {
+                    string fullStorageDirectory = Path.Combine(RootPath, relativePath);
+
+                    if (!Directory.Exists(fullStorageDirectory))
+                        Directory.CreateDirectory(fullStorageDirectory);
+
+                    string extension = Path.GetExtension(file.FileName);
+                    string newFileName = Guid.NewGuid().ToString() + extension;
+                    string destinationPath = Path.Combine(fullStorageDirectory, newFileName);
+
+                    // ✅ Save the uploaded stream directly to disk
+                    using (var stream = new FileStream(destinationPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    return Path.Combine(relativePath, newFileName);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
             public static string saveImageTofile(string selectedImagePath, ImageType type)
             {
                 if (string.IsNullOrEmpty(selectedImagePath))
