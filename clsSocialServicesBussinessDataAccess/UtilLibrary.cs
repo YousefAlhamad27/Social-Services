@@ -34,81 +34,46 @@ namespace clsSocialServicesBussiness
             private static readonly string postsImages = clsConfigurations.PostImagePath;
             private static readonly string adminsImages = clsConfigurations.AdminImagePath;
             private static readonly string volunteersImages = clsConfigurations.VolunteerImagePath;
-            
 
-            public static string saveImageTofile(string selectedImagePath,ImageType type)
+
+            public static string saveImageTofile(string selectedImagePath, ImageType type)
             {
-
-
-
-
                 if (string.IsNullOrEmpty(selectedImagePath))
                     return null!;
 
                 string relativePath;
-
                 if (type == ImageType.UserImage)
-                {
-                     relativePath=usersImages;
-                }
-                else if(type==ImageType.PostImage)
-                {
+                    relativePath = usersImages;
+                else if (type == ImageType.PostImage)
                     relativePath = postsImages;
-                }
-                else if(ImageType.AdminImage == type)
-                {
+                else if (type == ImageType.AdminImage)
                     relativePath = adminsImages;
-                }
                 else
-                {
                     relativePath = volunteersImages;
-                }
-                    try
-                    {
 
+                try
+                {
                     string fullStorageDirectory = Path.Combine(RootPath, relativePath);
-                    // Ensure storage directory exists
+
                     if (!Directory.Exists(fullStorageDirectory))
-                        {
-                            Directory.CreateDirectory(fullStorageDirectory);
-                        }
-                        // Generate unique filename to avoid conflicts
+                        Directory.CreateDirectory(fullStorageDirectory);
 
-                        string fileName = Path.GetFileName(selectedImagePath);
-                        string destinationPath = Path.Combine(fullStorageDirectory, fileName);
+                    string fileName = Path.GetFileName(selectedImagePath);
+                    string extension = Path.GetExtension(fileName);
+                    string newFileName = Guid.NewGuid().ToString() + extension;
 
-                        // Handle duplicate names by adding a counter
+                    // ✅ FIX: use fullStorageDirectory instead of relativePath
+                    string destinationPath = Path.Combine(fullStorageDirectory, newFileName);
 
+                    File.Copy(selectedImagePath, destinationPath);
 
-
-                        Guid newGuid = Guid.NewGuid();
-                        string newFileName = newGuid.ToString();
-
-
-                        string extension = Path.GetExtension(fileName);
-                        string fileNameWithExtension = newFileName + extension;
-                        string guidPathName = relativePath + "\\" + fileNameWithExtension;
-                        destinationPath = Path.Combine(relativePath, $"{fileNameWithExtension}");
-
-
-
-                        // Copy the file to storage directory
-                        File.Copy(selectedImagePath, destinationPath);
-
-                        return guidPathName;
-
-
-
-
-
-
-                    }
-                    catch (Exception ex)
-                    {
-                        // Handle exceptions (e.g., log the error)
-                        return null!;
-                    }
-
+                    // Return the relative path for storing in DB
+                    return Path.Combine(relativePath, newFileName);
+                }
+                catch (Exception ex)
+                {
+                    return null!;
+                }
             }
             public static bool removeImageFromFile(string ImagePath,ImageType type)
             {
