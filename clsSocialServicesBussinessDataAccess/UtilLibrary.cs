@@ -35,9 +35,9 @@ namespace clsSocialServicesBussiness
             private static readonly string adminsImages = clsConfigurations.AdminImagePath;
             private static readonly string volunteersImages = clsConfigurations.VolunteerImagePath;
 
-            public static string saveImageTofile(IFormFile file, ImageType type)
+            public static string saveImageTofile(byte[] fileBytes, string fileName, ImageType type)
             {
-                if (file == null || file.Length == 0)
+                if (fileBytes == null || fileBytes.Length == 0)
                     return null!;
 
                 string relativePath;
@@ -57,15 +57,11 @@ namespace clsSocialServicesBussiness
                     if (!Directory.Exists(fullStorageDirectory))
                         Directory.CreateDirectory(fullStorageDirectory);
 
-                    string extension = Path.GetExtension(file.FileName);
+                    string extension = Path.GetExtension(fileName);
                     string newFileName = Guid.NewGuid().ToString() + extension;
                     string destinationPath = Path.Combine(fullStorageDirectory, newFileName);
 
-                    // ✅ Save the uploaded stream directly to disk
-                    using (var stream = new FileStream(destinationPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
+                    File.WriteAllBytes(destinationPath, fileBytes);
 
                     return Path.Combine(relativePath, newFileName);
                 }

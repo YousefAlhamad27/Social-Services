@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using clsSocialServicesBussiness;
+﻿using clsSocialServicesBussiness;
+using DTOs;
+using DTOs.Login;
+using DTOs.Posts;
 using DTOs.Volunteer;
 using Microsoft.AspNetCore.Authorization;
-using DTOs;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SocialServices.Web_Objects;
+using static clsSocialServicesBussiness.UtilLibrary.FileOperations;
+using static SocialServices.Controllers.GeneralClass;
 
 namespace SocialServices.Controllers
 {
@@ -47,9 +52,27 @@ namespace SocialServices.Controllers
         [HttpPost("Issue Volunteer Request")]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> AddVolunteerApplication(AddVolunteerRequest request)
+        public async Task<IActionResult> AddVolunteerApplication([FromForm] AddVolunteerFormRequest form)
         {
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            form.Data.IdImagePath = UtilLibrary.FileOperations.saveImageTofile(
+                FormFileHelper.ToByteArray(form.GovernmentID),
+                form.GovernmentID.FileName,
+                ImageType.VolunteerImage
+            );
+
+            form.Data.ProofImagePaths = new List<string>();
+            foreach (var image in form.VolunteerImages)
+            {
+                string path = UtilLibrary.FileOperations.saveImageTofile(
+                    FormFileHelper.ToByteArray(image),
+                    image.FileName,
+                    ImageType.VolunteerImage
+                );
+                form.Data.ProofImagePaths.Add(path);
+            }
+
 
             if (currentUserID < 1)
                 return Unauthorized();
@@ -64,10 +87,12 @@ namespace SocialServices.Controllers
             if (!volunteerService.CanUserBecomeVolunteer(currentUserID))
                 return BadRequest("User already has a pending request to become a volunteer.");
 
-            if (request == null)
-            {
-                return BadRequest("Invalid request data.");
-            }
+            AddVolunteerRequest request= new AddVolunteerRequest();
+            request.UserID = currentUserID;
+            request.Description = form.Data.Description;
+
+            request.IdImagePath = form.Data.IdImagePath;
+            request.ProofImagePaths = form.Data.ProofImagePaths;
             bool result = await volunteerService.IssueVolunteerRequest(request);
             if (Convert.ToBoolean(result))
             {
@@ -84,6 +109,7 @@ namespace SocialServices.Controllers
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetVolunteerApplicationByID(int appID)
         {
+          
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
             if (currentUserID < 1)
@@ -175,6 +201,7 @@ namespace SocialServices.Controllers
 
             if (currentUserID < 1)
                 return Unauthorized();
+
 
            
             UserDTO currentUser = userService.Find(currentUserID);
