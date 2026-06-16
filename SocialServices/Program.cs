@@ -90,6 +90,7 @@ builder.Services.AddScoped<IProfessionRepository, ProfessionRepository>();
 builder.Services.AddScoped<clsProfession>();
 
 
+
 // Authentication Configuration
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -143,7 +144,28 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+
 FileOperations.RootPath = app.Environment.ContentRootPath;
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "PostsImages")),
+    RequestPath = "/PostsImages"
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "UserImages")),
+    RequestPath = "/UserImages"
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "VolunteerImages")),
+    RequestPath = "/VolunteerImages"
+});
 
 if (app.Environment.IsDevelopment())
 {
