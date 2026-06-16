@@ -14,6 +14,7 @@ namespace DTOs.Posts
         public DateTime PublishDate { get; set; }
 
         public string? Description { get; set; }
+        public int RemainingServicesRequiredCount { get; set; }
 
         public string PostTitle { get; set; }
         public int CountyID { get; set; }

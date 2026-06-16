@@ -163,6 +163,20 @@ namespace clsSocialServicesDataAccess.Services
                 return false;
             }
         }
+        public PostEntity GetPostByServiceApplication(int serviceApplicationID) {
+            try
+            {
+                ServiceApplicationEntity serviceApplication = _context.ServiceApplications.FirstOrDefault(p => p.ServiceApplicationID == serviceApplicationID)!;
+
+                return  _context.Posts.FirstOrDefault(post => post.PostID == serviceApplication.PostID)!;
+                 
+            }
+            catch
+            {
+                return null;
+            }
+        
+        }
 
     }
 }

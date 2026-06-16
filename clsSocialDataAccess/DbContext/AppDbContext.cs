@@ -133,6 +133,8 @@ namespace clsSocialServicesDataAccess
                       .WithMany()
                       .HasForeignKey(sa => sa.PostID)
                       .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne<VolunteerEntity>().WithMany().HasForeignKey(sa=>sa.VolunteerID).OnDelete(DeleteBehavior.Restrict);
             });
 
 

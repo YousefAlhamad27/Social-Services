@@ -24,6 +24,28 @@ namespace SocialServices.Controllers
             _userService = userService;
         }
 
+        [HttpGet("Get All Professions")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetAllProfessions()
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID == 0)
+            {
+                return Unauthorized("Invalid User");
+            }
+            
+            
+
+            var list = await _postService.GetAllProfessions();
+            if (list == null)
+            {
+                return StatusCode(500, new { Message = "Error retrieving posts" });
+            }
+            return Ok(list);
+
+        }
+
         [HttpGet("Get All Posts")]
         [Authorize(Roles = "User,Admin")]
         public ActionResult GetAllPosts()

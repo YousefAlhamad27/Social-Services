@@ -141,9 +141,10 @@ namespace clsSocialServicesDataAccess.Posts
                                        Status = p.Status,
                                        // Grab Type name from 'pt'
                                        PostTypeName = pt.TypeTitle,
-                                       Latitude = p.Latitude
-
-                                       ,Longitude = p.Longitude,
+                                       Latitude = p.Latitude,
+                                       RemainingServicesRequiredCount = p.RequiredServicesCount - p.AcceptedServiceApplicationsCount,
+                                       
+                                       Longitude = p.Longitude,
                                         Price = p.Price,
                                        // Grab Author name from 'per'
                                        AuthorName = per.FirstName + " " + per.LastName,
@@ -167,23 +168,22 @@ namespace clsSocialServicesDataAccess.Posts
 
                 IQueryable query = from p in _dbContext.Posts
 
-                                       //  Get County Name
+                                      
                                    join c in _dbContext.Counties
                                    on p.CountyID equals c.CountyID
 
                                    join prof in _dbContext.Professions
                                    on p.ProfessionID equals prof.ProfessionID
-                                   //  Get Post Type Name 
+                                  
                                    join pt in _dbContext.PostTypes
                             on p.PostTypeID equals pt.PostTypeID
 
-                                   // Get User/Person Name (To show Author)
-                                   // Assuming you have a Users table linked to a People table
+                                 
                                    join u in _dbContext.Users on p.UserID equals u.UserID
                                    join per in _dbContext.People on u.PersonID equals per.PersonID
-                                   where p.LockDate== null
-
-                                   // SELECT: Build your final list
+                                   where p.LockDate == null
+                                    
+                                  
                                    select new PostListDTO
                                    {
                                        PostID = p.PostID,
@@ -191,24 +191,23 @@ namespace clsSocialServicesDataAccess.Posts
                                        Description = p.Description,
                                        PublishDateTime = p.PublishDateTime,
 
-                                       // HERE IS THE MAGIC:
-                                       // We grab the name from the 'c' (County) variable, not 'p' (Post)
+                                     
                                        CountyName = c.CountyName,
                                        ImagePath = p.ImagePath,
                                        IsComplete = p.IsComplete,
-                                       ProfessionName = prof.ProfessionTitle, // Assuming ProfessionID is an int
+                                       ProfessionName = prof.ProfessionTitle,
                                        Status = p.Status,
-                                       // Grab Type name from 'pt'
+                                       
                                        PostTypeName = pt.TypeTitle,
-
-                                       Latitude=p.Latitude,
+                                       RemainingServicesRequiredCount = p.RequiredServicesCount -  p.AcceptedServiceApplicationsCount,
+                                       Latitude =p.Latitude,
                                        Longitude=p.Longitude,
                                        Price=p.Price,
 
-                                       // Grab Author name from 'per'
+                                      
                                        AuthorName = per.FirstName + " " + per.LastName,
 
-                                       // We still pass the IDs for logic if needed
+                                      
                                        UserID = p.UserID
                                    };
                 return query.Cast<PostListDTO>().ToList();
@@ -275,6 +274,7 @@ namespace clsSocialServicesDataAccess.Posts
                             ImagePath = p.ImagePath,
                             IsComplete = p.IsComplete,
                             Status = p.Status,
+                            RemainingServicesRequiredCount = p.RequiredServicesCount - p.AcceptedServiceApplicationsCount,
                             PostTypeName = pt.TypeTitle,
                             AuthorName = per.FirstName + " " + per.LastName,
                             UserID = p.UserID,
@@ -370,6 +370,18 @@ namespace clsSocialServicesDataAccess.Posts
             {
                 // Log the exception (ex) as needed
                 return false;
+            }
+        }
+
+        public async Task<List<ProfessionEntity>> GetAllProfessions()
+        {
+            try
+            {
+               return await _dbContext.Professions.ToListAsync();
+            }
+            catch
+            {
+                return null!;
             }
         }
 

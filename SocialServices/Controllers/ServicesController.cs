@@ -26,7 +26,7 @@ namespace SocialServices.Controllers
      ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Authorize(Roles = "User")]
 
-        public ActionResult CreateService(AddServiceDTO dto)
+        public async Task<IActionResult> CreateService(AddServiceDTO dto)
         {
             if (dto.PostID <= 0)
             {
@@ -39,6 +39,10 @@ namespace SocialServices.Controllers
             {
                 return Unauthorized("User not found");
             }
+            bool isUserAllowedToCreateService = await _serviceApplication.isVolunteerAllowedToCreateService(userID,dto.PostID);
+            if (!isUserAllowedToCreateService)
+                return BadRequest("Volunteer cannot issue a service application for this post");
+
             bool isCreated = _serviceApplication.addService(dto, userID);
             if (isCreated)
             {
@@ -131,14 +135,14 @@ namespace SocialServices.Controllers
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status401Unauthorized), ProducesResponseType(StatusCodes.Status400BadRequest),
 ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Authorize(Roles = "User")]
-        public ActionResult AcceptServiceApplication(int serviceApplicationID,string? AcceptanceMessage)
+        public async Task<IActionResult> AcceptServiceApplication(int serviceApplicationID,string? AcceptanceMessage)
         {
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
             if (currentUserID <= 0)
                 return Unauthorized("Not allowed");
 
-            if (_serviceApplication.AcceptSerivceApplication(currentUserID, serviceApplicationID, AcceptanceMessage))
+            if (await _serviceApplication.AcceptSerivceApplication(currentUserID, serviceApplicationID, AcceptanceMessage))
             {
                 return Ok("Service Application Accepted");
             }
