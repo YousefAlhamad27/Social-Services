@@ -5,7 +5,10 @@ using DTOs;
 using DTOs.Login;
 using DTOs.User_Person_DTOs;
 using Microsoft.AspNetCore.Mvc;
+using SocialServices.Web_Objects;
 using System.Text;
+using static clsSocialServicesBussiness.UtilLibrary.FileOperations;
+using static SocialServices.Controllers.GeneralClass;
 
 namespace SocialServices.Controllers
 {
@@ -31,23 +34,28 @@ namespace SocialServices.Controllers
        
         [HttpPost("Register User"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status202Accepted), ProducesResponseType(StatusCodes.Status400BadRequest)]
        
-        public ActionResult RegisterUser(RegisterRequestDTO reqDto)
+        public ActionResult RegisterUser([FromForm] AddFullUserDetails userDetails)
         {
             
+
+
+
             // if no data sent return bad request
-            if (!UtilLibrary.checkReqDTOValues(reqDto))
+            if (!UtilLibrary.checkReqDTOValues(userDetails.RegisterRequestDTO))
                 return BadRequest("Register Credentials are not valid");
 
             // check if username already exists
-            if (_userService.CheckUsernameExistence(reqDto.Username))
+            if (_userService.CheckUsernameExistence(userDetails.RegisterRequestDTO.Username))
             {
                 return BadRequest("Username Already Exists");
             }
 
+            userDetails.RegisterRequestDTO.Imagepath = UtilLibrary.FileOperations.saveImageTofile
+                (FormFileHelper.ToByteArray(userDetails.postImage),userDetails.postImage.FileName,ImageType.PostImage);
+            
+            
 
-           
-
-            int personID = _personSerivce.AddPerson(reqDto);
+            int personID = _personSerivce.AddPerson(userDetails.RegisterRequestDTO);
 
             // if person was not added return server error
             if (personID == -1)
@@ -56,8 +64,8 @@ namespace SocialServices.Controllers
 
             // add new user then check whether addition was success and hash the password
             int userID = _userService.RegisterNewUser(new RegisterRequestDTO(
-                 "", "", "", "", "", 0, "", reqDto.Username,
-                 UtilLibrary.returnHashedPassword(reqDto.PasswordHash), reqDto.IsActive, reqDto.CreationDate),personID);
+                 "", "", "", "", "", 0, "", userDetails.RegisterRequestDTO.Username,
+                 UtilLibrary.returnHashedPassword(userDetails.RegisterRequestDTO.PasswordHash), userDetails.RegisterRequestDTO.IsActive, userDetails.RegisterRequestDTO.CreationDate),personID);
 
             if (userID == -1)
             {

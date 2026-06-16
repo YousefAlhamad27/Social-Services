@@ -15,9 +15,9 @@ namespace DTOs.Posts
         public int ProfessionID { get; set; }
         public string PostTitle { get; set; }
         public int CountyID { get; set; }
-        public string imagePath {get; set; }
+        public string? imagePath {get; set; }
         public byte Status { get; set; }
-        public bool isComplete { get; set; }
+        public bool isComplete { get; set; } = false;
         public decimal ? Price { get; set; }
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }

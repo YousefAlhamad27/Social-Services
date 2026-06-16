@@ -78,12 +78,11 @@ namespace clsSocialServicesBussiness
 
         public  int AddPerson( RegisterRequestDTO reqDto)
         {
-            if (reqDto.Imagepath == null || reqDto.Imagepath == "")
-                reqDto.Imagepath = null!;
+           
 
 
-            string newImagePath = UtilLibrary.FileOperations.saveImageTofile(reqDto.Imagepath, UtilLibrary.FileOperations.ImageType.UserImage);
-            reqDto.Imagepath = newImagePath;
+           // string newImagePath = UtilLibrary.FileOperations.saveImageTofile(reqDto.Imagepath, UtilLibrary.FileOperations.ImageType.UserImage);
+           // reqDto.Imagepath = newImagePath;
 
             return _personRepository.AddPerson(MapToPersonEntity(reqDto));
         }
@@ -92,10 +91,10 @@ namespace clsSocialServicesBussiness
         
         
         //}
-        public bool updatePerson(int personID,PersonDetailsUpdateDTO updateDTO , int UserId)
+        public bool updatePerson(int personID,PersonDetailsUpdateDTO updateDTO , int UserId,string olderImagePath="")
         {
-            string newImagePath = UtilLibrary.FileOperations.saveImageTofile(updateDTO.Imagepath, UtilLibrary.FileOperations.ImageType.UserImage);
-            updateDTO.Imagepath = newImagePath;
+           // string newImagePath = UtilLibrary.FileOperations.saveImageTofile(updateDTO.Imagepath, UtilLibrary.FileOperations.ImageType.UserImage);
+           // updateDTO.Imagepath = newImagePath;
 
             if( _personRepository.UpdatePerson(MapUpdateDTOToPersonEntity(personID,updateDTO)))
 

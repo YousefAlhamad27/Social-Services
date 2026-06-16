@@ -15,7 +15,9 @@ namespace DTOs
         public string Email { get; set; }
         public string Phone { get; set; }
         public int Age { get; set; }
-        public string Imagepath { get; set; }
+        public string? Imagepath { get; set; }
+
+        public PersonDetailsUpdateDTO() { }
 
         public PersonDetailsUpdateDTO(string username, string firstName, string secondName, string lastName, string email, string phone, int age, string imagepath)
         {

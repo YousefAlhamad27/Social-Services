@@ -3,7 +3,10 @@ using DTOs;
 using DTOs.Posts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialServices.Web_Objects;
 using System.Security.Claims;
+using static clsSocialServicesBussiness.UtilLibrary.FileOperations;
+using static SocialServices.Controllers.GeneralClass;
 
 namespace SocialServices.Controllers
 {
@@ -56,7 +59,7 @@ namespace SocialServices.Controllers
         [HttpPost("Create Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User")]
 
-        public ActionResult CreatePost(AddPostDTO dto)
+        public ActionResult CreatePost(AddPost post)
         {
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
             int postID = _postService.GetLastPostIdByUser(userID);
@@ -67,8 +70,22 @@ namespace SocialServices.Controllers
             {
                 return Unauthorized("Invalid User");
             }
+            
+               
 
-            if (!_postService.addPost(userID, dto,postID))
+                if (post.Image != null)
+                {
+
+                post.Data.imagePath = UtilLibrary.FileOperations.saveImageTofile(
+                  FormFileHelper.ToByteArray(post.Image),
+                  post.Image.FileName,
+                  ImageType.PostImage);
+}
+                
+            
+
+
+            if (!_postService.addPost(userID, post.Data,postID))
             {
                 return StatusCode(500, new { Message = "Error adding post" });
             }
@@ -114,11 +131,11 @@ namespace SocialServices.Controllers
         [HttpPut("Update Post"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User")]
 
-        public ActionResult UpdatePost(PostUpdateDTO dto)
+        public ActionResult UpdatePost(UpdatePost details)
         {
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
 
-            if (dto.PostID <= 0)
+            if (details.Data.PostID <= 0)
                 return BadRequest("Post Does not exist");
 
             if (userID == 0)
@@ -128,7 +145,7 @@ namespace SocialServices.Controllers
 
             UserDTO CurrentUser = _userService.Find(userID);
            
-            var sentUser = _userService.Find(dto.UserID);
+            var sentUser = _userService.Find(details.Data.UserID);
 
             if (sentUser != null && CurrentUser != null)
             {
@@ -148,9 +165,35 @@ namespace SocialServices.Controllers
             {
                 return Unauthorized("Invalid User");
             }
-           
 
-            if (!_postService.updatePost(userID, dto))
+            if (details.ImageChanged)
+            {
+                PostDTO post=_postService.getPost(details.Data.PostID)!;
+                if (post != null)
+                {
+
+                    if (details.Image != null)
+                    {
+
+                        details.Data.imagePath = UtilLibrary.FileOperations.saveImageTofile(
+                      FormFileHelper.ToByteArray(details.Image),
+                      details.Image.FileName,
+                      ImageType.PostImage
+
+
+                  );
+
+                    }
+
+                    UtilLibrary.FileOperations.removeImageFromFile(post.imagePath!);
+                }
+                else
+                {
+                    return BadRequest("Post does not exist");
+                }
+            }
+
+            if (!_postService.updatePost(userID, details.Data))
             {
                 return StatusCode(500, new { Message = "Error updating post" });
             }

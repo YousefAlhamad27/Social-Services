@@ -101,11 +101,7 @@ namespace clsSocialServicesBussiness
                 return false;
             }
 
-            if(dto.imagePath!=null && dto.imagePath!=currentDetails.ImagePath)
-            {
-                UtilLibrary.FileOperations.removeImageFromFile(currentDetails.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
-                dto.imagePath = UtilLibrary.FileOperations.saveImageTofile(dto.imagePath, UtilLibrary.FileOperations.ImageType.PostImage);
-            }
+           
             currentDetails.ImagePath= dto.imagePath!;
             currentDetails.Description= dto.Description!;
             currentDetails.PostTitle= dto.PostTitle;
@@ -127,11 +123,7 @@ namespace clsSocialServicesBussiness
 
         public bool addPost(int userID, AddPostDTO dto,int postID)
         {
-           dto.imagePath= UtilLibrary.FileOperations.saveImageTofile(dto.imagePath,UtilLibrary.FileOperations.ImageType.PostImage);
-            if(dto.imagePath==null)
-            {
-                return false;
-            }
+           
 
             if ( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
             {
@@ -147,7 +139,7 @@ namespace clsSocialServicesBussiness
             {
                 return false;
             }
-            UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
+            UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!);
 
             if (_postRepository.DeletePost(postID))
             {

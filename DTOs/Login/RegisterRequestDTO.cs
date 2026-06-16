@@ -9,7 +9,7 @@
         public string Email { get; set; }
         public string Phone { get; set; }
         public int Age { get; set; }
-        public string Imagepath { get; set; }
+        public string? Imagepath { get; set; }
       
         public string Username { get; set; }
         public string PasswordHash { get; set; }
