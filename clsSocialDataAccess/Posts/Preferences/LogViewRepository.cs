@@ -63,7 +63,9 @@ namespace clsSocialDataAccess.Posts.Preferances
                     IsComplete = puprc.p.IsComplete,
                     Price = puprc.p.Price,
                     Latitude = puprc.p.Latitude,
-                    Longitude = puprc.p.Longitude
+                    Longitude = puprc.p.Longitude,
+                    RemainingServicesRequiredCount = puprc.p.RequiredServicesCount - puprc.p.AcceptedServiceApplicationsCount
+
                 })
                 .ToListAsync();
 
@@ -85,7 +87,8 @@ namespace clsSocialDataAccess.Posts.Preferances
                     IsComplete = p.IsComplete,
                     Price = p.Price,
                     Latitude = p.Latitude,
-                    Longitude = p.Longitude
+                    Longitude = p.Longitude,
+                    RemainingServicesRequiredCount = p.RemainingServicesRequiredCount
                 })
                 .ToList();
         }

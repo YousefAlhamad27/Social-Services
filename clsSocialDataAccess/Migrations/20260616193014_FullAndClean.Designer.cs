@@ -12,8 +12,8 @@ using clsSocialServicesDataAccess;
 namespace clsSocialDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260615212449_AddLogViewTable")]
-    partial class AddLogViewTable
+    [Migration("20260616193014_FullAndClean")]
+    partial class FullAndClean
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,51 @@ namespace clsSocialDataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LogViews");
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Professions.ProfessionEntity", b =>
+                {
+                    b.Property<int>("ProfessionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfessionID"));
+
+                    b.Property<string>("ProfessionDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfessionTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProfessionID");
+
+                    b.ToTable("Professions");
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.CertficateEntity", b =>
+                {
+                    b.Property<int>("CertificateID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CertificateID"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NumberOfAccomplishedServices")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VolunteerID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CertificateID");
+
+                    b.HasIndex("VolunteerID");
+
+                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
@@ -323,6 +368,9 @@ namespace clsSocialDataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostID"));
 
+                    b.Property<int>("AcceptedServiceApplicationsCount")
+                        .HasColumnType("int");
+
                     b.Property<int>("CountyID")
                         .HasColumnType("int");
 
@@ -360,6 +408,9 @@ namespace clsSocialDataAccess.Migrations
 
                     b.Property<DateTime>("PublishDateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("RequiredServicesCount")
+                        .HasColumnType("int");
 
                     b.Property<byte>("Status")
                         .HasColumnType("tinyint");
@@ -400,27 +451,6 @@ namespace clsSocialDataAccess.Migrations
                     b.HasKey("PostTypeID");
 
                     b.ToTable("PostTypes");
-                });
-
-            modelBuilder.Entity("clsSocialServicesDataAccess.Posts.ProfessionEntity", b =>
-                {
-                    b.Property<int>("ProfessionID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfessionID"));
-
-                    b.Property<string>("ProfessionDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProfessionTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ProfessionID");
-
-                    b.ToTable("Professions");
                 });
 
             modelBuilder.Entity("clsSocialServicesDataAccess.RefreshToken", b =>
@@ -478,11 +508,16 @@ namespace clsSocialDataAccess.Migrations
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
+                    b.Property<int>("VolunteerID")
+                        .HasColumnType("int");
+
                     b.HasKey("ServiceApplicationID");
 
                     b.HasIndex("PostID");
 
                     b.HasIndex("UserID");
+
+                    b.HasIndex("VolunteerID");
 
                     b.ToTable("ServiceApplications");
                 });
@@ -518,6 +553,15 @@ namespace clsSocialDataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Volunteers.CertficateEntity", b =>
+                {
+                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerEntity", null)
+                        .WithMany()
+                        .HasForeignKey("VolunteerID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.VolunteerApplicationEntity", b =>
@@ -589,7 +633,7 @@ namespace clsSocialDataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("clsSocialServicesDataAccess.Posts.ProfessionEntity", null)
+                    b.HasOne("clsSocialDataAccess.Professions.ProfessionEntity", null)
                         .WithMany()
                         .HasForeignKey("ProfessionID")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -613,6 +657,12 @@ namespace clsSocialDataAccess.Migrations
                     b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("clsSocialDataAccess.Volunteers.VolunteerEntity", null)
+                        .WithMany()
+                        .HasForeignKey("VolunteerID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
