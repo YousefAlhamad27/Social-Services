@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialServices.Web_Objects;
 using System.Text;
 using static clsSocialServicesBussiness.UtilLibrary.FileOperations;
-using static SocialServices.Controllers.GeneralClass;
+using static SocialServices.Classes.GeneralClass;
 
 namespace SocialServices.Controllers
 {

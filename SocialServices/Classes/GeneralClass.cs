@@ -1,4 +1,4 @@
-﻿namespace SocialServices.Controllers
+﻿namespace SocialServices.Classes
 {
     public class GeneralClass
     {
