@@ -40,7 +40,6 @@ namespace clsSocialDataAccess.Posts.Preferances
                 .Select(g => g.Key)
                 .ToListAsync();
 
-            // جيب كل البوستات
             var allPosts = await _dbContext.Posts
                 .Join(_dbContext.Users, p => p.UserID, u => u.UserID, (p, u) => new { p, u })
                 .Join(_dbContext.People, pu => pu.u.PersonID, per => per.PersonID, (pu, per) => new { pu.p, pu.u, per })
@@ -70,69 +69,35 @@ namespace clsSocialDataAccess.Posts.Preferances
 
             var random = new Random();
 
-            var preferredGroups = professionIds
-                .Select(profId => allPosts
-                    .Where(p => p.ProfessionID == profId)
-                    .OrderBy(_ => random.Next())
-                    .ToList())
-                .ToList();
-
-            var otherPosts = allPosts
-                .Where(p => !professionIds.Contains(p.ProfessionID))
-                .OrderBy(_ => random.Next())
-                .ToList();
-
-            var result = new List<PostListDTO>();
-            int maxCount = preferredGroups.Any() ? preferredGroups.Max(g => g.Count) : 0;
-
-            for (int i = 0; i < maxCount; i++)
-            {
-                foreach (var group in preferredGroups)
+            var result = allPosts
+                .Select(p => new
                 {
-                    if (i < group.Count)
-                    {
-                        var p = group[i];
-                        result.Add(new PostListDTO
-                        {
-                            PostID = p.PostID,
-                            UserID = p.UserID,
-                            PostTitle = p.PostTitle,
-                            Description = p.Description,
-                            ImagePath = p.ImagePath,
-                            AuthorName = p.AuthorName,
-                            ProfessionName = p.ProfessionName,
-                            CountyName = p.CountyName,
-                            PostTypeName = p.PostTypeName,
-                            Status = p.Status,
-                            PublishDateTime = p.PublishDateTime,
-                            IsComplete = p.IsComplete,
-                            Price = p.Price,
-                            Latitude = p.Latitude,
-                            Longitude = p.Longitude,
-                            RemainingServicesRequiredCount = p.RemainingServicesRequiredCount
-                        });
-                    }
-                }
-            }
-            result.AddRange(otherPosts.Select(p => new PostListDTO
-            {
-                PostID = p.PostID,
-                UserID = p.UserID,
-                PostTitle = p.PostTitle,
-                Description = p.Description,
-                ImagePath = p.ImagePath,
-                AuthorName = p.AuthorName,
-                ProfessionName = p.ProfessionName,
-                CountyName = p.CountyName,
-                PostTypeName = p.PostTypeName,
-                Status = p.Status,
-                PublishDateTime = p.PublishDateTime,
-                IsComplete = p.IsComplete,
-                Price = p.Price,
-                Latitude = p.Latitude,
-                Longitude = p.Longitude,
-                RemainingServicesRequiredCount = p.RemainingServicesRequiredCount
-            }));
+                    Post = p,
+                    Weight = professionIds.Contains(p.ProfessionID)
+                        ? (professionIds.Count - professionIds.IndexOf(p.ProfessionID)) * 10
+                        : 1
+                })
+                .OrderByDescending(x => x.Weight * random.NextDouble())
+                .Select(x => new PostListDTO
+                {
+                    PostID = x.Post.PostID,
+                    UserID = x.Post.UserID,
+                    PostTitle = x.Post.PostTitle,
+                    Description = x.Post.Description,
+                    ImagePath = x.Post.ImagePath,
+                    AuthorName = x.Post.AuthorName,
+                    ProfessionName = x.Post.ProfessionName,
+                    CountyName = x.Post.CountyName,
+                    PostTypeName = x.Post.PostTypeName,
+                    Status = x.Post.Status,
+                    PublishDateTime = x.Post.PublishDateTime,
+                    IsComplete = x.Post.IsComplete,
+                    Price = x.Post.Price,
+                    Latitude = x.Post.Latitude,
+                    Longitude = x.Post.Longitude,
+                    RemainingServicesRequiredCount = x.Post.RemainingServicesRequiredCount
+                })
+                .ToList();
 
             return result;
         }
