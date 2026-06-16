@@ -13,6 +13,8 @@ namespace DTOs.Posts
         public string? Description { get; set; }
         public string PostTitle { get; set; }
         public int CountyID { get; set; }
+        public byte ServicesRequiredCount { get; set; }
+         
         public string? imagePath { get; set; }
         public decimal? Price { get; set; }
         public decimal? Latitude { get; set; }

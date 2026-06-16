@@ -4,6 +4,9 @@ using DTOs;
 using DTOs.User_Person_DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialServices.Web_Objects;
+using static clsSocialServicesBussiness.UtilLibrary.FileOperations;
+using static SocialServices.Classes.GeneralClass;
 
 
 namespace SocialServices.Controllers
@@ -92,10 +95,10 @@ namespace SocialServices.Controllers
         [HttpPatch("Update Personal Details"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "User,Admin")]
         // [Authorize]
-        public ActionResult updateUser(PersonDetailsUpdateDTO updateDTO)
+        public ActionResult updateUser(UpdatePersonalDetails details)
         {
 
-            UserDTO user = _userService.Find(updateDTO.Username);
+            UserDTO user = _userService.Find(details.data.Username);
           
 
             if (user == null)
@@ -109,7 +112,31 @@ namespace SocialServices.Controllers
             }
 
             int userID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
-            if (_personSerivce.updatePerson(user.PersonID, updateDTO,userID))
+
+           
+            if (details.imageChanged)
+            {
+                PersonDTO person = _personSerivce.Find(user.PersonID);
+
+                if (details.Image != null)
+                {
+
+                    details.data.Imagepath = UtilLibrary.FileOperations.saveImageTofile(
+                  FormFileHelper.ToByteArray(details.Image),
+                  details.Image.FileName,
+                  ImageType.UserImage
+
+
+              );
+
+                }
+                UtilLibrary.FileOperations.removeImageFromFile(person.Imagepath);
+            }
+
+
+
+
+            if (_personSerivce.updatePerson(user.PersonID, details.data,userID))
             {
                 return Ok("User updated Sucessfully!");
             }

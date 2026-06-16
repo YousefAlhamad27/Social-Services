@@ -40,7 +40,8 @@ namespace clsSocialServicesBussiness
                 ProfessionID=dto.ProfessionID
                 ,Price=dto.Price,
                 Latitude=dto.Latitude,
-                Longitude=dto.Longitude
+                Longitude=dto.Longitude,
+                RequiredServicesCount=dto.ServicesRequiredCount
             };
         }
         private PostDTO MapPostEntityToPostDTO(PostEntity dto)
@@ -62,7 +63,8 @@ namespace clsSocialServicesBussiness
                     Price=dto.Price,
                     ProfessionID=dto.ProfessionID,
                      Latitude=dto.Latitude,
-                        Longitude=dto.Longitude
+                        Longitude=dto.Longitude,
+                        RemainingServicesRequiredCount=dto.RequiredServicesCount
 
                 };
             }
@@ -96,6 +98,20 @@ namespace clsSocialServicesBussiness
                 };
             else return null!;
         }
+        
+        public async Task<List<ProfessionsListDTO>> GetAllProfessions()
+        {
+            List<ProfessionEntity> professions = await _postRepository.GetAllProfessions();
+            List<ProfessionsListDTO> dTOs = new List<ProfessionsListDTO>();
+
+            foreach (var profess in professions) {
+                dTOs.Add(new ProfessionsListDTO {ProfessionID=profess.ProfessionID,Description=profess.ProfessionDescription,Title=profess.ProfessionTitle });
+
+            }
+
+       return dTOs;
+        }
+
         public bool updatePost(int userID, PostUpdateDTO dto)
         {
             PostEntity currentDetails = _postRepository.Find(dto.PostID)!;
@@ -104,16 +120,13 @@ namespace clsSocialServicesBussiness
                 return false;
             }
 
-            if(dto.imagePath!=null && dto.imagePath!=currentDetails.ImagePath)
-            {
-                UtilLibrary.FileOperations.removeImageFromFile(currentDetails.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
-                dto.imagePath = UtilLibrary.FileOperations.saveImageTofile(dto.imagePath, UtilLibrary.FileOperations.ImageType.PostImage);
-            }
+           
             currentDetails.ImagePath= dto.imagePath!;
             currentDetails.Description= dto.Description!;
             currentDetails.PostTitle= dto.PostTitle;
             currentDetails.CountyID= dto.CountyID;
             currentDetails.Price = dto.Price;
+           currentDetails.RequiredServicesCount=dto.ServicesRequiredCount;
             currentDetails.Latitude = dto.Latitude;
             currentDetails.Longitude = dto.Longitude;
 
@@ -130,11 +143,7 @@ namespace clsSocialServicesBussiness
 
         public bool addPost(int userID, AddPostDTO dto,int postID)
         {
-           dto.imagePath= UtilLibrary.FileOperations.saveImageTofile(dto.imagePath,UtilLibrary.FileOperations.ImageType.PostImage);
-            if(dto.imagePath==null)
-            {
-                return false;
-            }
+           
 
             if ( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
             {
@@ -150,7 +159,7 @@ namespace clsSocialServicesBussiness
             {
                 return false;
             }
-            UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!, UtilLibrary.FileOperations.ImageType.PostImage);
+            UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!);
 
             if (_postRepository.DeletePost(postID))
             {

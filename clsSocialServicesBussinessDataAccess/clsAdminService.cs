@@ -45,9 +45,9 @@ namespace clsSocialServicesBussiness
             if (Admin.Password != Password)
                 return null;
 
-            return UtilLibrary.returnAdminToken(Admin);
+            return UtilLibrary.returnToken(Admin);
         }
-
+        
         public async Task<bool> BlockUser(int UserID,int AdminId)
         {
             if (await _userRepo.BlockUser(UserID))

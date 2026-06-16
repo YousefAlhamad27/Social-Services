@@ -24,6 +24,8 @@ namespace clsSocialServicesDataAccess.Posts
         public DateTime PublishDateTime { get; set; }
         public DateTime? LockDate { get; set; }
         public bool IsComplete { get; set; }
+        public int RequiredServicesCount { get; set; }
+        public int AcceptedServiceApplicationsCount { get; set; }
         public byte Status { get; set; }
         public decimal? Price { get; set; }
 

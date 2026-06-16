@@ -27,5 +27,6 @@ namespace clsSocialServicesDataAccess
         public Task<bool> BlockUser(int UserID);
         public Task<bool> UnBlockUser(int UserID);
         public Task<List<UserEntity>> GetAllUsers();
+        public UserEntity GetUserByVolunteerID(int volunteerID);
     }
 }

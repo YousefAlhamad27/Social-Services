@@ -76,7 +76,23 @@ namespace clsSocialServicesDataAccess
         {
             try
             {
-                _dbContext.People.Update(personEntity);
+               
+                var existingPerson = _dbContext.People.FirstOrDefault(p => p.PersonID == personEntity.PersonID);
+
+                if (existingPerson == null)
+                    return false;
+
+               
+                existingPerson.FirstName = personEntity.FirstName;
+                existingPerson.SecondName = personEntity.SecondName;
+                existingPerson.LastName = personEntity.LastName;
+                existingPerson.Phone = personEntity.Phone;
+                existingPerson.ImagePath = personEntity.ImagePath;
+                existingPerson.Email = personEntity.Email;
+                existingPerson.Age = personEntity.Age; 
+
+                 
+
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -84,7 +100,7 @@ namespace clsSocialServicesDataAccess
             {
                 return false;
             }
-            
+
         }
         public bool DeletePerson(int personID)
         {

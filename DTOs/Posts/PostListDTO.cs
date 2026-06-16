@@ -22,7 +22,7 @@ namespace DTOs.Posts
         public string ProfessionName { get; set; }
         public string CountyName { get; set; }
         public string PostTypeName { get; set; }
-          
+        public int RemainingServicesRequiredCount {  get; set; }  
 
         
         public int Status { get; set; } 

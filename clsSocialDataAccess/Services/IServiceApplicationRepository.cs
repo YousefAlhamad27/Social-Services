@@ -1,4 +1,5 @@
-﻿using System;
+﻿using clsSocialServicesDataAccess.Posts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace clsSocialServicesDataAccess.Services
         public bool doesServiceBelongToUser(int serviceID, int userID);
         public bool AcceptServiceApplication(int userID, int serviceApplicationID, string? AcceptanceMessage);
         public bool DoesPostBelongToUser(int userID, int? postID);
-
+        public PostEntity GetPostByServiceApplication(int serviceApplicationID);
 
 
     }

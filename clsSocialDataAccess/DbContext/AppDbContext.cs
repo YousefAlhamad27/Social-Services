@@ -27,6 +27,7 @@ namespace clsSocialServicesDataAccess
         public DbSet<VolunteerApplicationEntity> VolunteerApplications { get; set; }
         public DbSet<VolunteerEntity> Volunteers { get; set; }
         public DbSet<VolunteerProofImage> VolunteerProofImages { get; set; }
+        public DbSet<CertficateEntity> Certificates { get; set; }
 
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
@@ -34,12 +35,23 @@ namespace clsSocialServicesDataAccess
         public DbSet<LogEntity> Logs { get; set; }
         public DbSet<LogViewEntity> LogViews { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Ignore<VolunteerProofImage>(); // Ignore the VolunteerProofImage entity
-            modelBuilder.Ignore<VolunteerEntity>();
-            modelBuilder.Ignore<VolunteerApplicationEntity>();
+             
+            modelBuilder.Entity<CertficateEntity>(
+                
+                entity=>
+                {
+                    entity.HasKey(c => c.CertificateID);
+                    entity.HasOne<VolunteerEntity>()
+                          .WithMany()
+                          .HasForeignKey(c => c.VolunteerID)
+                          .OnDelete(DeleteBehavior.Restrict);
+                });
+
+
 
             modelBuilder.Entity<VolunteerProofImage>(entity =>
             {
@@ -123,6 +135,8 @@ namespace clsSocialServicesDataAccess
                       .WithMany()
                       .HasForeignKey(sa => sa.PostID)
                       .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne<VolunteerEntity>().WithMany().HasForeignKey(sa=>sa.VolunteerID).OnDelete(DeleteBehavior.Restrict);
             });
 
 

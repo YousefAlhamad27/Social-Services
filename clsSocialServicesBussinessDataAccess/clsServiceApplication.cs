@@ -1,4 +1,6 @@
-﻿using clsSocialServicesDataAccess.Services;
+﻿using clsSocialDataAccess.Volunteers;
+using clsSocialServicesDataAccess.Posts;
+using clsSocialServicesDataAccess.Services;
 using DTOs.Services;
 using System;
 using System.Collections.Generic;
@@ -11,13 +13,17 @@ namespace clsSocialServicesBussiness
     public class clsServiceApplication
     {
         private readonly  IServiceApplicationRepository _repo;
+        private readonly IVolunteerRepository _volunteerRepository;
+        private readonly IPostRepository _post;
 
-        public clsServiceApplication(IServiceApplicationRepository repo)
+        public clsServiceApplication(IServiceApplicationRepository repo,IPostRepository post, IVolunteerRepository _vol)
         {
+            _volunteerRepository = _vol;
             _repo = repo;
+            _post = post;
         }
 
-        private ServiceApplicationEntity MapAddServiceDTO(AddServiceDTO dto ,int userID)
+        private ServiceApplicationEntity MapAddServiceDTO(AddServiceDTO dto ,int userID,int volunteerID)
         {
             return new ServiceApplicationEntity
             {
@@ -26,13 +32,35 @@ namespace clsSocialServicesBussiness
                 UserID = userID,
                 ApplyDateTime = DateTime.Now,
                 Accepted = false,
-                
+                VolunteerID = volunteerID
             };
         }
 
+        public async Task<bool> isVolunteerAllowedToCreateService(int userID,int postID)
+        {
+            PostEntity post=await _post.GetPostById(postID);
+            if (post.RequiredServicesCount != post.AcceptedServiceApplicationsCount) {
+            
+            List<ServiceApplicationEntity> services = getServicesForPost(postID);
+                 
+                if(services.Where(service=>service.UserID == userID).Any())
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+
+
+        }
         public bool addService(AddServiceDTO dto,int userID)
         {
-            return _repo.Create(MapAddServiceDTO(dto,userID));
+            VolunteerEntity entity=_volunteerRepository.GetVolunteerByUserID(userID);
+            if (entity == null)
+                return false;
+            
+
+            return _repo.Create(MapAddServiceDTO(dto,userID,entity.VolunteerID));
         }
         public List<ServiceApplicationEntity> getServicesForPost(int postID)
         {
@@ -46,11 +74,17 @@ namespace clsSocialServicesBussiness
         {
             return _repo.doesServiceBelongToUser(serviceID,userID);
         }
-        public bool AcceptSerivceApplication(int userID,int serviceApplicationID,string? AcceptanceMessage)
+        public async Task<bool> AcceptSerivceApplication(int userID,int serviceApplicationID,string? AcceptanceMessage)
         {
-            
-         
 
+            PostEntity post= _repo.GetPostByServiceApplication(serviceApplicationID);
+            if (post.RequiredServicesCount == post.AcceptedServiceApplicationsCount)
+            {
+                return false ;
+            }
+
+            post.AcceptedServiceApplicationsCount += 1;
+            _post.UpdatePost(post);
             return _repo.AcceptServiceApplication(userID,serviceApplicationID,AcceptanceMessage);
 
         }
