@@ -99,18 +99,6 @@ namespace clsSocialServicesBussiness
             else return null!;
         }
         
-        public async Task<List<ProfessionsListDTO>> GetAllProfessions()
-        {
-            List<ProfessionEntity> professions = await _postRepository.GetAllProfessions();
-            List<ProfessionsListDTO> dTOs = new List<ProfessionsListDTO>();
-
-            foreach (var profess in professions) {
-                dTOs.Add(new ProfessionsListDTO {ProfessionID=profess.ProfessionID,Description=profess.ProfessionDescription,Title=profess.ProfessionTitle });
-
-            }
-
-       return dTOs;
-        }
 
         public bool updatePost(int userID, PostUpdateDTO dto)
         {

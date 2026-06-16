@@ -373,19 +373,6 @@ namespace clsSocialServicesDataAccess.Posts
             }
         }
 
-        public async Task<List<ProfessionEntity>> GetAllProfessions()
-        {
-            try
-            {
-               return await _dbContext.Professions.ToListAsync();
-            }
-            catch
-            {
-                return null!;
-            }
-        }
-
-
         public async Task<int> PostsCount()
         {
             try
