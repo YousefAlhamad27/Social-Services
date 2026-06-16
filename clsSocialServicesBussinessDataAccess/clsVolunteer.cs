@@ -191,7 +191,8 @@ namespace clsSocialServicesBussiness
             VolunteerApplicationEntity application=repository.GetVolunteerApplicationByID(volunteer.VolunteerApplicationID);
 
             GetVolunteerDTO dto = new GetVolunteerDTO
-            {VolunteerID=volunteer.VolunteerID,
+            {
+                VolunteerID=volunteer.VolunteerID,
                 UserID = volunteer.UserID,
                 Description = volunteer.Description,
                 PointsCount = volunteer.PointsCount,
@@ -211,6 +212,29 @@ namespace clsSocialServicesBussiness
                volunteer.Description = description;
 
                 return await UpdateVolunteer(volunteer);
+
+        }
+         public async Task<bool> UpdateVolunteerApplicationImages(UpdateVolunteerApplicationImagesDTO dto)
+        {
+            VolunteerApplicationEntity volunteerApplication =  repository.GetVolunteerApplicationByID(dto.ApplicationID);
+
+            volunteerApplication.IdImagePath=dto.IdImagePath;
+           await repository.DeleteVolunteerApplicationProofImages(volunteerApplication.VolunteerApplicationID);
+
+
+            List<VolunteerProofImage> images=new List<VolunteerProofImage>();
+            foreach(var image in dto.ProofImages)
+            {
+
+                if (!await repository.AddVolunteerProofImage(new VolunteerProofImage { VolunteerApplicationID = volunteerApplication.VolunteerApplicationID, ImagePath = image })) {
+                    return false;
+                }
+;
+                
+            }
+           
+
+           return await repository.UpdateVolunteerApplication(volunteerApplication);
 
         }
         public async Task<List<GetVolunteerApplicationDTO>> GetAllVolunteerApplications()

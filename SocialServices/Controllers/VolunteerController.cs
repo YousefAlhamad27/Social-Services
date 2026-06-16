@@ -1,4 +1,5 @@
-﻿using clsSocialServicesBussiness;
+﻿using clsSocialDataAccess.Volunteers;
+using clsSocialServicesBussiness;
 using DTOs;
 using DTOs.Login;
 using DTOs.Posts;
@@ -31,6 +32,7 @@ namespace SocialServices.Controllers
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RespondToVolunteerApplication(RespondToVolunteerApplicationRequest request)
         {
+            int currentUserID=Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
             if (request == null)
             {
                 return BadRequest("Invalid request data.");
@@ -229,6 +231,73 @@ namespace SocialServices.Controllers
             {
                 return StatusCode(500, "An error occurred while adding points to the volunteer.");
             }
+
+        }
+
+
+        [HttpPut("Update Volunteer Application Images")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateVolunteerApplicationImages(UpdateVolunteerApplication details)
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID < 1)
+                return Unauthorized();
+
+         GetVolunteerApplicationDTO application= await    volunteerService.GetVolunteerApplicationByID(details.ApplicationID);
+            if (currentUserID != application.UserID)
+                return Unauthorized();
+            UpdateVolunteerApplicationImagesDTO dto=new UpdateVolunteerApplicationImagesDTO();
+            dto.ApplicationID = application.VolunteerApplicationID;
+
+            if (details.IdImageChanged)
+            {
+                
+
+                if (details.IdImage != null)
+                {
+
+                    dto.IdImagePath = UtilLibrary.FileOperations.saveImageTofile(
+                  FormFileHelper.ToByteArray(details.IdImage),
+                  details.IdImage.FileName,
+                  ImageType.VolunteerImage
+
+
+              );
+
+                }
+
+                UtilLibrary.FileOperations.removeImageFromFile(application.IdImagePath);
+            }
+            if (details.ProofImagesChanged)
+            {
+
+                if (details.ProofImages != null)
+                    foreach (var image in details.ProofImages) {
+                   
+                    
+
+                            dto.ProofImages.Add(
+                                UtilLibrary.FileOperations.saveImageTofile(
+                          FormFileHelper.ToByteArray(image),
+                          image.FileName,
+                          ImageType.VolunteerImage));
+
+                    }
+
+                        foreach (var imagePath in application.ProofImagePaths) {
+                            UtilLibrary.FileOperations.removeImageFromFile(imagePath);
+                        }
+
+                
+            }
+
+            if(await volunteerService.UpdateVolunteerApplicationImages(dto))
+            {
+                return Ok("Images Updated Successfully!");
+            }
+
+            return StatusCode(500, "Error occured while Updating images");
 
         }
 

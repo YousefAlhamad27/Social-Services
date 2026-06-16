@@ -18,6 +18,8 @@ namespace clsSocialDataAccess.Volunteers
         public Task<bool> AddVolunteer(VolunteerEntity volunteer);
         public Task<int> IssueVolunteerRequest(VolunteerApplicationEntity volunteerApplication);
         public Task<bool> AddVolunteerProofImage(VolunteerProofImage proofImage);
+        public Task<bool> UpdateVolunteerProofImages(List<VolunteerProofImage> proofImages);
+        public Task<bool> DeleteVolunteerApplicationProofImages(int applicationID);
         public bool CanUserApplyToBeVolunteer(int userID);
         public Task<bool> RespondToVolunteerApplication(VolunteerApplicationEntity application);
         public VolunteerApplicationEntity GetVolunteerApplicationByID(int applicationID);

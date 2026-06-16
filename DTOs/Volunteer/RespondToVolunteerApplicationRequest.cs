@@ -9,7 +9,7 @@ namespace DTOs.Volunteer
     public class RespondToVolunteerApplicationRequest
     {
         public int VolunteerApplicationID { get; set; }
-        public int AdminID { get; set; }
+        public int? AdminID { get; set; }
         public bool IsApproved { get; set; }
        
 

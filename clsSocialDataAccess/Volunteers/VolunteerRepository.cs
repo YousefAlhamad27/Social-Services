@@ -66,7 +66,38 @@ namespace clsSocialDataAccess.Volunteers
             }
 
         }
+        public async Task<bool> UpdateVolunteerProofImages(List<VolunteerProofImage> proofImages) {
+            try
+            {
+               
+                  _context.VolunteerProofImages.UpdateRange(proofImages);
+              await  _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        
+        }
+        public async Task<bool> DeleteVolunteerApplicationProofImages(int applicationID)
+        {
 
+            try
+            {
+
+                List<VolunteerProofImage> images = _context.VolunteerProofImages.Where(app => app.VolunteerApplicationID == applicationID).ToList();
+                _context.VolunteerProofImages.
+                 RemoveRange(images);
+                await _context.SaveChangesAsync();
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public bool CanUserApplyToBeVolunteer(int userID)
         {
 
@@ -123,13 +154,15 @@ namespace clsSocialDataAccess.Volunteers
         {
             try
             {
-                var existingApplication = await _context.VolunteerApplications.FindAsync(application.VolunteerApplicationID);
-                if (existingApplication == null)
-                {
-                    return false; // Application not found
-                }
-                existingApplication.Status = application.Status;
-                existingApplication.AdminID = application.AdminID;
+                //var existingApplication = await _context.VolunteerApplications.FindAsync(application.VolunteerApplicationID);
+                //if (existingApplication == null)
+                //{
+                //    return false; // Application not found
+                //}
+
+                //existingApplication.Status = application.Status;
+                //existingApplication.AdminID = application.AdminID;
+                _context.VolunteerApplications.Update(application);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -292,7 +325,7 @@ namespace clsSocialDataAccess.Volunteers
                 return new List<VolunteerProofImage>();
             }
         }
-
+        
         
 
 
