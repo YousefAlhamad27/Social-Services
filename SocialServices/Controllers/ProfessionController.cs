@@ -37,5 +37,21 @@ namespace SocialServices.Controllers
 
             return Ok(professionId);
         }
+
+        [HttpGet("GetAllProfessions",Name = "GetAllProfessions")
+            ,ProducesResponseType(StatusCodes.Status200OK)
+            ,ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> GetAllProfession()
+        {
+            var Profession = await _profession.GetAllProfessions();
+
+            if(Profession == null)
+            {
+                return NotFound("No profession found.");
+            }
+
+            return Ok(Profession);
+        }
     }
 }

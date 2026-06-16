@@ -21,5 +21,10 @@ namespace clsSocialServicesBussiness
             return await _professionRepo.GetProfessionIdByProfessionName(ProfessionTitle);
         }
 
+        public async Task<List<ProfessionEntity>> GetAllProfessions()
+        {
+            return await _professionRepo.GetAllProfessions();
+        }
+
     }
 }

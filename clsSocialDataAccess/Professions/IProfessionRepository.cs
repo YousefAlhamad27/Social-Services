@@ -9,5 +9,7 @@ namespace clsSocialDataAccess.Professions
     public interface IProfessionRepository
     {
         public Task<int> GetProfessionIdByProfessionName(string ProfessionTitle);
+
+        public Task<List<ProfessionEntity>> GetAllProfessions();
     }
 }

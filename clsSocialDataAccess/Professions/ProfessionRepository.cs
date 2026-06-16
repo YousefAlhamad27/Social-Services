@@ -25,5 +25,11 @@ namespace clsSocialDataAccess.Professions
                 FirstOrDefaultAsync();
         }
 
+        public async Task<List<ProfessionEntity>> GetAllProfessions()
+        {
+            return await _context.Professions.ToListAsync();
+        }
+
+
     }
 }
