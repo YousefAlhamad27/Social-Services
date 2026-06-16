@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace clsSocialServicesDataAccess.Posts
+namespace clsSocialDataAccess.Professions
 {
     public class ProfessionEntity
     {

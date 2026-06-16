@@ -1,4 +1,5 @@
 using clsSocialDataAccess.Posts.Preferances;
+using clsSocialDataAccess.Professions;
 using clsSocialDataAccess.Volunteers;
 using clsSocialServicesBussiness;
 using clsSocialServicesDataAccess;
@@ -79,7 +80,8 @@ builder.Services.AddScoped<clsAdminService>();
 builder.Services.AddScoped<clsAiRecommendationService>();
 builder.Services.AddScoped<ILogRepository,LogRepository>();
 builder.Services.AddScoped<ILogViewRepository, LogViewRepository>();
-
+builder.Services.AddScoped<IProfessionRepository, ProfessionRepository>();
+builder.Services.AddScoped<clsProfession>();
 
 
 // Authentication Configuration
