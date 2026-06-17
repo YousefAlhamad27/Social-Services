@@ -1,4 +1,5 @@
-﻿using clsSocialDataAccess.Volunteers;
+﻿using clsSocialDataAccess.Migrations;
+using clsSocialDataAccess.Volunteers;
 using clsSocialServicesDataAccess;
 using DTOs.Volunteer;
 using System;
@@ -377,6 +378,19 @@ namespace clsSocialServicesBussiness
             }
             return DTOlist;
 
+        }
+        public CertificateListDTO GetCertificate(int certificateID,int userID) {
+
+            VolunteerEntity volunteer = GetVolunteer(userID);
+            if (volunteer == null)
+                return null;
+            List<CertificateClassification> certificateClassifications = repository.GetAllCertificateClassifications();
+
+            CertficateEntity entity = repository.GetCertificate(certificateID);
+
+           return new CertificateListDTO {CertificateID=entity.CertificateID, 
+               Classifcation = certificateClassifications.FirstOrDefault(c => c.ClassifcationID == entity.ClassifcationID)!.Title,CreationDate=DateTime.Now,
+               NumberOfAccomplishedServices=entity.NumberOfAccomplishedServices,VolunteerID=entity.VolunteerID };
         }
 
         }

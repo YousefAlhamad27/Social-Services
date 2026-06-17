@@ -364,6 +364,17 @@ namespace clsSocialDataAccess.Volunteers
             }
 
         }
+        public CertficateEntity GetCertificate(int certificateID)
+        {
+            try
+            {
+                return _context.Certificates.FirstOrDefault(c => c.CertificateID ==certificateID)!;
+            }
+            catch
+            {
+                return null!;
+            }
+        }
 
 
     }

@@ -298,7 +298,7 @@ namespace SocialServices.Controllers
                 return Ok("Images Updated Successfully!");
             }
 
-            return StatusCode(500, "Error occured while Updating images");
+            return StatusCode(500, "Error occured while Updating images.");
 
         }
 
@@ -316,16 +316,16 @@ namespace SocialServices.Controllers
 
             int ClassID=volunteerService.IsUserAllowedToIssueACertificate(currentUserID);
             if (ClassID == 0)
-                return BadRequest("User isn't allowed to issue a certificate");
+                return BadRequest("User isn't allowed to issue a certificate.");
 
             if(await volunteerService.IssueCertificate(currentUserID, ClassID)){
                 return Ok("Certificate has been created successfully!");
             }
-            return StatusCode(500, "Error occured while creating new certificate");
+            return StatusCode(500, "Error occured while creating new certificate.");
 
         }
-        [HttpPost("Get Certificates")]
-        [Authorize(Roles = "User")]
+        [HttpGet("Get Certificates")]
+        [Authorize(Roles = "User,Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetCertificates()
         {
@@ -336,9 +336,42 @@ namespace SocialServices.Controllers
 
             var list=volunteerService.GetVolunteerCertificates(currentUserID);
             if (list == null)
-                return BadRequest("Volunteer has no Certificates");
+                return BadRequest("Volunteer has no Certificates.");
 
             return Ok(list);
+        }
+
+        [HttpGet("Get Certificate")]
+        [Authorize(Roles = "User,Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetCertificate(int certficateID)
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID < 1)
+                return Unauthorized();
+
+            CertificateListDTO certListDTO = volunteerService.GetCertificate(certficateID,currentUserID);
+
+            if (certListDTO == null)
+                return BadRequest("Certificate doesn't exist.");
+            return Ok(certListDTO);
+        }
+
+        [HttpGet("Is User allowed to Issue A Certificate")]
+        [Authorize(Roles = "User,Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> IsUserAllowedToIssueCertificate()
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID < 1)
+                return Unauthorized();
+
+            if (volunteerService.IsUserAllowedToIssueACertificate(currentUserID) == 0)
+                return BadRequest("User isn't allowed to issue a certificate.");
+
+            return Ok("User can Issue a certificate.");
         }
 
     }
