@@ -14,7 +14,10 @@ namespace clsSocialDataAccess.Volunteers
             Approved = 2,
             Rejected = 3
         }
-
+        public List<CertificateClassification> GetAllCertificateClassifications();
+        
+        public List<CertficateEntity> GetCertificatesForVolunteer(int volunteerID);
+        public Task<bool> IssueCertificate(CertficateEntity certficate);
         public Task<bool> AddVolunteer(VolunteerEntity volunteer);
         public Task<int> IssueVolunteerRequest(VolunteerApplicationEntity volunteerApplication);
         public Task<bool> AddVolunteerProofImage(VolunteerProofImage proofImage);

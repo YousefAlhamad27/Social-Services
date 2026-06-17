@@ -28,6 +28,7 @@ namespace clsSocialServicesDataAccess
         public DbSet<VolunteerEntity> Volunteers { get; set; }
         public DbSet<VolunteerProofImage> VolunteerProofImages { get; set; }
         public DbSet<CertficateEntity> Certificates { get; set; }
+        public DbSet<CertificateClassification> CertificateClassifications { get; set; }
 
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
@@ -39,7 +40,13 @@ namespace clsSocialServicesDataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-             
+            modelBuilder.Entity<CertificateClassification>(
+                entity =>
+                {
+                    entity.HasKey(c => c.ClassifcationID);
+                }
+                );
+
             modelBuilder.Entity<CertficateEntity>(
                 
                 entity=>
@@ -49,6 +56,11 @@ namespace clsSocialServicesDataAccess
                           .WithMany()
                           .HasForeignKey(c => c.VolunteerID)
                           .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne<CertificateClassification>()
+                         .WithMany()
+                         .HasForeignKey(c => c.ClassifcationID)
+                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
 

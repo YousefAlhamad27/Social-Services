@@ -268,5 +268,116 @@ namespace clsSocialServicesBussiness
             VolunteerEntity volunteer =  GetVolunteer(userID);
             return volunteer != null;
         }
+
+        public  int IsUserAllowedToIssueACertificate(int userID)
+        {
+            VolunteerEntity entity = GetVolunteer(userID);
+            if (entity == null)
+                return 0 ;
+
+            List<CertficateEntity> certficates =  repository.GetCertificatesForVolunteer(entity.VolunteerID);
+            List<CertificateClassification> classifications = repository.GetAllCertificateClassifications();
+
+            if (entity.AccomplishedServiceApplicationsCount >= Convert.ToInt32(CertficateEntity.CertficateClass.Bronze))
+            {
+                if (certficates.Count ==0) {
+                    return classifications.FirstOrDefault(c => c.RequiredAccomplishedServices == Convert.ToInt32(CertficateEntity.CertficateClass.Bronze)).ClassifcationID;
+                }
+
+                if (entity.AccomplishedServiceApplicationsCount >= Convert.ToInt32(CertficateEntity.CertficateClass.silver))
+                {
+                    if (certficates.Count == 1)
+                    {
+                        return classifications.FirstOrDefault(c => c.RequiredAccomplishedServices == Convert.ToInt32(CertficateEntity.CertficateClass.silver)).ClassifcationID;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+                if (entity.AccomplishedServiceApplicationsCount >= Convert.ToInt32(CertficateEntity.CertficateClass.Gold))
+                {
+                    if (certficates.Count == 2)
+                    {
+                        return classifications.FirstOrDefault(c => c.RequiredAccomplishedServices == Convert.ToInt32(CertficateEntity.CertficateClass.Gold)).ClassifcationID;
+                    }
+                }
+                else return 0;
+
+                    if (entity.AccomplishedServiceApplicationsCount >= Convert.ToInt32(CertficateEntity.CertficateClass.Platinum))
+                {
+
+                    if (certficates.Count == 3)
+                    {
+                        return classifications.FirstOrDefault(c => c.RequiredAccomplishedServices == Convert.ToInt32(CertficateEntity.CertficateClass.Platinum)).ClassifcationID;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+                if (entity.AccomplishedServiceApplicationsCount >= Convert.ToInt32(CertficateEntity.CertficateClass.Diamond))
+                {
+
+                    if (certficates.Count == 4)
+                    {
+                        return classifications.FirstOrDefault(c => c.RequiredAccomplishedServices == Convert.ToInt32(CertficateEntity.CertficateClass.Diamond)).ClassifcationID;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+                if (entity.AccomplishedServiceApplicationsCount >= Convert.ToInt32(CertficateEntity.CertficateClass.Elite))
+                {
+
+                    if (certficates.Count == 5)
+                    {
+                        return classifications.FirstOrDefault(c => c.RequiredAccomplishedServices == Convert.ToInt32(CertficateEntity.CertficateClass.Elite)).ClassifcationID;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+
+
+                else
+                {
+                    return 0;
+                }
+            return 0;
+
+            }
+        public async Task<bool> IssueCertificate(int userID,int classID)
+        {
+            VolunteerEntity volunteer=repository.GetVolunteerByUserID(userID);
+
+          return await  repository.IssueCertificate(new CertficateEntity {ClassifcationID=classID,VolunteerID=volunteer.VolunteerID,
+                NumberOfAccomplishedServices=volunteer.AccomplishedServiceApplicationsCount,CreationDate=DateTime.Now });
+        }    
+            
+        public List<CertificateListDTO> GetVolunteerCertificates(int userID)
+        {
+            VolunteerEntity volunteer=GetVolunteer(userID);
+
+            List<CertficateEntity> list=repository.GetCertificatesForVolunteer(volunteer.VolunteerID);
+            List<CertificateListDTO> DTOlist = new List<CertificateListDTO>();
+
+            foreach(CertficateEntity certficate in list)
+            {
+                List<CertificateClassification> certificateClassifications = repository.GetAllCertificateClassifications();
+                DTOlist.Add(new CertificateListDTO {VolunteerID=certficate.VolunteerID,CertificateID=certficate.CertificateID
+                ,Classifcation = certificateClassifications.FirstOrDefault(c=>c.ClassifcationID==certficate.ClassifcationID)!.Title,CreationDate=certficate.CreationDate,NumberOfAccomplishedServices=certficate.NumberOfAccomplishedServices      
+                }
+                
+                );
+            }
+            return DTOlist;
+
+        }
+
         }
 }

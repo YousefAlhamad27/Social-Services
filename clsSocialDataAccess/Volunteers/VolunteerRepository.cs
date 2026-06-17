@@ -325,8 +325,45 @@ namespace clsSocialDataAccess.Volunteers
                 return new List<VolunteerProofImage>();
             }
         }
+        public async Task<bool> IssueCertificate(CertficateEntity certficate)
+        {
+            try
+            {
+                _context.Certificates.Add(certficate);
+                 await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+        public List<CertificateClassification> GetAllCertificateClassifications()
+        {
+            try
+            {
+              return  _context.CertificateClassifications.ToList();
+            }
+            catch
+            {
+                return null!;
+            }
+
+        }
         
-        
+        public  List<CertficateEntity> GetCertificatesForVolunteer(int volunteerID)
+        {
+            try
+            {
+                return  _context.Certificates.Where(c => c.VolunteerID == volunteerID).ToList();
+            }
+            catch
+            {
+                return null!;
+            }
+
+        }
 
 
     }

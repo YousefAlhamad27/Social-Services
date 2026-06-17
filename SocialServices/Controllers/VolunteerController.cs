@@ -237,6 +237,7 @@ namespace SocialServices.Controllers
 
         [HttpPut("Update Volunteer Application Images")]
         [Authorize(Roles = "User")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateVolunteerApplicationImages(UpdateVolunteerApplication details)
         {
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
@@ -301,7 +302,46 @@ namespace SocialServices.Controllers
 
         }
 
+
+        [HttpPost("Issue Certificate")]
+        [Authorize(Roles="User")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> CreateCertificate()
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID < 1)
+                return Unauthorized();
+
+            int ClassID=volunteerService.IsUserAllowedToIssueACertificate(currentUserID);
+            if (ClassID == 0)
+                return BadRequest("User isn't allowed to issue a certificate");
+
+            if(await volunteerService.IssueCertificate(currentUserID, ClassID)){
+                return Ok("Certificate has been created successfully!");
+            }
+            return StatusCode(500, "Error occured while creating new certificate");
+
+        }
+        [HttpPost("Get Certificates")]
+        [Authorize(Roles = "User")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetCertificates()
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID < 1)
+                return Unauthorized();
+
+            var list=volunteerService.GetVolunteerCertificates(currentUserID);
+            if (list == null)
+                return BadRequest("Volunteer has no Certificates");
+
+            return Ok(list);
         }
 
-    
+    }
+
+
 }
