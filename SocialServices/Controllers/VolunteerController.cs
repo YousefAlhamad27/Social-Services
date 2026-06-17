@@ -371,7 +371,7 @@ namespace SocialServices.Controllers
             if (volunteerService.IsUserAllowedToIssueACertificate(currentUserID) == 0)
                 return BadRequest("User isn't allowed to issue a certificate.");
 
-            return Ok("User can Issue a certificate.");
+            return Ok(true);
         }
 
     }
