@@ -50,8 +50,9 @@ namespace SocialServices.Controllers
                 return BadRequest("Username Already Exists");
             }
 
+            if(userDetails.postImage!=null)
             userDetails.RegisterRequestDTO.Imagepath = UtilLibrary.FileOperations.saveImageTofile
-                (FormFileHelper.ToByteArray(userDetails.postImage),userDetails.postImage.FileName,ImageType.PostImage);
+                (FormFileHelper.ToByteArray(userDetails.postImage),userDetails.postImage.FileName,ImageType.UserImage);
             
             
 

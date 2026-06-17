@@ -16,6 +16,7 @@
         public bool IsActive { get; set; }
         public DateTime CreationDate { get; set; }
 
+        public RegisterRequestDTO() { }
 
         public RegisterRequestDTO( string firstName, string secondName, string lastName, string email, string phone, int age, string imagepath, string username, string passwordHash,
             bool isActive, DateTime creationDate)
