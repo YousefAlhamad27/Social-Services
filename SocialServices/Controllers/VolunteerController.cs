@@ -89,13 +89,14 @@ namespace SocialServices.Controllers
             if (!volunteerService.CanUserBecomeVolunteer(currentUserID))
                 return BadRequest("User already has a pending request to become a volunteer.");
 
+
             AddVolunteerRequest request= new AddVolunteerRequest();
-            request.UserID = currentUserID;
+             
             request.Description = form.Data.Description;
 
             request.IdImagePath = form.Data.IdImagePath;
             request.ProofImagePaths = form.Data.ProofImagePaths;
-            bool result = await volunteerService.IssueVolunteerRequest(request);
+            bool result = await volunteerService.IssueVolunteerRequest(request,currentUserID);
             if (Convert.ToBoolean(result))
             {
                 return Ok("Volunteer request issued successfully.");
@@ -374,6 +375,33 @@ namespace SocialServices.Controllers
             return Ok(true);
         }
 
+        [HttpDelete("Delete Volunteer Application")]
+        [Authorize(Roles ="User")]
+        [ProducesResponseType(StatusCodes.Status200OK),ProducesResponseType(StatusCodes.Status406NotAcceptable),ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteVolunteerApplication(int appID)
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+            if (currentUserID < 1)
+                return Unauthorized();
+
+           GetVolunteerApplicationDTO application= await volunteerService.GetVolunteerApplicationByID(appID);
+            
+            if (application == null)
+                return BadRequest("Application does not exist");
+
+            if (application.UserID != currentUserID)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden,"User is not allowed delete this application.");
+            }
+             
+
+            if (await volunteerService.DeleteVolunteerApplication(appID))
+                return Ok("volunteer Application has been deleted.");
+
+            return BadRequest("User is already a volunteer and cannot delete this application.");
+        }
     }
 
 

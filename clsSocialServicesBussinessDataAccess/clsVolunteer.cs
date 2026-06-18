@@ -32,7 +32,7 @@ namespace clsSocialServicesBussiness
             }
             return true;
         }
-        public async Task<bool> IssueVolunteerRequest(AddVolunteerRequest addVolunteerRequest)
+        public async Task<bool> IssueVolunteerRequest(AddVolunteerRequest addVolunteerRequest,int userID)
         {
             //if (UtilLibrary.FileOperations.saveImageTofile(addVolunteerRequest.IdImagePath, UtilLibrary.FileOperations.ImageType.VolunteerImage) == null) return false;
 
@@ -47,7 +47,7 @@ namespace clsSocialServicesBussiness
 
             VolunteerApplicationEntity request = new VolunteerApplicationEntity
             {
-                UserID = addVolunteerRequest.UserID,
+                UserID =userID, 
                 Description = addVolunteerRequest.Description,
                 AdminID = null,
                 CreationDate = DateTime.Now,
@@ -78,6 +78,30 @@ namespace clsSocialServicesBussiness
 
 
             return repository.CanUserApplyToBeVolunteer(userID);
+        }
+        public async Task<bool> DeleteVolunteerApplication(int appID)
+        {
+            VolunteerEntity volunteer= await repository.GetVolunteerByID(appID);
+            GetVolunteerApplicationDTO dto=await GetVolunteerApplicationByID(appID);
+
+            UtilLibrary.FileOperations.removeImageFromFile(dto.IdImagePath);
+            foreach (var image in dto.ProofImagePaths)
+            {
+                if (image != null)
+                {
+                    UtilLibrary.FileOperations.removeImageFromFile(image);
+
+                }
+            }
+
+            if (volunteer != null)
+                return false;
+
+            if (!await repository.DeleteVolunteerApplicationProofImages(appID))
+                return false;
+
+           return await repository.DeleteApplication(appID);
+
         }
 
         public async Task<bool> RespondToVolunteerApplication(RespondToVolunteerApplicationRequest request)

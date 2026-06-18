@@ -16,6 +16,7 @@ namespace clsSocialDataAccess.Volunteers
         }
         public List<CertificateClassification> GetAllCertificateClassifications();
         public CertficateEntity GetCertificate(int certificateID);
+        public Task<VolunteerEntity> GetVolunteerByAppID(int appID);
         public List<CertficateEntity> GetCertificatesForVolunteer(int volunteerID);
         public Task<bool> IssueCertificate(CertficateEntity certficate);
         public Task<bool> AddVolunteer(VolunteerEntity volunteer);

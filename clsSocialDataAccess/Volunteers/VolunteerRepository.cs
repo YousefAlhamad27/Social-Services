@@ -18,7 +18,17 @@ namespace clsSocialDataAccess.Volunteers
         }
 
 
-
+        public  async Task<VolunteerEntity> GetVolunteerByAppID(int appID)
+        {
+            try
+            {
+              return  await _context.Volunteers.FirstOrDefaultAsync(volunteer=>volunteer.VolunteerApplicationID==appID);
+            }
+            catch
+            {
+                return null!;
+            }
+        }
         public async Task<bool> AddVolunteer(VolunteerEntity volunteer)
         {
             try

@@ -203,10 +203,7 @@ namespace SocialServices.Controllers
 
             if (userID < 1)
             {
-                if (currentUserRole != "Admin" && currentUsername != username)
-                {
-                    return Forbid();
-                }
+               
                 if (currentUserID == 0)
                 {
                     return BadRequest("Not Accepted");
