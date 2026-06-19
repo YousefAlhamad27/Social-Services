@@ -32,7 +32,7 @@ namespace SocialServices.Controllers
 
        
        
-        [HttpPost("RegisterUser"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status202Accepted), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("Register User"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status202Accepted), ProducesResponseType(StatusCodes.Status400BadRequest)]
        
         public ActionResult RegisterUser([FromForm] AddFullUserDetails userDetails)
         {
@@ -80,7 +80,7 @@ namespace SocialServices.Controllers
 
 
 
-        [HttpPost("LoginUser"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError),ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("Login User"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError),ProducesResponseType(StatusCodes.Status401Unauthorized)]
       
 
         public async Task<ActionResult> Login(UserLoginRequest request)
@@ -118,7 +118,7 @@ namespace SocialServices.Controllers
 
         }
 
-        [HttpPost("LoginAdmin"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("Login Admin"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<ActionResult> Login(AdminLoginRequest request)
         {
@@ -151,7 +151,7 @@ namespace SocialServices.Controllers
 
         }
 
-        [HttpPost("RefreshToken"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status401Unauthorized), ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("Refresh Token"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status401Unauthorized), ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public ActionResult RefreshToken(RefreshTokenDTO dto)
         {

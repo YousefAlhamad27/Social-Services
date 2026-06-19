@@ -28,7 +28,7 @@ namespace SocialServices.Controllers
 
 
 
-        [HttpDelete("DeleteUser"), ProducesResponseType(StatusCodes.Status401Unauthorized), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpDelete("Delete User"), ProducesResponseType(StatusCodes.Status401Unauthorized), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Authorize(Roles = "User,Admin")]
         public ActionResult deleteUser(string Username)
         {
@@ -71,7 +71,7 @@ namespace SocialServices.Controllers
             
         }
 
-        [HttpDelete("LogoutEverywhere"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpDelete("Logout Everywhere"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> logoutEverywhere()
         {
@@ -92,7 +92,7 @@ namespace SocialServices.Controllers
             }
         }
 
-        [HttpPatch("UpdatePersonalDetails"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPatch("Update Personal Details"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "User,Admin")]
         // [Authorize]
         public ActionResult updateUser(UpdatePersonalDetails details)
@@ -146,7 +146,7 @@ namespace SocialServices.Controllers
             }
 
         }
-        [HttpPatch("UpdateUserPassword"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPatch("Update User Password"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User")]
         public ActionResult updateUserPassword(PasswordUpdateDTO dto)
         {
@@ -186,7 +186,7 @@ namespace SocialServices.Controllers
 
 
         }
-        [HttpGet("GetUser"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet("Get User"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(Roles = "User,Admin")]
 
         public ActionResult getUser(string username="", int userID = -1)
