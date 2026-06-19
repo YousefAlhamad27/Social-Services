@@ -27,7 +27,7 @@ namespace SocialServices.Controllers
             userService = user;
         }
 
-        [HttpPost("Response To Volunteer Application")]
+        [HttpPost("ResponseToVolunteerApplication")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RespondToVolunteerApplication(RespondToVolunteerApplicationRequest request)
@@ -51,7 +51,7 @@ namespace SocialServices.Controllers
         }
 
 
-        [HttpPost("Issue Volunteer Request")]
+        [HttpPost("IssueVolunteerRequest")]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AddVolunteerApplication([FromForm] AddVolunteerFormRequest form)
@@ -107,7 +107,7 @@ namespace SocialServices.Controllers
             }
 
         }
-        [HttpGet("Get VolunteerApplication by ID")]
+        [HttpGet("GetVolunteerApplicationByID")]
         [Authorize(Roles = "User,Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetVolunteerApplicationByID(int appID)
@@ -129,7 +129,7 @@ namespace SocialServices.Controllers
             return StatusCode(500, "An error occured while fetching the Application");
 
         }
-        [HttpGet("Get Volunteer by userID")]
+        [HttpGet("GetVolunteerByUserID")]
         [Authorize(Roles = "User,Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public  IActionResult GetVolunteerByUserID(int userID)
@@ -150,7 +150,7 @@ namespace SocialServices.Controllers
             return StatusCode(500, "An error occured while fetching the Application");
 
         }
-        [HttpGet("Get all Volunteer Applications")]
+        [HttpGet("GetAllVolunteerApplications")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
@@ -167,7 +167,7 @@ namespace SocialServices.Controllers
             return StatusCode(500, "An error occured while fetching the Volunteer Applications");
 
         }
-        [HttpPut("Update Volunteer Description")]
+        [HttpPut("UpdateVolunteerDescription")]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
@@ -194,7 +194,7 @@ namespace SocialServices.Controllers
 
         }
 
-        [HttpPut("Add Volunteer Points")]
+        [HttpPut("AddVolunteerPoints")]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
@@ -236,7 +236,7 @@ namespace SocialServices.Controllers
         }
 
 
-        [HttpPut("Update Volunteer Application Images")]
+        [HttpPut("UpdateVolunteerApplicationImages")]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateVolunteerApplicationImages(UpdateVolunteerApplication details)
@@ -304,7 +304,7 @@ namespace SocialServices.Controllers
         }
 
 
-        [HttpPost("Issue Certificate")]
+        [HttpPost("IssueCertificate")]
         [Authorize(Roles="User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
 
@@ -325,7 +325,7 @@ namespace SocialServices.Controllers
             return StatusCode(500, "Error occured while creating new certificate.");
 
         }
-        [HttpGet("Get Certificates")]
+        [HttpGet("GetCertificates")]
         [Authorize(Roles = "User,Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetCertificates()
@@ -342,7 +342,7 @@ namespace SocialServices.Controllers
             return Ok(list);
         }
 
-        [HttpGet("Get Certificate")]
+        [HttpGet("GetCertificate")]
         [Authorize(Roles = "User,Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetCertificate(int certficateID)
@@ -359,7 +359,7 @@ namespace SocialServices.Controllers
             return Ok(certListDTO);
         }
 
-        [HttpGet("Is User allowed to Issue A Certificate")]
+        [HttpGet("IsUserallowedtoIssueACertificate")]
         [Authorize(Roles = "User,Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> IsUserAllowedToIssueCertificate()
@@ -375,7 +375,7 @@ namespace SocialServices.Controllers
             return Ok(true);
         }
 
-        [HttpDelete("Delete Volunteer Application")]
+        [HttpDelete("DeleteVolunteerApplication")]
         [Authorize(Roles ="User")]
         [ProducesResponseType(StatusCodes.Status200OK),ProducesResponseType(StatusCodes.Status406NotAcceptable),ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

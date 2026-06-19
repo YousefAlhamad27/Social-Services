@@ -123,18 +123,19 @@ namespace SocialServices.Controllers
             {
                 return Unauthorized("Not Authorized");
             }
-            if (!User.Identities.Any
-                (identity => identity.IsAuthenticated && identity.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == "Admin")))
-            {
+           
                 UserDTO user = _userService.Find(username);
                 UserDTO currentUser = _userService.Find(userID);
                 if (user == null || currentUser == null)
                 {
                     return Unauthorized("Not Authorized to view feedbacks for this user");
-                }
+                
             }
+
             //else admin implementation, to confirm that admin exists
-            double averageRating = _feedbackService.GetAverageRatingForUser(userID);
+            double averageRating = _feedbackService.GetAverageRatingForUser(username);
+            if (averageRating == 0)
+                return Ok("No feedbacks for this user.");
             return Ok(averageRating);
 
         }

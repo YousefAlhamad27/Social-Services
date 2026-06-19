@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +34,8 @@ namespace clsSocialServicesDataAccess.Services
             try
             {
                 ServiceApplicationEntity service = _context.ServiceApplications.Find(serviceID)!;
+                if (service == null)
+                    return false;
                 if(service.UserID == userID)
                 {
                     return true;
@@ -51,7 +54,7 @@ namespace clsSocialServicesDataAccess.Services
                 ServiceApplicationEntity service = _context.ServiceApplications.Find(serviceID)!;
                 _context.ServiceApplications.Remove(service);
                 _context.SaveChanges();
-                return false;
+                return true;
             }
             catch
             {

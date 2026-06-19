@@ -32,7 +32,7 @@ namespace SocialServices.Controllers
 
        
        
-        [HttpPost("Register User"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status202Accepted), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("RegisterUser"), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status202Accepted), ProducesResponseType(StatusCodes.Status400BadRequest)]
        
         public ActionResult RegisterUser([FromForm] AddFullUserDetails userDetails)
         {
@@ -80,7 +80,7 @@ namespace SocialServices.Controllers
 
 
 
-        [HttpPost("Login User"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError),ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("LoginUser"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError),ProducesResponseType(StatusCodes.Status401Unauthorized)]
       
 
         public async Task<ActionResult> Login(UserLoginRequest request)
@@ -118,7 +118,7 @@ namespace SocialServices.Controllers
 
         }
 
-        [HttpPost("Login Admin"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost("LoginAdmin"), ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest), ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<ActionResult> Login(AdminLoginRequest request)
         {

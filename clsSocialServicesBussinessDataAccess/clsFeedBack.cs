@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Feedback;
 using DTOs.Services;
  
@@ -12,9 +13,11 @@ namespace clsSocialServicesBussiness
     public class clsFeedBack
     {
         private readonly IFeedbackRepository _feedbackRepository;
+        private readonly IUserRepository _userRepository;
 
-        public clsFeedBack(IFeedbackRepository feedbackRepository)
+        public clsFeedBack(IFeedbackRepository feedbackRepository,IUserRepository user)
         {
+            _userRepository = user;
             _feedbackRepository = feedbackRepository;
         }
         private FeedbackEntity MapFeedbackDtoToEntity(AddFeedbackDTO feedbackDto,int userID)
@@ -36,11 +39,19 @@ namespace clsSocialServicesBussiness
         }
         public bool IsUserEligibleForPostingFeedback(int serviceApplicationID, int userID)
         {
+            if (_feedbackRepository.GetFeedbacksAppliedByUser(userID).Where(feedback => feedback.ServiceApplicationID == serviceApplicationID).Any())
+            {
+                return false;
+            }
+
             return _feedbackRepository.IsUserEligibleForPostingFeedback(serviceApplicationID, userID);
         }
-        public double GetAverageRatingForUser(int userID)
+        public double GetAverageRatingForUser(string username)
         {
-            return _feedbackRepository.GetAverageRatingForUser(userID);
+            UserEntity user=_userRepository.FindUserName(username);
+            if (user == null)
+                return 0;
+            return _feedbackRepository.GetAverageRatingForUser(user.UserID);
         }
         public List<FeedbackEntity> GetFeedbacksForUser(string username)
         {

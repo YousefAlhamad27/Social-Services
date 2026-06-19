@@ -9,11 +9,13 @@ using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Posts;
 using clsSocialServicesDataAccess.Services;
 using dotenv.net;
+using System.IO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SocialServices.Classes;
@@ -146,32 +148,46 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 FileOperations.RootPath = app.Environment.ContentRootPath;
+// 1. Define the physical paths
+var postsImagesPath = Path.Combine(builder.Environment.ContentRootPath, "PostsImages");
+var userImagesPath = Path.Combine(builder.Environment.ContentRootPath, "UserImages");
+var adminImagesPath = Path.Combine(builder.Environment.ContentRootPath, "AdminImages");
+var volunteerImagesPath = Path.Combine(builder.Environment.ContentRootPath, "VolunteerImages");
+
+// 2. Force the application to create them if they do not exist
+if (!Directory.Exists(postsImagesPath)) Directory.CreateDirectory(postsImagesPath);
+if (!Directory.Exists(userImagesPath)) Directory.CreateDirectory(userImagesPath);
+if (!Directory.Exists(adminImagesPath)) Directory.CreateDirectory(adminImagesPath);
+if (!Directory.Exists(volunteerImagesPath)) Directory.CreateDirectory(volunteerImagesPath);
+
+// 3. Now it is safe to map the file providers
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "PostsImages")),
+    FileProvider = new PhysicalFileProvider(postsImagesPath),
     RequestPath = "/PostsImages"
 });
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "UserImages")),
+    FileProvider = new PhysicalFileProvider(userImagesPath),
     RequestPath = "/UserImages"
 });
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "VolunteerImages")),
-    RequestPath = "/VolunteerImages"
-});
+// Add the other two mapping blocks for AdminImages and VolunteerImages here as well
 
-if (app.Environment.IsDevelopment())
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty;  
+});
 
 app.UseHttpsRedirection();
 

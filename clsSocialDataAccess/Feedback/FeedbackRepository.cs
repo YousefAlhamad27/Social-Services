@@ -85,7 +85,7 @@ namespace clsSocialServicesDataAccess.Feedback
                 ServiceApplicationEntity serviceApplication = _context.ServiceApplications.FirstOrDefault(s => s.ServiceApplicationID == serviceApplicationID)!;
                 PostEntity post = _context.Posts.FirstOrDefault(p => p.PostID == serviceApplication.PostID)!;
 
-                if (post.UserID == userID && serviceApplication.UserID != userID&&serviceApplication.Accepted)
+                if (post.UserID == userID && serviceApplication.UserID != userID&&serviceApplication.Accepted&&post.IsComplete)
                 {
                     return true;
                 }

@@ -88,9 +88,14 @@ namespace clsSocialServicesBussiness
             return _repo.AcceptServiceApplication(userID,serviceApplicationID,AcceptanceMessage);
 
         }
-        public ServiceApplicationEntity Find(int serviceID)
+        public ServiceApplicationDTO Find(int serviceID)
         {
-            return _repo.Find(serviceID);
+            ServiceApplicationEntity entity = _repo.Find(serviceID);
+
+            if (entity == null)
+                return null!;
+            return  new ServiceApplicationDTO {ServiceApplicationID=entity.ServiceApplicationID,AcceptanceMessage=entity.AcceptanceMessage
+           ,Accepted=entity.Accepted,ApplyDateTime=entity.ApplyDateTime,Description=entity.Description,PostID=entity.PostID,UserID=entity.UserID,VolunteerID=entity.VolunteerID};
         }
         public bool DeleteServiceApplication(int serviceApplicationID)
         {
