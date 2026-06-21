@@ -285,6 +285,7 @@ namespace SocialServices.Controllers
             {
                 return Unauthorized("Invalid User");
             }
+
             if (User.Identities.Any
                 (identity => identity.IsAuthenticated && identity.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == "Admin")))
             {

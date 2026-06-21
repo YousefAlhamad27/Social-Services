@@ -43,7 +43,11 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
+
+            policy.WithOrigins("https://social-services-sigma.vercel.app/").AllowAnyHeader().AllowAnyMethod();
         });
+
+
 });
 
 builder.Services.AddSwaggerGen(c =>
@@ -173,21 +177,34 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/UserImages"
 });
 
-// Add the other two mapping blocks for AdminImages and VolunteerImages here as well
-
-
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+app.UseStaticFiles(new StaticFileOptions
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    options.RoutePrefix = string.Empty;  
+    FileProvider = new PhysicalFileProvider(adminImagesPath),
+    RequestPath = "/AdminImages"
 });
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(volunteerImagesPath),
+    RequestPath = "/VolunteerImages"
+});
+
+
+
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+//app.UseSwagger();
+//app.UseSwaggerUI(options =>
+//{
+//    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+//    options.RoutePrefix = string.Empty;
+//});
+
 
 app.UseHttpsRedirection();
 
