@@ -44,7 +44,7 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader()
                   .AllowAnyMethod();
 
-            policy.WithOrigins("https://social-services-sigma.vercel.app/").AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins("https://social-services-sigma.vercel.app").AllowAnyHeader().AllowAnyMethod();
         });
 
 
