@@ -35,7 +35,7 @@ namespace clsSocialDataAccess.Volunteers
             {
 
                 _context.Volunteers.Add(volunteer);
-                _context.SaveChangesAsync();
+                 await _context.SaveChangesAsync();
 
                 return true;
             }
