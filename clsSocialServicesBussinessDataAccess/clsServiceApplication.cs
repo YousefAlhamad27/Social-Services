@@ -89,6 +89,7 @@ namespace clsSocialServicesBussiness
             }
             string notTitle;
             string notDescription;
+
             if (isAccepted)
             {
                 post.AcceptedServiceApplicationsCount += 1;
@@ -125,5 +126,6 @@ namespace clsSocialServicesBussiness
                 $"Your Service application  -> {entity.Description} <- has been deleted.");
             return _repo.Delete(serviceApplicationID);
         }
+
     }
 }

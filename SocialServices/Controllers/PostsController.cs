@@ -306,9 +306,9 @@ namespace SocialServices.Controllers
                 return Unauthorized("Invalid User");
             }
             // we will ensure that the currentUserID belongs to the user who has the access token of this request
-            if (!_postService.CompletePost(currentUserID, postID))
+            if (!_postService.LockPost(currentUserID, postID))
             {
-                return StatusCode(500, new { Message = "Error completing post" });
+                return StatusCode(500, new { Message = "Error Locking post" });
             }
             // Implementation to complete a post
             return Ok("Post Locked Successfully");

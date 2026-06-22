@@ -2,6 +2,7 @@
 using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Admin;
 using clsSocialServicesDataAccess.Posts;
+using clsSocialServicesDataAccess.Services;
 using DTOs.Posts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -19,9 +20,11 @@ namespace clsSocialServicesBussiness
         private readonly ILogRepository _logRepo;
         private readonly ILogViewRepository _logViewRepo;
         private readonly clsNotification _Notifcation;
-        public clsPost(IPostRepository postRepository, ILogRepository logRepo , ILogViewRepository LogViewRepo,clsNotification notification)
+        private readonly IServiceApplicationRepository _serviceApplicationRepository;
+        public clsPost(IPostRepository postRepository, ILogRepository logRepo , ILogViewRepository LogViewRepo,clsNotification notification,IServiceApplicationRepository serviceApplication    )
         {
-            _Notifcation= notification;
+            _serviceApplicationRepository=serviceApplication;
+            _Notifcation = notification;
             _postRepository = postRepository;
             _logRepo = logRepo;
             _logViewRepo = LogViewRepo;
@@ -151,6 +154,17 @@ namespace clsSocialServicesBussiness
             {
                 return false;
             }
+            if (post.IsComplete)
+                return false;
+
+            List<ServiceApplicationEntity> services = _serviceApplicationRepository.GetServicesForPost(postID);
+
+            foreach(var service in services)
+            {
+                if (!_serviceApplicationRepository.Delete(service.ServiceApplicationID))
+                    return false;
+            }
+
             UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!);
 
             if (_postRepository.DeletePost(postID))

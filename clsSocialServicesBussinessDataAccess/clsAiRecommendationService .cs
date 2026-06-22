@@ -96,8 +96,9 @@ You are a precise Service Recommendation System. Your task is to match the user'
                 }
             };
 
+
             var response = await client.PostAsJsonAsync(
-                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_apiKey}",
+                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={_apiKey}",
                 body
             );
 

@@ -1,3 +1,4 @@
+using clsSocialDataAccess.Notifications;
 using clsSocialDataAccess.Posts.Preferances;
 using clsSocialDataAccess.Professions;
 using clsSocialDataAccess.Volunteers;
@@ -9,7 +10,7 @@ using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Posts;
 using clsSocialServicesDataAccess.Services;
 using dotenv.net;
-using System.IO;
+using GenerativeAI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +21,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SocialServices.Classes;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
 using static clsSocialServicesBussiness.UtilLibrary;
-using clsSocialDataAccess.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,13 @@ string myGcpKey = builder.Configuration["API_KEY"]!;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSingleton(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var apiKey = config["Gemini:ApiKey"];
+    return new GenerativeModel(apiKey, "gemini-1.5-flash");
+});
 
 // CORS Configuration
 builder.Services.AddCors(options =>
