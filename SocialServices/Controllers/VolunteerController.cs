@@ -374,6 +374,35 @@ namespace SocialServices.Controllers
 
             return Ok(true);
         }
+        [HttpGet("Get Top Volunteer")]
+        [Authorize(Roles = "User,Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult GetTopVolunteer()
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+
+            GetVolunteerDTO dto = volunteerService.GetTopVolunteer();
+            if(dto == null)
+                return StatusCode(StatusCodes.Status404NotFound);
+             
+
+            return Ok(dto);
+        }
+        [HttpGet("Get Volunteers Count")]
+        [Authorize(Roles = "User,Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status500InternalServerError), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult GetVolunteersCount()
+        {
+            int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+             
+            int count=volunteerService.GetVolunteersCount();
+           
+             
+
+            return Ok(count);
+        }
 
         [HttpDelete("Delete Volunteer Application")]
         [Authorize(Roles ="User")]
@@ -402,6 +431,8 @@ namespace SocialServices.Controllers
 
             return BadRequest("User is already a volunteer and cannot delete this application.");
         }
+
+
     }
 
 

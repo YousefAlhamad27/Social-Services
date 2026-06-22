@@ -16,17 +16,18 @@ namespace clsSocialServicesDataAccess.Services
             _context = context;
         }
 
-        public bool Create(ServiceApplicationEntity service)
+        public int Create(ServiceApplicationEntity service)
         {
             try
             {
                 _context.ServiceApplications.Add(service);
                 _context.SaveChanges();
-                return true;
+                return service.ServiceApplicationID;
+                
             }
             catch (Exception e)
             {
-                return false;
+                return 0;
             }
         }
         public bool doesServiceBelongToUser(int serviceID,int userID)
@@ -62,6 +63,18 @@ namespace clsSocialServicesDataAccess.Services
             }
 
             
+        }
+        public ServiceApplicationEntity GetServiceApplicationById(int serviceApplicationID)
+        {
+            try
+            {
+               return _context.ServiceApplications.FirstOrDefault(s => s.ServiceApplicationID == serviceApplicationID)!;
+               
+            }
+            catch
+            {
+                return null!;
+            }
         }
         public ServiceApplicationEntity Find(int serviceID)
         {
@@ -105,7 +118,7 @@ namespace clsSocialServicesDataAccess.Services
 
 
         }
-        public bool AcceptServiceApplication(int userID,int serviceApplicationID,string? AcceptanceMessage)
+        public bool RespondToServiceApplication(int userID,int serviceApplicationID,bool isAccepted,string? Message)
         {
 
             try
@@ -120,9 +133,12 @@ namespace clsSocialServicesDataAccess.Services
                     return false;
                 if (post.IsComplete || post.LockDate != null)
                     return false;
+                if(isAccepted)
+                    serviceApplication.Status = 2;
+                else
+                    serviceApplication.Status = 3;
 
-                    serviceApplication.Accepted = true;
-                serviceApplication.AcceptanceMessage = AcceptanceMessage;
+                    serviceApplication.AcceptanceMessage = Message;
                 _context.ServiceApplications.Update(serviceApplication);
                 _context.SaveChanges();
                 return true;

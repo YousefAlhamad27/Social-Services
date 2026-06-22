@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace clsSocialServicesBussiness
 {
@@ -15,13 +16,20 @@ namespace clsSocialServicesBussiness
     {
         private readonly IVolunteerRepository repository;
         private readonly IUserRepository user_rep;
+        private readonly clsNotification _Notifcation;
 
 
-        public clsVolunteer(IVolunteerRepository context, IUserRepository user) { repository = context; user_rep = user; }
+        public clsVolunteer(IVolunteerRepository context, IUserRepository user,  clsNotification not) { repository = context; user_rep = user;
+            _Notifcation = not; }
 
         public async Task<bool> AddVolunteer(VolunteerEntity volunteer)
         {
-            return await repository.AddVolunteer(volunteer);
+            int volunteerID= await repository.AddVolunteer(volunteer);
+            if (volunteerID == 0)
+                return false;
+            return _Notifcation.CreateNotification(volunteer.UserID, volunteerID, clsNotification.NotificaitonType.Volunteer, "New Volunteer",
+               "You have become a volunteer!");
+             
         }
         public async Task<bool> AddVolunteerProofImages(List<VolunteerProofImage> proofImages)
         {
@@ -100,7 +108,9 @@ namespace clsSocialServicesBussiness
             if (!await repository.DeleteVolunteerApplicationProofImages(appID))
                 return false;
 
-           return await repository.DeleteApplication(appID);
+             await repository.DeleteApplication(appID);
+            return _Notifcation.CreateNotification(dto.UserID, appID, clsNotification.NotificaitonType.VolunteerApplication, "Volunteer Application Deleted",
+               "Your Volunteer Application has been deleted.");
 
         }
 
@@ -120,7 +130,11 @@ namespace clsSocialServicesBussiness
             {
                 return false; // Failed to update the application
             }
-
+            string notTitle = request.IsApproved ? "Volunteer Application Accepted" : "Volunteer Application Rejeceted";
+            string notDescription = request.IsApproved ? "Your Volunteer Application has been Accepted" : $"Volunteer Application has been Rejeceted";
+            _Notifcation.CreateNotification(application.UserID, application.VolunteerApplicationID, 
+                 clsNotification.NotificaitonType.VolunteerApplication, notTitle,
+               notDescription);
             if (request.IsApproved)
             {
                 VolunteerEntity newVolunteer = new VolunteerEntity
@@ -380,7 +394,11 @@ namespace clsSocialServicesBussiness
         {
             VolunteerEntity volunteer=repository.GetVolunteerByUserID(userID);
 
-          return await  repository.IssueCertificate(new CertficateEntity {ClassifcationID=classID,VolunteerID=volunteer.VolunteerID,
+
+            _Notifcation.CreateNotification( userID, volunteer.VolunteerID,
+                clsNotification.NotificaitonType.Volunteer,"Certificate Created",
+              $"New certificate has been issued after you have accomplished {volunteer.AccomplishedServiceApplicationsCount} volunteer services.");
+            return await  repository.IssueCertificate(new CertficateEntity {ClassifcationID=classID,VolunteerID=volunteer.VolunteerID,
                 NumberOfAccomplishedServices=volunteer.AccomplishedServiceApplicationsCount,CreationDate=DateTime.Now });
         }    
             
@@ -415,6 +433,18 @@ namespace clsSocialServicesBussiness
            return new CertificateListDTO {CertificateID=entity.CertificateID, 
                Classifcation = certificateClassifications.FirstOrDefault(c => c.ClassifcationID == entity.ClassifcationID)!.Title,CreationDate=DateTime.Now,
                NumberOfAccomplishedServices=entity.NumberOfAccomplishedServices,VolunteerID=entity.VolunteerID };
+        }
+        public GetVolunteerDTO GetTopVolunteer()
+        {
+           VolunteerEntity volunteer= repository.GetTopVolunteer();
+            VolunteerApplicationEntity application = repository.GetVolunteerApplicationByID(volunteer.VolunteerApplicationID);
+
+            return new GetVolunteerDTO {AccomplishedServiceApplicationsCount=volunteer.AccomplishedServiceApplicationsCount,CreationDate=volunteer.CreationDate
+           ,Description=volunteer.Description,IdImagePath=application.IdImagePath,UserID=application.UserID,PointsCount=volunteer.PointsCount,VolunteerID=volunteer.VolunteerID};
+        }
+        public int GetVolunteersCount()
+        {
+            return repository.GetVolunteersCount();
         }
 
         }

@@ -19,7 +19,7 @@ namespace clsSocialDataAccess.Volunteers
         public Task<VolunteerEntity> GetVolunteerByAppID(int appID);
         public List<CertficateEntity> GetCertificatesForVolunteer(int volunteerID);
         public Task<bool> IssueCertificate(CertficateEntity certficate);
-        public Task<bool> AddVolunteer(VolunteerEntity volunteer);
+        public Task<int> AddVolunteer(VolunteerEntity volunteer);
         public Task<int> IssueVolunteerRequest(VolunteerApplicationEntity volunteerApplication);
         public Task<bool> AddVolunteerProofImage(VolunteerProofImage proofImage);
         public Task<bool> UpdateVolunteerProofImages(List<VolunteerProofImage> proofImages);
@@ -30,7 +30,8 @@ namespace clsSocialDataAccess.Volunteers
 
         public Task<bool> UpdateVolunteerApplication(VolunteerApplicationEntity application);
         public Task<bool> DeleteApplication(int applicationID);
-
+        public VolunteerEntity GetTopVolunteer();
+        public int GetVolunteersCount();
         public Task<bool> DeleteVolunteer(int volunteerID);
         public Task<bool> UpdateVolunteer(VolunteerEntity volunteer);
         public VolunteerEntity GetVolunteerByUserID(int userID);

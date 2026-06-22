@@ -4,6 +4,7 @@ using clsSocialServicesDataAccess.Admin;
 using clsSocialServicesDataAccess.Posts;
 using DTOs.Posts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,10 @@ namespace clsSocialServicesBussiness
         private readonly IPostRepository _postRepository;
         private readonly ILogRepository _logRepo;
         private readonly ILogViewRepository _logViewRepo;
-        public clsPost(IPostRepository postRepository, ILogRepository logRepo , ILogViewRepository LogViewRepo)
+        private readonly clsNotification _Notifcation;
+        public clsPost(IPostRepository postRepository, ILogRepository logRepo , ILogViewRepository LogViewRepo,clsNotification notification)
         {
+            _Notifcation= notification;
             _postRepository = postRepository;
             _logRepo = logRepo;
             _logViewRepo = LogViewRepo;
@@ -136,6 +139,7 @@ namespace clsSocialServicesBussiness
             if ( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
             {
                 _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post.", null);
+
                 return true;
             }
             return false;
@@ -154,6 +158,8 @@ namespace clsSocialServicesBussiness
                 string logMessage = adminId.HasValue
                     ? $"Post {postID} has been deleted by Admin {adminId}."
                     : $"Post {postID} has been deleted by User {userId}.";
+                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Deleted",
+               $"Your post \"{post.PostTitle}\" has been deleted");
 
                 _logRepo.AddLog("Delete Post", postID, "Post", logMessage, adminId);
                 return true;
@@ -193,20 +199,26 @@ namespace clsSocialServicesBussiness
         {
             // إذا Admin بنبعث null للـ userID
             int? repoUserId = adminId != null ? null : userID;
+            PostEntity post= _postRepository.Find(postID)!;
 
             if (_postRepository.LockPost(postID, repoUserId))
             {
                 _logRepo.AddLog("LockPost", postID, "Post", "Post locked", adminId);
-                return true;
+                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Locked",
+               $"Your post \"{post.PostTitle}\" has been locked");
+                  
             }
             return false;
         }
         public bool UnlockPost(int postID,int adminID)
         {
-            if(_postRepository.UnlockPost(postID))
+            PostEntity post = _postRepository.Find(postID)!;
+            if (_postRepository.UnlockPost(postID))
             {
                 _logRepo.AddLog("Unlock Post", postID, "Post", "Post Unlocked", adminID);
-                return true;
+                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Locked",
+               $"Your post \"{post.PostTitle}\" has been unlocked");
+                
             }
             return false;
         }

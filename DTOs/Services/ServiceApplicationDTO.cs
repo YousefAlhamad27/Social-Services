@@ -13,7 +13,7 @@ namespace DTOs.Services
         public int VolunteerID { get; set; }
         public int PostID { get; set; }
         public DateTime ApplyDateTime { get; set; }
-        public bool Accepted { get; set; }
+        public byte Status { get; set; }
         public string? Description { get; set; }
         public string? AcceptanceMessage { get; set; }
 

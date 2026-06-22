@@ -23,12 +23,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
 using static clsSocialServicesBussiness.UtilLibrary;
+using clsSocialDataAccess.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 
 clsConfigurations config = new clsConfigurations(builder.Configuration);
+
+string myGcpKey = builder.Configuration["API_KEY"]!;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -71,7 +74,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         }
     ));
 
-
+builder.Services.AddScoped<INotifcationRepository, NotificationRepository>();
 builder.Services.AddScoped<IServiceApplicationRepository,ServiceApplicationRepository>();
 builder.Services.AddScoped<IFeedbackRepository,FeedbackRepository>();
 builder.Services.AddScoped<IPostRepository,PostRepository>();
@@ -84,6 +87,7 @@ builder.Services.AddScoped<clsUser>();
 builder.Services.AddScoped<clsServiceApplication>();
 builder.Services.AddScoped<clsFeedBack>();
 builder.Services.AddScoped<clsCountiesCities>();
+builder.Services.AddScoped<clsNotification>();
 
 builder.Services.AddScoped<clsVolunteer>();
 builder.Services.AddScoped<IVolunteerRepository,VolunteerRepository>();
@@ -150,6 +154,24 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+
+
+ 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>(); 
+        context.Database.Migrate();
+    }
+    catch 
+    {
+        
+        
+    }
+}
+
 
 FileOperations.RootPath = app.Environment.ContentRootPath;
 // 1. Define the physical paths

@@ -8,6 +8,7 @@ using clsSocialServicesDataAccess.Admin;
 using clsSocialDataAccess.Volunteers;
 using clsSocialDataAccess.Posts.Preferances;
 using clsSocialDataAccess.Professions;
+using clsSocialDataAccess.Notifications;
 namespace clsSocialServicesDataAccess
 {
 
@@ -29,7 +30,7 @@ namespace clsSocialServicesDataAccess
         public DbSet<VolunteerProofImage> VolunteerProofImages { get; set; }
         public DbSet<CertficateEntity> Certificates { get; set; }
         public DbSet<CertificateClassification> CertificateClassifications { get; set; }
-
+        public DbSet<NotificationEntity> Notifications { get; set; }
         public DbSet<ServiceApplicationEntity> ServiceApplications { get; set; }
         public DbSet<FeedbackEntity> Feedbacks { get; set; }
         public DbSet<ProfessionEntity> Professions { get; set; }
@@ -39,6 +40,13 @@ namespace clsSocialServicesDataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<NotificationEntity>(entity =>
+            {
+            entity.HasKey(n=>n.NotificationID);
+                entity.HasOne<UserEntity>().WithMany().HasForeignKey(user => user.UserID).OnDelete(DeleteBehavior.Restrict);
+
+            });
 
             modelBuilder.Entity<CertificateClassification>(
                 entity =>

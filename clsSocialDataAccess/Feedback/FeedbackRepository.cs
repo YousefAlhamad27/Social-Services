@@ -16,17 +16,17 @@ namespace clsSocialServicesDataAccess.Feedback
         {
             _context = context;
         }
-        public bool Create(FeedbackEntity feedback)
+        public int Create(FeedbackEntity feedback)
         {
             try
             {
                 _context.Add(feedback);
                 _context.SaveChanges();
-                return true;
+                return feedback.FeedbackID;
             }
             catch (Exception)
             {
-                return false;
+                return 0;
             }
         }
         public List<FeedbackEntity> GetFeedbacksAppliedByUser(int userID)
@@ -85,7 +85,7 @@ namespace clsSocialServicesDataAccess.Feedback
                 ServiceApplicationEntity serviceApplication = _context.ServiceApplications.FirstOrDefault(s => s.ServiceApplicationID == serviceApplicationID)!;
                 PostEntity post = _context.Posts.FirstOrDefault(p => p.PostID == serviceApplication.PostID)!;
 
-                if (post.UserID == userID && serviceApplication.UserID != userID&&serviceApplication.Accepted&&post.IsComplete)
+                if (post.UserID == userID && serviceApplication.UserID != userID&&serviceApplication.Status==2&&post.IsComplete)
                 {
                     return true;
                 }

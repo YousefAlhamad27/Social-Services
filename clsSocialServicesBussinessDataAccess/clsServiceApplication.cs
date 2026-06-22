@@ -15,10 +15,12 @@ namespace clsSocialServicesBussiness
         private readonly  IServiceApplicationRepository _repo;
         private readonly IVolunteerRepository _volunteerRepository;
         private readonly IPostRepository _post;
+        private readonly clsNotification _Notifcation;
 
-        public clsServiceApplication(IServiceApplicationRepository repo,IPostRepository post, IVolunteerRepository _vol)
+        public clsServiceApplication(IServiceApplicationRepository repo,IPostRepository post, IVolunteerRepository _vol,clsNotification notification)
         {
             _volunteerRepository = _vol;
+            _Notifcation= notification;
             _repo = repo;
             _post = post;
         }
@@ -31,7 +33,7 @@ namespace clsSocialServicesBussiness
                 Description = dto.Description,
                 UserID = userID,
                 ApplyDateTime = DateTime.Now,
-                Accepted = false,
+                Status = 1,
                 VolunteerID = volunteerID
             };
         }
@@ -58,9 +60,12 @@ namespace clsSocialServicesBussiness
             VolunteerEntity entity=_volunteerRepository.GetVolunteerByUserID(userID);
             if (entity == null)
                 return false;
-            
 
-            return _repo.Create(MapAddServiceDTO(dto,userID,entity.VolunteerID));
+            int serviceID= _repo.Create(MapAddServiceDTO(dto, userID, entity.VolunteerID));
+            if(serviceID == 0) return false;
+            
+            return _Notifcation.CreateNotification(entity.UserID, serviceID, clsNotification.NotificaitonType.ServiceApplication, "Service Application Added",
+                "Your Service Application has been successfully Added!");
         }
         public List<ServiceApplicationEntity> getServicesForPost(int postID)
         {
@@ -74,7 +79,7 @@ namespace clsSocialServicesBussiness
         {
             return _repo.doesServiceBelongToUser(serviceID,userID);
         }
-        public async Task<bool> AcceptSerivceApplication(int userID,int serviceApplicationID,string? AcceptanceMessage)
+        public bool AcceptSerivceApplication(int userID,int serviceApplicationID,bool isAccepted,string? AcceptanceMessage)
         {
 
             PostEntity post= _repo.GetPostByServiceApplication(serviceApplicationID);
@@ -82,10 +87,25 @@ namespace clsSocialServicesBussiness
             {
                 return false ;
             }
+            string notTitle;
+            string notDescription;
+            if (isAccepted)
+            {
+                post.AcceptedServiceApplicationsCount += 1;
+                notTitle = "Service Application Accepted";
+                notDescription = $"Your Service Application For \"{post.PostTitle}\" has been accepted!";
+            }
+            else
+            {
+                notTitle = "Service Application Rejected";
+                notDescription = $"Your Service Application For \"{post.PostTitle}\" has been rejected!";
 
-            post.AcceptedServiceApplicationsCount += 1;
-            _post.UpdatePost(post);
-            return _repo.AcceptServiceApplication(userID,serviceApplicationID,AcceptanceMessage);
+            }
+                _post.UpdatePost(post);
+
+            _Notifcation.CreateNotification(userID, serviceApplicationID, clsNotification.NotificaitonType.ServiceApplication, notTitle,
+                notDescription);
+            return _repo.RespondToServiceApplication(userID,serviceApplicationID,isAccepted,AcceptanceMessage);
 
         }
         public ServiceApplicationDTO Find(int serviceID)
@@ -95,10 +115,14 @@ namespace clsSocialServicesBussiness
             if (entity == null)
                 return null!;
             return  new ServiceApplicationDTO {ServiceApplicationID=entity.ServiceApplicationID,AcceptanceMessage=entity.AcceptanceMessage
-           ,Accepted=entity.Accepted,ApplyDateTime=entity.ApplyDateTime,Description=entity.Description,PostID=entity.PostID,UserID=entity.UserID,VolunteerID=entity.VolunteerID};
+           ,Status=entity.Status,ApplyDateTime=entity.ApplyDateTime,Description=entity.Description,PostID=entity.PostID,UserID=entity.UserID,VolunteerID=entity.VolunteerID};
         }
         public bool DeleteServiceApplication(int serviceApplicationID)
         {
+            ServiceApplicationEntity entity= _repo.Find(serviceApplicationID);
+
+            _Notifcation.CreateNotification(entity.UserID, serviceApplicationID, clsNotification.NotificaitonType.ServiceApplication, "Service Application Deleted",
+                $"Your Service application \"{entity.Description}\" has been deleted.");
             return _repo.Delete(serviceApplicationID);
         }
     }

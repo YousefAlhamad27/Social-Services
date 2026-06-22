@@ -12,8 +12,8 @@ using clsSocialServicesDataAccess;
 namespace clsSocialDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260616235316_Certificate")]
-    partial class Certificate
+    [Migration("20260621204442_edit")]
+    partial class edit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,8 +105,8 @@ namespace clsSocialDataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassifcationID"));
 
-                    b.Property<byte>("RequiredAccomplishedServices")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("RequiredAccomplishedServices")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -518,9 +518,6 @@ namespace clsSocialDataAccess.Migrations
                     b.Property<string>("AcceptanceMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Accepted")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("ApplyDateTime")
                         .HasColumnType("datetime2");
 
@@ -529,6 +526,9 @@ namespace clsSocialDataAccess.Migrations
 
                     b.Property<int>("PostID")
                         .HasColumnType("int");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");

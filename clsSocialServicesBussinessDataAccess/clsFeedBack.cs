@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using clsSocialDataAccess.Notifications;
 using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Feedback;
+using clsSocialServicesDataAccess.Services;
 using DTOs.Services;
  
 
@@ -14,9 +16,13 @@ namespace clsSocialServicesBussiness
     {
         private readonly IFeedbackRepository _feedbackRepository;
         private readonly IUserRepository _userRepository;
+        private readonly clsNotification _notifcation;
+        private readonly IServiceApplicationRepository serviceApplicationRepository;
 
-        public clsFeedBack(IFeedbackRepository feedbackRepository,IUserRepository user)
+        public clsFeedBack(IFeedbackRepository feedbackRepository,IUserRepository user, clsNotification notifcation,IServiceApplicationRepository repository)
         {
+            serviceApplicationRepository= repository;
+            _notifcation= notifcation;
             _userRepository = user;
             _feedbackRepository = feedbackRepository;
         }
@@ -35,7 +41,16 @@ namespace clsSocialServicesBussiness
 
         public bool CreateFeedback(AddFeedbackDTO feedback,int userID)
         {
-            return _feedbackRepository.Create(MapFeedbackDtoToEntity(feedback,userID));
+            ServiceApplicationEntity service=serviceApplicationRepository.GetServiceApplicationById(feedback.ServiceApplicationID);
+            int feedbackID;
+            if (service != null) {
+              feedbackID=  _feedbackRepository.Create(MapFeedbackDtoToEntity(feedback, userID));
+                if(feedbackID != 0) 
+                    
+                return _notifcation.CreateNotification(service.UserID, feedbackID , clsNotification.NotificaitonType.Feedback, "Feedback Received",
+                    $"You got a feedback for your service \"{service.Description}\" with rating of \"{feedback.Rating}\"");
+            }
+            return false;
         }
         public bool IsUserEligibleForPostingFeedback(int serviceApplicationID, int userID)
         {

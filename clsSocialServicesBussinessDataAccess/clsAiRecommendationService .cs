@@ -14,11 +14,13 @@ namespace clsSocialServicesBussiness
     {
         private readonly string _apiKey;
         private readonly IPostRepository _postRepo;
+        private readonly IConfiguration _config;
 
         public clsAiRecommendationService(IPostRepository postRepo, IConfiguration configuration)
         {
             _postRepo = postRepo;
-            _apiKey = configuration["Gemini:ApiKey"]!;
+            _config = configuration;
+            _apiKey = _config["API_KEY"];
         }
 
 

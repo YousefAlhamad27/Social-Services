@@ -8,7 +8,7 @@ namespace clsSocialServicesDataAccess.Feedback
 {
     public interface IFeedbackRepository
     {
-        public bool Create(FeedbackEntity feedback);
+        public int Create(FeedbackEntity feedback);
         public List<FeedbackEntity> GetFeedbacksAppliedByUser(int userID);
         public List<FeedbackEntity> GetFeedbacksForUser(string username);
         public double GetAverageRatingForUser(int userID);

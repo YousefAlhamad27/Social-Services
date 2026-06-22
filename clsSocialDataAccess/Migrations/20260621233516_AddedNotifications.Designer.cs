@@ -12,8 +12,8 @@ using clsSocialServicesDataAccess;
 namespace clsSocialDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260616235707_updateField")]
-    partial class updateField
+    [Migration("20260621233516_AddedNotifications")]
+    partial class AddedNotifications
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,44 @@ namespace clsSocialDataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("clsSocialDataAccess.Notifications.NotificationEntity", b =>
+                {
+                    b.Property<int>("NotificationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationID"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsViewed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TypeID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotificationID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Notifcations");
+                });
 
             modelBuilder.Entity("clsSocialDataAccess.Posts.Preferances.LogViewEntity", b =>
                 {
@@ -518,9 +556,6 @@ namespace clsSocialDataAccess.Migrations
                     b.Property<string>("AcceptanceMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Accepted")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("ApplyDateTime")
                         .HasColumnType("datetime2");
 
@@ -529,6 +564,9 @@ namespace clsSocialDataAccess.Migrations
 
                     b.Property<int>("PostID")
                         .HasColumnType("int");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
@@ -578,6 +616,15 @@ namespace clsSocialDataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("clsSocialDataAccess.Notifications.NotificationEntity", b =>
+                {
+                    b.HasOne("clsSocialServicesDataAccess.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("clsSocialDataAccess.Volunteers.CertficateEntity", b =>

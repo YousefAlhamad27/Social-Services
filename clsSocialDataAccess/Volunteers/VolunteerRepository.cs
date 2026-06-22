@@ -29,7 +29,30 @@ namespace clsSocialDataAccess.Volunteers
                 return null!;
             }
         }
-        public async Task<bool> AddVolunteer(VolunteerEntity volunteer)
+        public VolunteerEntity GetTopVolunteer()
+        {
+            try
+            {
+                return _context.Volunteers.OrderByDescending(v => v.AccomplishedServiceApplicationsCount).FirstOrDefault()!;
+            }
+            catch
+            {
+                return null!;
+            }
+        }
+        public int GetVolunteersCount()
+        {
+
+            try
+            {
+              return  _context.Volunteers.Count();
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+        public async Task<int> AddVolunteer(VolunteerEntity volunteer)
         {
             try
             {
@@ -37,12 +60,12 @@ namespace clsSocialDataAccess.Volunteers
                 _context.Volunteers.Add(volunteer);
                  await _context.SaveChangesAsync();
 
-                return true;
+                return volunteer.VolunteerID;
             }
             catch (Exception ex)
             {
                 // Log the exception (ex) here as needed
-                return false;
+                return 0;
             }
         }
 
@@ -172,13 +195,14 @@ namespace clsSocialDataAccess.Volunteers
 
                 //existingApplication.Status = application.Status;
                 //existingApplication.AdminID = application.AdminID;
+
                 _context.VolunteerApplications.Update(application);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch 
             {
-                // Log the exception (ex) here as needed
+                
                 return false;
             }
         }
@@ -196,7 +220,7 @@ namespace clsSocialDataAccess.Volunteers
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch 
             {
                 // Log the exception (ex) here as needed
                 return false;
@@ -251,10 +275,10 @@ namespace clsSocialDataAccess.Volunteers
             {
                 return  _context.Volunteers.FirstOrDefault(v => v.UserID == userID)!;
             }
-            catch (Exception ex)
+            catch 
             {
                 // Log the exception (ex) here as needed
-                return null;
+                return null!;
             }
         }
 
@@ -303,7 +327,7 @@ namespace clsSocialDataAccess.Volunteers
             {
                 return await _context.VolunteerApplications.Where(a => a.Status == status).ToListAsync();
             }
-            catch (Exception ex)
+            catch 
             {
                 // Log the exception (ex) here as needed
                 return new List<VolunteerApplicationEntity>();
