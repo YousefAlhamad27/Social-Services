@@ -160,6 +160,7 @@ ProducesResponseType(StatusCodes.Status500InternalServerError)]
             int currentUserID = Convert.ToInt32(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
             if (currentUserID <= 0)
                 return Unauthorized("Not allowed");
+
             if (!User.IsInRole("Admin"))
             {
                 var serviceApp = _serviceApplication.Find(serviceApplicationID);

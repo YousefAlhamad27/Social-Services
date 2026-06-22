@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using clsSocialDataAccess.Notifications;
+﻿using clsSocialDataAccess.Notifications;
 using clsSocialServicesDataAccess;
 using clsSocialServicesDataAccess.Feedback;
 using clsSocialServicesDataAccess.Services;
 using DTOs.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
  
 
 namespace clsSocialServicesBussiness
@@ -48,7 +48,7 @@ namespace clsSocialServicesBussiness
                 if(feedbackID != 0) 
                     
                 return _notifcation.CreateNotification(service.UserID, feedbackID , clsNotification.NotificaitonType.Feedback, "Feedback Received",
-                    $"You got a feedback for your service \"{service.Description}\" with rating of \"{feedback.Rating}\"");
+                    $"You got a feedback for your service -> {service.Description} <- with rating of {feedback.Rating}");
             }
             return false;
         }

@@ -159,7 +159,7 @@ namespace clsSocialServicesBussiness
                     ? $"Post {postID} has been deleted by Admin {adminId}."
                     : $"Post {postID} has been deleted by User {userId}.";
                 return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Deleted",
-               $"Your post \"{post.PostTitle}\" has been deleted");
+               $"Your post -> {post.PostTitle} <- has been deleted");
 
                 _logRepo.AddLog("Delete Post", postID, "Post", logMessage, adminId);
                 return true;
@@ -205,7 +205,7 @@ namespace clsSocialServicesBussiness
             {
                 _logRepo.AddLog("LockPost", postID, "Post", "Post locked", adminId);
                 return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Locked",
-               $"Your post \"{post.PostTitle}\" has been locked");
+               $"Your post -> {post.PostTitle} <- has been locked");
                   
             }
             return false;
@@ -217,7 +217,7 @@ namespace clsSocialServicesBussiness
             {
                 _logRepo.AddLog("Unlock Post", postID, "Post", "Post Unlocked", adminID);
                 return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Locked",
-               $"Your post \"{post.PostTitle}\" has been unlocked");
+               $"Your post ->  {post.PostTitle} <- has been unlocked");
                 
             }
             return false;

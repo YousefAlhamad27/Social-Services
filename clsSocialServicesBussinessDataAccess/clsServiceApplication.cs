@@ -93,12 +93,12 @@ namespace clsSocialServicesBussiness
             {
                 post.AcceptedServiceApplicationsCount += 1;
                 notTitle = "Service Application Accepted";
-                notDescription = $"Your Service Application For \"{post.PostTitle}\" has been accepted!";
+                notDescription = $"Your Service Application For -> {post.PostTitle} <- has been accepted!";
             }
             else
             {
                 notTitle = "Service Application Rejected";
-                notDescription = $"Your Service Application For \"{post.PostTitle}\" has been rejected!";
+                notDescription = $"Your Service Application For -> {post.PostTitle} <- has been rejected!";
 
             }
                 _post.UpdatePost(post);
@@ -122,7 +122,7 @@ namespace clsSocialServicesBussiness
             ServiceApplicationEntity entity= _repo.Find(serviceApplicationID);
 
             _Notifcation.CreateNotification(entity.UserID, serviceApplicationID, clsNotification.NotificaitonType.ServiceApplication, "Service Application Deleted",
-                $"Your Service application \"{entity.Description}\" has been deleted.");
+                $"Your Service application  -> {entity.Description} <- has been deleted.");
             return _repo.Delete(serviceApplicationID);
         }
     }

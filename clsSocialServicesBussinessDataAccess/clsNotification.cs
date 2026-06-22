@@ -61,6 +61,8 @@ namespace clsSocialServicesBussiness
             notification.TypeID = typeID;
             notification.Title = title;
             notification.Description = description;
+            notification.CreatedDate = DateTime.Now;   
+            
             
             return _notificationRepository.CreateNotification(notification);
         }
@@ -76,7 +78,7 @@ namespace clsSocialServicesBussiness
                 notificationDTO.UserID = userID;
                 notificationDTO.Title=notification.Title;
                 notificationDTO.Description=notification.Description;
-                notificationDTO.CreatedDate= DateTime.Now;
+                notificationDTO.CreatedDate = notification.CreatedDate;
                 notificationDTO.TypeName = notification.TypeName;
                 notificationDTO.TypeID = notification.TypeID;
                 notificationDTO.IsViewed=notification.IsViewed;
