@@ -21,7 +21,7 @@ namespace SocialServices.Controllers
         public async Task<ActionResult> GetRecommendations(string userMessage)
         {
             int userId = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            var result = await _aiService.GetRecommendations(userMessage, userId);
+            var result = await _aiService.GetRecommendations(userMessage);
             return Ok(result);
         }
     }

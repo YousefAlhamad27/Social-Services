@@ -24,10 +24,10 @@ namespace clsSocialServicesBussiness
         }
 
 
-        public async Task<string> GetRecommendations(string userMessage, int userId)
+        public async Task<string> GetRecommendations(string userMessage)
         {
             // جلب البوستات الخاصة بالمستخدم
-            var posts = _postRepo.GetAllPosts(userId);
+            var posts = _postRepo.GetAllPosts();
 
             // عمل Projection باستخدام الأسماء النصية بدلاً من الـ IDs لزيادة دقة الـ AI
             // ملاحظة: يمكنك تعويض p.CountyName بـ p.CountyID.ToString() أو الاسم الفعلي للمحافظة المتوفر لديك
