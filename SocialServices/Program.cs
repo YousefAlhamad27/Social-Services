@@ -83,11 +83,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 builder.Services.AddScoped<INotifcationRepository, NotificationRepository>();
-builder.Services.AddScoped<IServiceApplicationRepository,ServiceApplicationRepository>();
-builder.Services.AddScoped<IFeedbackRepository,FeedbackRepository>();
-builder.Services.AddScoped<IPostRepository,PostRepository>();
-builder.Services.AddScoped<IUserRepository,UserRepository>();
-builder.Services.AddScoped<IPersonRespository,PersonRepository>();
+builder.Services.AddScoped<IServiceApplicationRepository, ServiceApplicationRepository>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPersonRespository, PersonRepository>();
 builder.Services.AddScoped<CountyCityRepository>();
 builder.Services.AddScoped<clsPerson>();
 builder.Services.AddScoped<clsPost>();
@@ -98,11 +98,11 @@ builder.Services.AddScoped<clsCountiesCities>();
 builder.Services.AddScoped<clsNotification>();
 
 builder.Services.AddScoped<clsVolunteer>();
-builder.Services.AddScoped<IVolunteerRepository,VolunteerRepository>();
-builder.Services.AddScoped<IAdminRepository,AdminRepository>();
+builder.Services.AddScoped<IVolunteerRepository, VolunteerRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<clsAdminService>();
 builder.Services.AddScoped<clsAiRecommendationService>();
-builder.Services.AddScoped<ILogRepository,LogRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ILogViewRepository, LogViewRepository>();
 builder.Services.AddScoped<IProfessionRepository, ProfessionRepository>();
 builder.Services.AddScoped<clsProfession>();
@@ -164,19 +164,19 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 
- 
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<AppDbContext>(); 
+        var context = services.GetRequiredService<AppDbContext>();
         context.Database.Migrate();
     }
-    catch 
+    catch
     {
-        
-        
+
+
     }
 }
 
@@ -199,6 +199,9 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(postsImagesPath),
     RequestPath = "/PostsImages"
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "PostsImages")),
+    RequestPath = ""
 });
 
 app.UseStaticFiles(new StaticFileOptions

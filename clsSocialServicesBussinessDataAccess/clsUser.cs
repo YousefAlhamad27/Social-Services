@@ -65,7 +65,7 @@ namespace clsSocialServicesBussiness
         {
           if( _userRepo.DeleteAllRefreshTokensForUser(userID))
             {
-                await _logRepo.AddLog("Logout",userID, "User", "User logout", null);
+                await _logRepo.AddLog("Logout",userID, "User", $"User {userID} logout", null);
                 return true;
             }
             return false;
@@ -89,9 +89,10 @@ namespace clsSocialServicesBussiness
             var userId = _userRepo.AddUser(userEntity);
             if (userId != -1)
             {
-                _logRepo.AddLog("Register", userId, "Login or Register", "New User Registerd!", null);
+                _logRepo.AddLog("Register", userId, "Login or Register", $"New User {userId} Registerd!", null);
                 return userId;
             }
+
             return -1;
         }
       
@@ -102,7 +103,7 @@ namespace clsSocialServicesBussiness
 
         if( _userRepo.DeleteUser(userDTO.Username))
             {
-                _logRepo.AddLog("Delete User", userId, "User", "User Deleted", AdminID);
+                _logRepo.AddLog("Delete User", userId, "User", $"User {userId} Deleted", AdminID);
                 return true;
             }
             return false;

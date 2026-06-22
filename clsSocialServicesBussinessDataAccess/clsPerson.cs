@@ -99,7 +99,7 @@ namespace clsSocialServicesBussiness
             if( _personRepository.UpdatePerson(MapUpdateDTOToPersonEntity(personID,updateDTO)))
 
             {
-                _logRepo.AddLog("Update User",UserId, "User", "User been updated", null);
+                _logRepo.AddLog("Update User",UserId, "User", $"User {UserId} been updated", null);
                 return true;
             }
 

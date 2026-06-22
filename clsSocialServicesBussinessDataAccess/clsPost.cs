@@ -21,16 +21,16 @@ namespace clsSocialServicesBussiness
         private readonly ILogViewRepository _logViewRepo;
         private readonly clsNotification _Notifcation;
         private readonly IServiceApplicationRepository _serviceApplicationRepository;
-        public clsPost(IPostRepository postRepository, ILogRepository logRepo , ILogViewRepository LogViewRepo,clsNotification notification,IServiceApplicationRepository serviceApplication    )
+        public clsPost(IPostRepository postRepository, ILogRepository logRepo, ILogViewRepository LogViewRepo, clsNotification notification, IServiceApplicationRepository serviceApplication)
         {
-            _serviceApplicationRepository=serviceApplication;
+            _serviceApplicationRepository = serviceApplication;
             _Notifcation = notification;
             _postRepository = postRepository;
             _logRepo = logRepo;
             _logViewRepo = LogViewRepo;
         }
 
-        private PostEntity MapPostDTOToPostEntity(int userID,AddPostDTO dto)
+        private PostEntity MapPostDTOToPostEntity(int userID, AddPostDTO dto)
         {
             return new PostEntity
             {
@@ -41,13 +41,14 @@ namespace clsSocialServicesBussiness
                 PostTypeID = dto.TypeID,
                 PublishDateTime = dto.PublishDate,
                 LockDate = null,
-                ImagePath=dto.imagePath,
-                Status=dto.Status,
-                ProfessionID=dto.ProfessionID
-                ,Price=dto.Price,
-                Latitude=dto.Latitude,
-                Longitude=dto.Longitude,
-                RequiredServicesCount=dto.ServicesRequiredCount
+                ImagePath = dto.imagePath,
+                Status = dto.Status,
+                ProfessionID = dto.ProfessionID
+                ,
+                Price = dto.Price,
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude,
+                RequiredServicesCount = dto.ServicesRequiredCount
             };
         }
         private PostDTO MapPostEntityToPostDTO(PostEntity dto)
@@ -66,20 +67,20 @@ namespace clsSocialServicesBussiness
                     TypeID = dto.PostTypeID,
                     imagePath = dto.ImagePath,
                     Status = dto.Status,
-                    Price=dto.Price,
-                    ProfessionID=dto.ProfessionID,
-                     Latitude=dto.Latitude,
-                        Longitude=dto.Longitude,
-                        RemainingServicesRequiredCount=dto.RequiredServicesCount
+                    Price = dto.Price,
+                    ProfessionID = dto.ProfessionID,
+                    Latitude = dto.Latitude,
+                    Longitude = dto.Longitude,
+                    RemainingServicesRequiredCount = dto.RequiredServicesCount
 
                 };
             }
             else
                 return null!;
         }
-        private PostEntity MapPostUpdateDTOToPostEntity(int userID, PostUpdateDTO dto,PostEntity currentDetails)
+        private PostEntity MapPostUpdateDTOToPostEntity(int userID, PostUpdateDTO dto, PostEntity currentDetails)
         {
-         
+
             if (currentDetails != null)
 
                 return new PostEntity
@@ -91,20 +92,20 @@ namespace clsSocialServicesBussiness
                     CountyID = dto.CountyID,
                     LockDate = null,
                     ImagePath = dto.imagePath!,
-                    PostTypeID=currentDetails.PostTypeID,
-                    IsComplete=currentDetails.IsComplete,
-                    PublishDateTime=currentDetails.PublishDateTime,
-                    Status=currentDetails.Status,
-                    Price=currentDetails.Price,
-                    ProfessionID=currentDetails.ProfessionID,
-                    Latitude=currentDetails.Latitude,
-                    Longitude=currentDetails.Longitude
+                    PostTypeID = currentDetails.PostTypeID,
+                    IsComplete = currentDetails.IsComplete,
+                    PublishDateTime = currentDetails.PublishDateTime,
+                    Status = currentDetails.Status,
+                    Price = currentDetails.Price,
+                    ProfessionID = currentDetails.ProfessionID,
+                    Latitude = currentDetails.Latitude,
+                    Longitude = currentDetails.Longitude
 
 
                 };
             else return null!;
         }
-        
+
 
         public bool updatePost(int userID, PostUpdateDTO dto)
         {
@@ -114,43 +115,42 @@ namespace clsSocialServicesBussiness
                 return false;
             }
 
-           
-            currentDetails.ImagePath= dto.imagePath!;
-            currentDetails.Description= dto.Description!;
-            currentDetails.PostTitle= dto.PostTitle;
-            currentDetails.CountyID= dto.CountyID;
+
+            currentDetails.ImagePath = dto.imagePath!;
+            currentDetails.Description = dto.Description!;
+            currentDetails.PostTitle = dto.PostTitle;
+            currentDetails.CountyID = dto.CountyID;
             currentDetails.Price = dto.Price;
-           currentDetails.RequiredServicesCount=dto.ServicesRequiredCount;
+            currentDetails.RequiredServicesCount = dto.ServicesRequiredCount;
             currentDetails.Latitude = dto.Latitude;
             currentDetails.Longitude = dto.Longitude;
 
 
             //  PostEntity updatedPost = MapPostUpdateDTOToPostEntity(userID, dto,currentDetails);
-            if(_postRepository.UpdatePost(currentDetails))
+            if (_postRepository.UpdatePost(currentDetails))
             {
                 int postId = _postRepository.GetLastPostIdByUser(userID);
                 _logRepo.AddLog("Update Post", postId, "Post", $"User {userID} Updated Post{postId}", null);
                 return true;
             }
-            return false; 
+            return false;
         }
 
-        public bool addPost(int userID, AddPostDTO dto,int postID)
+        public bool addPost(int userID, AddPostDTO dto, int postID)
         {
-           
 
-            if ( _postRepository.AddPost(MapPostDTOToPostEntity( userID,dto)))
+
+            if (_postRepository.AddPost(MapPostDTOToPostEntity(userID, dto)))
             {
-                _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post.", null);
-
+                _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post{postID}.", null);
                 return true;
             }
             return false;
         }
-        public bool deletePost(int postID,int? userId, int? adminId)
+        public bool deletePost(int postID, int? userId, int? adminId)
         {
-            PostEntity post=_postRepository.Find(postID)!;
-            if(post==null)
+            PostEntity post = _postRepository.Find(postID)!;
+            if (post == null)
             {
                 return false;
             }
@@ -159,13 +159,13 @@ namespace clsSocialServicesBussiness
 
             List<ServiceApplicationEntity> services = _serviceApplicationRepository.GetServicesForPost(postID);
 
-            foreach(var service in services)
+            foreach (var service in services)
             {
                 if (!_serviceApplicationRepository.Delete(service.ServiceApplicationID))
                     return false;
             }
 
-            UtilLibrary.FileOperations.removeImageFromFile( post.ImagePath!);
+            UtilLibrary.FileOperations.removeImageFromFile(post.ImagePath!);
 
             if (_postRepository.DeletePost(postID))
             {
@@ -204,35 +204,31 @@ namespace clsSocialServicesBussiness
         {
             return MapPostEntityToPostDTO(_postRepository.Find(postID)!);
         }
-        public bool CompletePost(int userID,int postID)
+        public bool CompletePost(int userID, int postID)
         {
-             
-            return _postRepository.CompletePost(userID,postID);
+
+            return _postRepository.CompletePost(userID, postID);
         }
         public bool LockPost(int postID, int? userID, int? adminId = null)
         {
             // إذا Admin بنبعث null للـ userID
             int? repoUserId = adminId != null ? null : userID;
-            PostEntity post= _postRepository.Find(postID)!;
+            PostEntity post = _postRepository.Find(postID)!;
 
             if (_postRepository.LockPost(postID, repoUserId))
             {
                 _logRepo.AddLog("LockPost", postID, "Post", "Post locked", adminId);
-                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Locked",
-               $"Your post -> {post.PostTitle} <- has been locked");
-                  
+                return true;
             }
             return false;
         }
-        public bool UnlockPost(int postID,int adminID)
+        public bool UnlockPost(int postID, int adminID)
         {
             PostEntity post = _postRepository.Find(postID)!;
             if (_postRepository.UnlockPost(postID))
             {
                 _logRepo.AddLog("Unlock Post", postID, "Post", "Post Unlocked", adminID);
-                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Locked",
-               $"Your post ->  {post.PostTitle} <- has been unlocked");
-                
+                return true;
             }
             return false;
         }

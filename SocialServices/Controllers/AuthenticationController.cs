@@ -36,10 +36,6 @@ namespace SocialServices.Controllers
        
         public ActionResult RegisterUser([FromForm] AddFullUserDetails userDetails)
         {
-            
-
-
-
             // if no data sent return bad request
             if (!UtilLibrary.checkReqDTOValues(userDetails.RegisterRequestDTO))
                 return BadRequest("Register Credentials are not valid");
@@ -113,7 +109,7 @@ namespace SocialServices.Controllers
             if (token == null)
                 return StatusCode(500, new { Message = "Error generating token" });
 
-            await _logRepo.AddLog("Login" ,_userService.getUserID(request.Username) , "Login or Register", "User logged in", null);
+            await _logRepo.AddLog("Login" ,_userService.getUserID(request.Username) , "Login or Register", $"User {_userService.getUserID(request.Username) }logged in", null);
             return Ok(new { AccessToken = token, RefreshToken = refreshToken });
 
         }
@@ -146,7 +142,7 @@ namespace SocialServices.Controllers
             if (token == null)
                 return StatusCode(500, new { Message = "Error generating token" });
 
-            await _logRepo.AddLog("Login", _userService.getUserID(request.Username), "Login or Register", "User logged in", null);
+            await _logRepo.AddLog("Login", _userService.getUserID(request.Username), "Login or Register", $"User {_userService.getUserID(request.Username)}logged in", null);
             return Ok(new { AccessToken = token, RefreshToken = refreshToken });
 
         }
