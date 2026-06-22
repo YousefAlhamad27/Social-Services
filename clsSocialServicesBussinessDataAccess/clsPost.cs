@@ -130,7 +130,7 @@ namespace clsSocialServicesBussiness
             if (_postRepository.UpdatePost(currentDetails))
             {
                 int postId = _postRepository.GetLastPostIdByUser(userID);
-                _logRepo.AddLog("Update Post", postId, "Post", $"User {userID} Updated Post{postId}", null);
+                _logRepo.AddLog("Update Post", postId, "Post", $"User {userID} Updated Post {postId}.", null);
                 return true;
             }
             return false;
@@ -142,7 +142,7 @@ namespace clsSocialServicesBussiness
 
             if (_postRepository.AddPost(MapPostDTOToPostEntity(userID, dto)))
             {
-                _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post{postID}.", null);
+                _logRepo.AddLog("Add Post", postID, "Post", $"User {userID} add new post {postID}.", null);
                 return true;
             }
             return false;
@@ -217,7 +217,7 @@ namespace clsSocialServicesBussiness
 
             if (_postRepository.LockPost(postID, repoUserId))
             {
-                _logRepo.AddLog("LockPost", postID, "Post", "Post locked", adminId);
+                _logRepo.AddLog("LockPost", postID, "Post", $"Post {postID} locked", adminId);
                 return true;
             }
             return false;
@@ -227,7 +227,7 @@ namespace clsSocialServicesBussiness
             PostEntity post = _postRepository.Find(postID)!;
             if (_postRepository.UnlockPost(postID))
             {
-                _logRepo.AddLog("Unlock Post", postID, "Post", "Post Unlocked", adminID);
+                _logRepo.AddLog("Unlock Post", postID, "Post", $"Post {postID} Unlocked", adminID);
                 return true;
             }
             return false;
