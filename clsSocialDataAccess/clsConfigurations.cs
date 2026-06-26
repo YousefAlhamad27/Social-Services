@@ -59,7 +59,7 @@ namespace clsSocialServicesDataAccess
             {
                  return $"Data Source={_config["DB_HOST"]};Database={_config["db_name"]};Integrated Security=True;TrustServerCertificate=True;";
                 // return $"Server={_config["DB_HOST"]};Integrated Security=False;Database={_config["db_name"]};User Id={_config["db_user"]};Password={_config["db_password"]};TrustServerCertificate=True;";
-                //return _config["ConnectionString:DefaultConnection"]!;
+               // return _config["ConnectionString:DefaultConnection"]!;
             }
         }
     

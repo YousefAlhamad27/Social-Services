@@ -172,8 +172,9 @@ namespace clsSocialServicesBussiness
                 string logMessage = adminId.HasValue
                     ? $"Post {postID} has been deleted by Admin {adminId}."
                     : $"Post {postID} has been deleted by User {userId}.";
-                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post, "Post Deleted",
-               $"Your post -> {post.PostTitle} <- has been deleted");
+                 _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post,
+      "تم حذف المنشور",
+      $"تم حذف منشورك -> {post.PostTitle} <-");
 
                 _logRepo.AddLog("Delete Post", postID, "Post", logMessage, adminId);
                 return true;
@@ -218,6 +219,9 @@ namespace clsSocialServicesBussiness
             if (_postRepository.LockPost(postID, repoUserId))
             {
                 _logRepo.AddLog("LockPost", postID, "Post", "Post locked", adminId);
+                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post,
+     "تم قفل المنشور",
+     $"تم قفل منشورك -> {post.PostTitle} <-");
                 return true;
             }
             return false;
@@ -228,6 +232,9 @@ namespace clsSocialServicesBussiness
             if (_postRepository.UnlockPost(postID))
             {
                 _logRepo.AddLog("Unlock Post", postID, "Post", "Post Unlocked", adminID);
+                return _Notifcation.CreateNotification(post.UserID, postID, clsNotification.NotificaitonType.Post,
+     "تم إلغاء قفل المنشور",
+     $"تم إلغاء قفل منشورك -> {post.PostTitle} <-");
                 return true;
             }
             return false;

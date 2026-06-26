@@ -45,10 +45,11 @@ namespace clsSocialServicesBussiness
             int feedbackID;
             if (service != null) {
               feedbackID=  _feedbackRepository.Create(MapFeedbackDtoToEntity(feedback, userID));
-                if(feedbackID != 0) 
-                    
-                return _notifcation.CreateNotification(service.UserID, feedbackID , clsNotification.NotificaitonType.Feedback, "Feedback Received",
-                    $"You got a feedback for your service -> {service.Description} <- with rating of {feedback.Rating}");
+                if(feedbackID != 0)
+
+                    return _notifcation.CreateNotification(service.UserID, feedbackID, clsNotification.NotificaitonType.Feedback,
+         "تقييم جديد",
+         $"لقد حصلت على تقييم لخدمتك -> {service.Description} <- بتقييم {feedback.Rating}");
             }
             return false;
         }

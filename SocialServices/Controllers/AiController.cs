@@ -22,6 +22,8 @@ namespace SocialServices.Controllers
         {
             int userId = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var result = await _aiService.GetRecommendations(userMessage);
+            if (result == null)
+                return NotFound("Gemini is under load");
             return Ok(result);
         }
     }

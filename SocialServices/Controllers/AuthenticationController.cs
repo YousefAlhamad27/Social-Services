@@ -98,7 +98,7 @@ namespace SocialServices.Controllers
             if (!UtilLibrary.VerifyPassword(request.Password,userDTO.PasswordHash))
                 return Unauthorized("Invalid Username or Password");
 
-            string token = _userService.getAccessToken(request.Username);
+            string token = _userService.getAccessToken(request.Username)!;
             string refreshToken = UtilLibrary.GenerateRefreshToken();
 
             bool isRefreshTokenAdded = _userService.addRefreshToken(refreshToken, request.Username);
