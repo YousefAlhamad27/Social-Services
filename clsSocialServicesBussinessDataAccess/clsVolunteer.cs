@@ -1,5 +1,4 @@
-﻿using clsSocialDataAccess.Migrations;
-using clsSocialDataAccess.Volunteers;
+﻿using clsSocialDataAccess.Volunteers;
 using clsSocialServicesDataAccess;
 using DTOs.Volunteer;
 using System;

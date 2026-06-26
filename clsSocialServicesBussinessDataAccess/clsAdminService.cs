@@ -52,7 +52,7 @@ namespace clsSocialServicesBussiness
         {
             if (await _userRepo.BlockUser(UserID))
             {
-                await _logRepo.AddLog("Uesr Blocked",UserID,"User","User has been blocked",AdminId);
+                await _logRepo.AddLog("Uesr Blocked",UserID,"User",$"User {UserID} has been blocked",AdminId);
                 return true;
             }
             return false;
@@ -62,7 +62,7 @@ namespace clsSocialServicesBussiness
         {
             if (await _userRepo.UnBlockUser(UserID))
             {
-                await _logRepo.AddLog("Uesr Unblocked", UserID, "User", "User has been Unblocked", AdminId);
+                await _logRepo.AddLog("Uesr Unblocked", UserID, "User", $"User {UserID} has been Unblocked", AdminId);
                 return true;
             }
             return false;

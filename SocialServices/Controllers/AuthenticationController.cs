@@ -109,7 +109,7 @@ namespace SocialServices.Controllers
             if (token == null)
                 return StatusCode(500, new { Message = "Error generating token" });
 
-            await _logRepo.AddLog("Login" ,_userService.getUserID(request.Username) , "Login or Register", $"User {_userService.getUserID(request.Username) }logged in", null);
+            await _logRepo.AddLog("Login" ,_userService.getUserID(request.Username) , "Login or Register", $"User {_userService.getUserID(request.Username) } logged in", null);
             return Ok(new { AccessToken = token, RefreshToken = refreshToken });
 
         }
@@ -142,7 +142,7 @@ namespace SocialServices.Controllers
             if (token == null)
                 return StatusCode(500, new { Message = "Error generating token" });
 
-            await _logRepo.AddLog("Login", _userService.getUserID(request.Username), "Login or Register", $"User {_userService.getUserID(request.Username)}logged in", null);
+            await _logRepo.AddLog("Login", _userService.getUserID(request.Username), "Login or Register", $"User {_userService.getUserID(request.Username)} logged in", null);
             return Ok(new { AccessToken = token, RefreshToken = refreshToken });
 
         }
