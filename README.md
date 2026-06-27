@@ -18,6 +18,10 @@ This backend is structured to provide secure, scalable, and efficient data opera
 * **RESTful Principles:** Endpoints are logically structured for standard CRUD operations using appropriate HTTP verbs and status codes.
 * **Data Access:** Utilizes Entity Framework Core for optimized database querying, ensuring strong typing and preventing SQL injection.
 
+## Database Architecture
+
+![Database Diagram](Docs/database-Diagram.png)
+
 ## Key Features
 * **User & Volunteer Management:** Endpoints to register, authenticate, and manage users and their roles within the social services system.
 * **Service Applications:** Secure tracking of service requests, status updates, and acceptance messaging.
